@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameHub - Cobrinha</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        #pontuacao {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            background: #222;
+            border: 3px solid #fff;
+            max-width: 90vw;
+            max-height: 70vh;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            color: #111;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🐍 Cobrinha</h1>
+
+    <div id="pontuacao">Pontuação: 0</div>
+
+    <canvas id="jogo" width="400" height="400"></canvas>
+
+    <button onclick="reiniciar()">🔄 Reiniciar</button>
+
+    <script>
+        const canvas = document.getElementById("jogo");
+        const ctx = canvas.getContext("2d");
+
+        const tamanho = 20;
+
+        let cobra;
+        let comida;
+        let direcao;
+        let pontuacao;
+        let jogoAtivo;
+
+        function iniciar() {
+            cobra = [
+                { x: 200, y: 200 },
+                { x: 180, y: 200 },
+                { x: 160, y: 200 }
+            ];
+
+            comida = criarComida();
+
+            direcao = {
+                x: tamanho,
+                y: 0
+            };
+
+            pontuacao = 0;
+            jogoAtivo = true;
+
+            atualizarPontuacao();
+        }
+
+        function criarComida() {
+            return {
+                x: Math.floor(Math.random() * (canvas.width / tamanho)) * tamanho,
+                y: Math.floor(Math.random() * (canvas.height / tamanho)) * tamanho
+            };
+        }
+
+        function desenhar() {
+            ctx.fillStyle = "#222";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Comida
+            ctx.fillStyle = "red";
+            ctx.fillRect(comida.x, comida.y, tamanho, tamanho);
+
+            // Cobra
+            ctx.fillStyle = "lime";
+
+            cobra.forEach(parte => {
+                ctx.fillRect(
+                    parte.x,
+                    parte.y,
+                    tamanho - 2,
+                    tamanho - 2
+                );
+            });
+        }
+
+        function atualizar() {
+            if (!jogoAtivo) return;
+
+            const cabeca = {
+                x: cobra[0].x + direcao.x,
+                y: cobra[0].y + direcao.y
+            };
+
+            // Colisão com parede
+            if (
+                cabeca.x < 0 ||
+                cabeca.x >= canvas.width ||
+                cabeca.y < 0 ||
+                cabeca.y >= canvas.height
+            ) {
+                fimDeJogo();
+                return;
+            }
+
+            // Colisão com o próprio corpo
+            for (let i = 0; i < cobra.length; i++) {
+                if (
+                    cabeca.x === cobra[i].x &&
+                    cabeca.y === cobra[i].y
+                ) {
+                    fimDeJogo();
+                    return;
+                }
+            }
+
+            cobra.unshift(cabeca);
+
+            // Comeu a comida
+            if (
+                cabeca.x === comida.x &&
+                cabeca.y === comida.y
+            ) {
+                pontuacao++;
+                comida = criarComida();
+                atualizarPontuacao();
+            } else {
+                cobra.pop();
+            }
+
+            desenhar();
+        }
+
+        function atualizarPontuacao() {
+            document.getElementById("pontuacao").textContent =
+                "Pontuação: " + pontuacao;
+        }
+
+        function fimDeJogo() {
+            jogoAtivo = false;
+
+            setTimeout(() => {
+                alert("Game Over! Pontuação: " + pontuacao);
+            }, 100);
+        }
+
+        function reiniciar() {
+            iniciar();
+            desenhar();
+        }
+
+        document.addEventListener("keydown", function(event) {
+
+            if (event.key === "ArrowUp" && direcao.y === 0) {
+                direcao = { x: 0, y: -tamanho };
+            }
+
+            if (event.key === "ArrowDown" && direcao.y === 0) {
+                direcao = { x: 0, y: tamanho };
+            }
+
+            if (event.key === "ArrowLeft" && direcao.x === 0) {
+                direcao = { x: -tamanho, y: 0 };
+            }
+
+            if (event.key === "ArrowRight" && direcao.x === 0) {
+                direcao = { x: tamanho, y: 0 };
+            }
+        });
+
+        iniciar();
+        desenhar();
+
+        setInterval(atualizar, 120);
+    </script>
+
+</body>
+</html>
