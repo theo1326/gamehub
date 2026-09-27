@@ -358,18 +358,24 @@
                     });
 
 
-            if (error) {
+         if (error) {
 
-                console.error(
-                    "Erro Supabase:",
-                    error
-                );
+    console.error(
+        "Erro Supabase:",
+        error
+    );
 
-                document.getElementById(
-                    "mensagem"
-                ).textContent =
-                    "⚠️ Não foi possível salvar a pontuação.";
+    alert(
+        "ERRO: " +
+        error.message +
+        "\nCÓDIGO: " +
+        error.code
+    );
 
+    document.getElementById(
+        "mensagem"
+    ).textContent =
+        "⚠️ Não foi possível salvar a pontuação.";
                 return;
             }
 
