@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GameHub - Cobrinha</title>
 
+    <!-- Biblioteca oficial do Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -43,7 +46,7 @@
 
         canvas {
             background: #222;
-            border: 3px solid #fff;
+            border: 3px solid white;
             max-width: 90vw;
             max-height: 70vh;
         }
@@ -55,7 +58,7 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            background: #fff;
+            background: white;
             color: #111;
         }
 
@@ -120,17 +123,22 @@
     </div>
 
     <script>
-        /* ==========================================
-           COLOQUE AQUI OS DADOS DO SEU SUPABASE
-           ========================================== */
+        /* =========================================
+           SUPABASE
+           ========================================= */
 
         const SUPABASE_URL = "https://vkswxahmirkhcynwlzys.supabase.co/rest/v1/";
         const SUPABASE_KEY = "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
 
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
 
-        /* ==========================================
+
+        /* =========================================
            JOGO
-           ========================================== */
+           ========================================= */
 
         const canvas = document.getElementById("jogo");
         const ctx = canvas.getContext("2d");
@@ -143,7 +151,9 @@
         let pontuacao;
         let jogoAtivo;
 
+
         function iniciar() {
+
             cobra = [
                 { x: 200, y: 200 },
                 { x: 180, y: 200 },
@@ -161,42 +171,83 @@
             jogoAtivo = true;
 
             atualizarPontuacao();
+            desenhar();
+
             document.getElementById("mensagem").textContent = "";
         }
 
+
         function criarComida() {
+
             return {
-                x: Math.floor(Math.random() * (canvas.width / tamanho)) * tamanho,
-                y: Math.floor(Math.random() * (canvas.height / tamanho)) * tamanho
+                x: Math.floor(
+                    Math.random() *
+                    (canvas.width / tamanho)
+                ) * tamanho,
+
+                y: Math.floor(
+                    Math.random() *
+                    (canvas.height / tamanho)
+                ) * tamanho
             };
         }
 
+
         function desenhar() {
+
             ctx.fillStyle = "#222";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            /* Comida */
 
             ctx.fillStyle = "red";
-            ctx.fillRect(comida.x, comida.y, tamanho, tamanho);
+
+            ctx.fillRect(
+                comida.x,
+                comida.y,
+                tamanho,
+                tamanho
+            );
+
+
+            /* Cobra */
 
             ctx.fillStyle = "lime";
 
             cobra.forEach(parte => {
+
                 ctx.fillRect(
                     parte.x,
                     parte.y,
                     tamanho - 2,
                     tamanho - 2
                 );
+
             });
         }
 
+
         function atualizar() {
+
             if (!jogoAtivo) return;
 
+
             const cabeca = {
+
                 x: cobra[0].x + direcao.x,
+
                 y: cobra[0].y + direcao.y
             };
+
+
+            /* Parede */
 
             if (
                 cabeca.x < 0 ||
@@ -204,105 +255,138 @@
                 cabeca.y < 0 ||
                 cabeca.y >= canvas.height
             ) {
+
                 fimDeJogo();
+
                 return;
             }
 
-            for (let i = 0; i < cobra.length; i++) {
+
+            /* Próprio corpo */
+
+            for (
+                let i = 0;
+                i < cobra.length;
+                i++
+            ) {
+
                 if (
                     cabeca.x === cobra[i].x &&
                     cabeca.y === cobra[i].y
                 ) {
+
                     fimDeJogo();
+
                     return;
                 }
             }
 
+
             cobra.unshift(cabeca);
+
+
+            /* Comida */
 
             if (
                 cabeca.x === comida.x &&
                 cabeca.y === comida.y
             ) {
+
                 pontuacao++;
+
                 comida = criarComida();
+
                 atualizarPontuacao();
+
             } else {
+
                 cobra.pop();
+
             }
+
 
             desenhar();
         }
 
+
         function atualizarPontuacao() {
-            document.getElementById("pontuacao").textContent =
+
+            document.getElementById(
+                "pontuacao"
+            ).textContent =
                 "Pontuação: " + pontuacao;
         }
 
 
-        /* ==========================================
-           SALVAR PONTUAÇÃO NO SUPABASE
-           ========================================== */
+        /* =========================================
+           SALVAR PONTUAÇÃO
+           ========================================= */
 
         async function salvarPontuacao() {
 
-            const nome = document
-                .getElementById("nomeJogador")
-                .value
-                .trim();
+            const nome =
+                document
+                    .getElementById("nomeJogador")
+                    .value
+                    .trim();
+
 
             if (!nome) {
-                alert("Digite seu apelido antes de jogar!");
-                return;
-            }
 
-            if (pontuacao <= 0) {
-                return;
-            }
-
-            try {
-
-                const resposta = await fetch(
-                    SUPABASE_URL + "/rest/v1/snake_scores",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json",
-                            "apikey": SUPABASE_KEY,
-                            "Authorization": "Bearer " + SUPABASE_KEY,
-                            "Prefer": "return=minimal"
-                        },
-
-                        body: JSON.stringify({
-                            player_name: nome,
-                            score: pontuacao
-                        })
-                    }
+                alert(
+                    "Digite seu apelido antes de jogar!"
                 );
 
-                if (!resposta.ok) {
-                    throw new Error("Erro ao salvar pontuação");
-                }
-
-                document.getElementById("mensagem").textContent =
-                    "✅ Pontuação enviada para o ranking!";
-
-                carregarRanking();
-
-            } catch (erro) {
-
-                console.error(erro);
-
-                document.getElementById("mensagem").textContent =
-                    "⚠️ Não foi possível salvar a pontuação.";
+                return;
             }
+
+
+            if (pontuacao <= 0) {
+
+                return;
+            }
+
+
+            const { error } =
+                await supabaseClient
+                    .from("snake_scores")
+                    .insert({
+
+                        player_name: nome,
+
+                        score: pontuacao
+                    });
+
+
+            if (error) {
+
+                console.error(
+                    "Erro Supabase:",
+                    error
+                );
+
+                document.getElementById(
+                    "mensagem"
+                ).textContent =
+                    "⚠️ Não foi possível salvar a pontuação.";
+
+                return;
+            }
+
+
+            document.getElementById(
+                "mensagem"
+            ).textContent =
+                "✅ Pontuação enviada para o ranking!";
+
+
+            carregarRanking();
         }
 
 
-        /* ==========================================
+        /* =========================================
            FIM DE JOGO
-           ========================================== */
+           ========================================= */
 
         function fimDeJogo() {
 
@@ -311,133 +395,181 @@
             salvarPontuacao();
 
             setTimeout(() => {
+
                 alert(
                     "Game Over!\n\n" +
                     "Pontuação: " +
                     pontuacao
                 );
+
             }, 100);
         }
 
 
-        /* ==========================================
+        /* =========================================
            REINICIAR
-           ========================================== */
+           ========================================= */
 
         function reiniciar() {
 
-            const nome = document
-                .getElementById("nomeJogador")
-                .value
-                .trim();
+            const nome =
+                document
+                    .getElementById("nomeJogador")
+                    .value
+                    .trim();
+
 
             if (!nome) {
-                alert("Digite seu apelido antes de jogar!");
+
+                alert(
+                    "Digite seu apelido antes de jogar!"
+                );
+
                 return;
             }
 
+
             iniciar();
-            desenhar();
         }
 
 
-        /* ==========================================
-           CONTROLES
-           ========================================== */
+        /* =========================================
+           TECLADO
+           ========================================= */
 
-        document.addEventListener("keydown", function(event) {
+        document.addEventListener(
+            "keydown",
+            function(event) {
 
-            if (event.key === "ArrowUp" && direcao.y === 0) {
-                direcao = {
-                    x: 0,
-                    y: -tamanho
-                };
+                if (
+                    event.key === "ArrowUp" &&
+                    direcao.y === 0
+                ) {
+
+                    direcao = {
+                        x: 0,
+                        y: -tamanho
+                    };
+                }
+
+
+                if (
+                    event.key === "ArrowDown" &&
+                    direcao.y === 0
+                ) {
+
+                    direcao = {
+                        x: 0,
+                        y: tamanho
+                    };
+                }
+
+
+                if (
+                    event.key === "ArrowLeft" &&
+                    direcao.x === 0
+                ) {
+
+                    direcao = {
+                        x: -tamanho,
+                        y: 0
+                    };
+                }
+
+
+                if (
+                    event.key === "ArrowRight" &&
+                    direcao.x === 0
+                ) {
+
+                    direcao = {
+                        x: tamanho,
+                        y: 0
+                    };
+                }
+
             }
-
-            if (event.key === "ArrowDown" && direcao.y === 0) {
-                direcao = {
-                    x: 0,
-                    y: tamanho
-                };
-            }
-
-            if (event.key === "ArrowLeft" && direcao.x === 0) {
-                direcao = {
-                    x: -tamanho,
-                    y: 0
-                };
-            }
-
-            if (event.key === "ArrowRight" && direcao.x === 0) {
-                direcao = {
-                    x: tamanho,
-                    y: 0
-                };
-            }
-        });
+        );
 
 
-        /* ==========================================
-           CARREGAR RANKING GLOBAL
-           ========================================== */
+        /* =========================================
+           RANKING GLOBAL
+           ========================================= */
 
         async function carregarRanking() {
 
-            const lista = document.getElementById("listaRanking");
-
-            lista.innerHTML = "Carregando...";
-
-            try {
-
-                const resposta = await fetch(
-                    SUPABASE_URL +
-                    "/rest/v1/snake_scores?select=player_name,score&order=score.desc&limit=10",
-                    {
-                        headers: {
-                            "apikey": SUPABASE_KEY,
-                            "Authorization": "Bearer " + SUPABASE_KEY
-                        }
-                    }
+            const lista =
+                document.getElementById(
+                    "listaRanking"
                 );
 
-                if (!resposta.ok) {
-                    throw new Error("Erro ao carregar ranking");
-                }
 
-                const jogadores = await resposta.json();
+            lista.textContent =
+                "Carregando...";
 
-                if (jogadores.length === 0) {
-                    lista.innerHTML =
-                        "Ainda não existem pontuações.";
-                    return;
-                }
 
-                lista.innerHTML = jogadores
-                    .map((jogador, indice) => `
+            const { data, error } =
+                await supabaseClient
+                    .from("snake_scores")
+                    .select("player_name, score")
+                    .order("score", {
+                        ascending: false
+                    })
+                    .limit(10);
+
+
+            if (error) {
+
+                console.error(
+                    "Erro ranking:",
+                    error
+                );
+
+                lista.textContent =
+                    "Não foi possível carregar o ranking.";
+
+                return;
+            }
+
+
+            if (!data || data.length === 0) {
+
+                lista.textContent =
+                    "Ainda não existem pontuações.";
+
+                return;
+            }
+
+
+            lista.innerHTML =
+                data
+                    .map(
+                        (jogador, indice) => `
+
                         <div class="jogador">
+
                             <span>
-                                ${indice + 1}º ${escaparHTML(jogador.player_name)}
+                                ${indice + 1}º
+                                ${escaparHTML(
+                                    jogador.player_name
+                                )}
                             </span>
+
                             <strong>
                                 ${jogador.score}
                             </strong>
+
                         </div>
-                    `)
+                    `
+                    )
                     .join("");
-
-            } catch (erro) {
-
-                console.error(erro);
-
-                lista.innerHTML =
-                    "Não foi possível carregar o ranking.";
-            }
         }
 
 
         function escaparHTML(texto) {
 
-            const div = document.createElement("div");
+            const div =
+                document.createElement("div");
 
             div.textContent = texto;
 
@@ -445,16 +577,18 @@
         }
 
 
-        /* ==========================================
+        /* =========================================
            INICIAR
-           ========================================== */
+           ========================================= */
+
+        iniciar();
 
         carregarRanking();
 
-        iniciar();
-        desenhar();
-
-        setInterval(atualizar, 120);
+        setInterval(
+            atualizar,
+            120
+        );
 
     </script>
 
