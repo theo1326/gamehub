@@ -26,6 +26,16 @@
             margin-bottom: 10px;
         }
 
+        #nomeJogador {
+            padding: 12px;
+            font-size: 17px;
+            border-radius: 8px;
+            border: none;
+            width: 250px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
         #pontuacao {
             font-size: 20px;
             margin-bottom: 15px;
@@ -52,6 +62,36 @@
         button:hover {
             transform: scale(1.05);
         }
+
+        #ranking {
+            margin-top: 25px;
+            width: 350px;
+            max-width: 90vw;
+            background: #222;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        #ranking h2 {
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .jogador {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #444;
+        }
+
+        .jogador:last-child {
+            border-bottom: none;
+        }
+
+        #mensagem {
+            margin-top: 10px;
+            color: #ccc;
+        }
     </style>
 </head>
 
@@ -59,13 +99,39 @@
 
     <h1>🐍 Cobrinha</h1>
 
+    <input
+        id="nomeJogador"
+        type="text"
+        maxlength="20"
+        placeholder="Digite seu apelido"
+    >
+
     <div id="pontuacao">Pontuação: 0</div>
 
     <canvas id="jogo" width="400" height="400"></canvas>
 
     <button onclick="reiniciar()">🔄 Reiniciar</button>
 
+    <div id="mensagem"></div>
+
+    <div id="ranking">
+        <h2>🏆 Ranking Global</h2>
+        <div id="listaRanking">Carregando...</div>
+    </div>
+
     <script>
+        /* ==========================================
+           COLOQUE AQUI OS DADOS DO SEU SUPABASE
+           ========================================== */
+
+        const SUPABASE_URL = "https://vkswxahmirkhcynwlzys.supabase.co/rest/v1/";
+        const SUPABASE_KEY = "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
+
+
+        /* ==========================================
+           JOGO
+           ========================================== */
+
         const canvas = document.getElementById("jogo");
         const ctx = canvas.getContext("2d");
 
@@ -95,6 +161,7 @@
             jogoAtivo = true;
 
             atualizarPontuacao();
+            document.getElementById("mensagem").textContent = "";
         }
 
         function criarComida() {
@@ -108,11 +175,9 @@
             ctx.fillStyle = "#222";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Comida
             ctx.fillStyle = "red";
             ctx.fillRect(comida.x, comida.y, tamanho, tamanho);
 
-            // Cobra
             ctx.fillStyle = "lime";
 
             cobra.forEach(parte => {
@@ -133,7 +198,6 @@
                 y: cobra[0].y + direcao.y
             };
 
-            // Colisão com parede
             if (
                 cabeca.x < 0 ||
                 cabeca.x >= canvas.width ||
@@ -144,7 +208,6 @@
                 return;
             }
 
-            // Colisão com o próprio corpo
             for (let i = 0; i < cobra.length; i++) {
                 if (
                     cabeca.x === cobra[i].x &&
@@ -157,7 +220,6 @@
 
             cobra.unshift(cabeca);
 
-            // Comeu a comida
             if (
                 cabeca.x === comida.x &&
                 cabeca.y === comida.y
@@ -177,42 +239,223 @@
                 "Pontuação: " + pontuacao;
         }
 
+
+        /* ==========================================
+           SALVAR PONTUAÇÃO NO SUPABASE
+           ========================================== */
+
+        async function salvarPontuacao() {
+
+            const nome = document
+                .getElementById("nomeJogador")
+                .value
+                .trim();
+
+            if (!nome) {
+                alert("Digite seu apelido antes de jogar!");
+                return;
+            }
+
+            if (pontuacao <= 0) {
+                return;
+            }
+
+            try {
+
+                const resposta = await fetch(
+                    SUPABASE_URL + "/rest/v1/snake_scores",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json",
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": "Bearer " + SUPABASE_KEY,
+                            "Prefer": "return=minimal"
+                        },
+
+                        body: JSON.stringify({
+                            player_name: nome,
+                            score: pontuacao
+                        })
+                    }
+                );
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao salvar pontuação");
+                }
+
+                document.getElementById("mensagem").textContent =
+                    "✅ Pontuação enviada para o ranking!";
+
+                carregarRanking();
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                document.getElementById("mensagem").textContent =
+                    "⚠️ Não foi possível salvar a pontuação.";
+            }
+        }
+
+
+        /* ==========================================
+           FIM DE JOGO
+           ========================================== */
+
         function fimDeJogo() {
+
             jogoAtivo = false;
 
+            salvarPontuacao();
+
             setTimeout(() => {
-                alert("Game Over! Pontuação: " + pontuacao);
+                alert(
+                    "Game Over!\n\n" +
+                    "Pontuação: " +
+                    pontuacao
+                );
             }, 100);
         }
 
+
+        /* ==========================================
+           REINICIAR
+           ========================================== */
+
         function reiniciar() {
+
+            const nome = document
+                .getElementById("nomeJogador")
+                .value
+                .trim();
+
+            if (!nome) {
+                alert("Digite seu apelido antes de jogar!");
+                return;
+            }
+
             iniciar();
             desenhar();
         }
 
+
+        /* ==========================================
+           CONTROLES
+           ========================================== */
+
         document.addEventListener("keydown", function(event) {
 
             if (event.key === "ArrowUp" && direcao.y === 0) {
-                direcao = { x: 0, y: -tamanho };
+                direcao = {
+                    x: 0,
+                    y: -tamanho
+                };
             }
 
             if (event.key === "ArrowDown" && direcao.y === 0) {
-                direcao = { x: 0, y: tamanho };
+                direcao = {
+                    x: 0,
+                    y: tamanho
+                };
             }
 
             if (event.key === "ArrowLeft" && direcao.x === 0) {
-                direcao = { x: -tamanho, y: 0 };
+                direcao = {
+                    x: -tamanho,
+                    y: 0
+                };
             }
 
             if (event.key === "ArrowRight" && direcao.x === 0) {
-                direcao = { x: tamanho, y: 0 };
+                direcao = {
+                    x: tamanho,
+                    y: 0
+                };
             }
         });
+
+
+        /* ==========================================
+           CARREGAR RANKING GLOBAL
+           ========================================== */
+
+        async function carregarRanking() {
+
+            const lista = document.getElementById("listaRanking");
+
+            lista.innerHTML = "Carregando...";
+
+            try {
+
+                const resposta = await fetch(
+                    SUPABASE_URL +
+                    "/rest/v1/snake_scores?select=player_name,score&order=score.desc&limit=10",
+                    {
+                        headers: {
+                            "apikey": SUPABASE_KEY,
+                            "Authorization": "Bearer " + SUPABASE_KEY
+                        }
+                    }
+                );
+
+                if (!resposta.ok) {
+                    throw new Error("Erro ao carregar ranking");
+                }
+
+                const jogadores = await resposta.json();
+
+                if (jogadores.length === 0) {
+                    lista.innerHTML =
+                        "Ainda não existem pontuações.";
+                    return;
+                }
+
+                lista.innerHTML = jogadores
+                    .map((jogador, indice) => `
+                        <div class="jogador">
+                            <span>
+                                ${indice + 1}º ${escaparHTML(jogador.player_name)}
+                            </span>
+                            <strong>
+                                ${jogador.score}
+                            </strong>
+                        </div>
+                    `)
+                    .join("");
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                lista.innerHTML =
+                    "Não foi possível carregar o ranking.";
+            }
+        }
+
+
+        function escaparHTML(texto) {
+
+            const div = document.createElement("div");
+
+            div.textContent = texto;
+
+            return div.innerHTML;
+        }
+
+
+        /* ==========================================
+           INICIAR
+           ========================================== */
+
+        carregarRanking();
 
         iniciar();
         desenhar();
 
         setInterval(atualizar, 120);
+
     </script>
 
 </body>
