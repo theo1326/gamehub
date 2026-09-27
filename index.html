@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="GameHub - jogos online gratuitos.">
+<title>GameHub - Jogos Online</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+<a class="logo" href="#">🎮 GameHub</a>
+<nav><a href="#inicio">Início</a><a href="#jogos">Jogos</a><a href="#categorias">Categorias</a></nav>
+<button id="themeBtn" class="icon-btn">☀️</button>
+</header>
+<main>
+<section id="inicio" class="hero">
+<div><span class="badge">NOVO PORTAL DE JOGOS</span>
+<h1>Jogue. Descubra.<br><span>Divirta-se.</span></h1>
+<p>Encontre jogos para jogar diretamente no navegador.</p>
+<a class="primary-btn" href="#jogos">Explorar jogos</a></div>
+<div class="hero-art">🎮</div>
+</section>
+<section id="jogos" class="section">
+<div class="section-head"><div><h2>Jogos</h2><p id="resultCount"></p></div>
+<input id="search" class="search" type="search" placeholder="🔎 Procurar jogo..."></div>
+<div id="categorias" class="filters">
+<button class="filter active" data-category="Todos">Todos</button>
+<button class="filter" data-category="Ação">Ação</button>
+<button class="filter" data-category="Corrida">Corrida</button>
+<button class="filter" data-category="Puzzle">Puzzle</button>
+<button class="filter" data-category="Aventura">Aventura</button>
+</div>
+<div id="gameGrid" class="game-grid"></div>
+<div id="empty" class="empty hidden">Nenhum jogo encontrado.</div>
+</section>
+</main>
+<footer><p>© 2026 GameHub. Feito para a web.</p></footer>
+<script src="script.js"></script>
+</body>
+</html>
