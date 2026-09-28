@@ -859,3 +859,31 @@ canvas {
         font-size: 17px;
     }
 }
+.categories {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.shop-grid {
+    max-height: 430px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.item-card {
+    min-height: 230px;
+}
+
+.item-card.owned {
+    border-color: #638d52;
+}
+
+.item-card.equipped {
+    border-color: #e2b83e;
+    box-shadow: 0 0 15px rgba(255,200,40,.25);
+}
+
+.item-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
