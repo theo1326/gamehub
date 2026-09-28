@@ -1,0 +1,146 @@
+import pygame
+import random
+import sys
+
+# Inicializa o Pygame
+pygame.init()
+
+# Configurações da tela
+LARGURA = 800
+ALTURA = 600
+tela = pygame.display.set_mode((LARGURA, ALTURA))
+pygame.display.set_caption("Space Warriors")
+
+# Cores (RGB)
+PRETO = (0, 0, 0)
+BRANCO = (255, 255, 255)
+VERMELHO = (255, 0, 0)
+VERDE = (0, 255, 0)
+AMARELO = (255, 255, 0)
+
+# Taxa de atualização (FPS)
+relogio = pygame.time.Clock()
+FPS = 60
+
+# Configurações do Jogador
+jogador_largura = 50
+jogador_altura = 40
+jogador_x = LARGURA // 2 - jogador_largura // 2
+jogador_y = ALTURA - 60
+jogador_velocidade = 7
+
+# Configurações dos Tiros
+tiro_largura = 5
+tiro_altura = 15
+tiro_velocidade = -10
+tiros = []
+
+# Configurações dos Inimigos
+inimigo_largura = 40
+inimigo_altura = 40
+inimigo_velocidade_min = 3
+inimigo_velocidade_max = 7
+inimigos = []
+
+# Pontuação e Fonte
+pontos = 0
+fonte = pygame.font.SysFont("Arial", 30)
+
+def criar_inimigo():
+    x = random.randint(0, LARGURA - inimigo_largura)
+    y = random.randint(-150, -40)
+    velocidade = random.randint(inimigo_velocidade_min, inimigo_velocidade_max)
+    return {"rect": pygame.Rect(x, y, inimigo_largura, inimigo_altura), "vel": velocidade}
+
+# Criar inimigos iniciais
+for _ in range(6):
+    inimigos.append(criar_inimigo())
+
+# Loop principal do jogo
+jogando = True
+while jogando:
+    relogio.tick(FPS)
+    tela.fill(PRETO)
+
+    # ---- 1. CAPTURA DE EVENTOS ----
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            jogando = False
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_SPACE:
+                # Cria um tiro saindo do meio da nave do jogador
+                novo_tiro = pygame.Rect(jogador_x + jogador_largura // 2 - tiro_largura // 2, jogador_y, tiro_largura, tiro_altura)
+                tiros.append(novo_tiro)
+
+    # ---- 2. MOVIMENTAÇÃO DO JOGADOR ----
+    teclas = pygame.key.get_pressed()
+    if teclas[pygame.K_LEFT] and jogador_x > 0:
+        jogador_x -= jogador_velocidade
+    if teclas[pygame.K_RIGHT] and jogador_x < LARGURA - jogador_largura:
+        jogador_x += jogador_velocidade
+
+    # Atualiza a posição do retângulo do jogador
+    jogador_rect = pygame.Rect(jogador_x, jogador_y, jogador_largura, jogador_altura)
+
+    # ---- 3. MOVIMENTAÇÃO DOS TIROS ----
+    for tiro in tiros[:]:
+        tiro.y += tiro_velocidade
+        if tiro.y < 0:
+            tiros.remove(tiro)
+
+    # ---- 4. MOVIMENTAÇÃO DOS INIMIGOS ----
+    for inimigo in inimigos:
+        inimigo["rect"].y += inimigo["vel"]
+        
+        # Se o inimigo passar do final da tela, ele volta para o topo em uma nova posição
+        if inimigo["rect"].y > ALTURA:
+            inimigos.remove(inimigo)
+            inimigos.append(criar_inimigo())
+
+    # ---- 5. COLISÕES ----
+    # Colisão: Tiro vs Inimigo
+    for tiro in tiros[:]:
+        for inimigo in inimigos[:]:
+            if tiro.colliderect(inimigo["rect"]):
+                if tiro in tiros:
+                    tiros.remove(tiro)
+                inimigos.remove(inimigo)
+                pontos += 10
+                inimigos.append(criar_inimigo())
+
+    # Colisão: Inimigo vs Jogador (Fim de jogo)
+    for inimigo in inimigos:
+        if jogador_rect.colliderect(inimigo["rect"]):
+            jogando = False  # Sai do loop principal
+
+    # ---- 6. DESENHAR NA TELA ----
+    # Desenha o jogador (Nave)
+    pygame.draw.rect(tela, VERDE, jogador_rect)
+
+    # Desenha os tiros
+    for tiro in tiros:
+        pygame.draw.rect(tela, AMARELO, tiro)
+
+    # Desenha os inimigos
+    for inimigo in inimigos:
+        pygame.draw.rect(tela, VERMELHO, inimigo["rect"])
+
+    # Desenha o placar
+    texto_pontos = fonte.render(f"Pontos: {pontos}", True, BRANCO)
+    tela.blit(texto_pontos, (10, 10))
+
+    # Atualiza a tela gráfica
+    pygame.display.flip()
+
+# Tela de Game Over simples
+tela.fill(PRETO)
+texto_game_over = fonte.render("GAME OVER", True, VERMELHO)
+texto_final = fonte.render(f"Pontuação Final: {pontos}", True, BRANCO)
+tela.blit(texto_game_over, (LARGURA // 2 - 80, ALTURA // 2 - 40))
+tela.blit(texto_final, (LARGURA // 2 - 110, ALTURA // 2 + 10))
+pygame.display.flip()
+
+# Espera 3 segundos antes de fechar o programa automaticamente
+pygame.time.wait(3000)
+pygame.quit()
+sys.exit()
