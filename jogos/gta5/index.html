@@ -6,127 +6,87 @@
 <title>Ludix City 3D</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    overflow: hidden;
-    background: #000;
-    font-family: Arial, sans-serif;
+body{
+    overflow:hidden;
+    background:#000;
+    font-family:Arial,sans-serif;
 }
 
-canvas {
-    display: block;
+canvas{
+    display:block;
 }
 
-#hud {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 10;
-    color: white;
-    user-select: none;
+#hud{
+    position:fixed;
+    top:15px;
+    left:15px;
+    z-index:10;
+    color:white;
 }
 
-.hud-box {
-    background: rgba(0,0,0,.65);
-    padding: 12px 16px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    border: 1px solid rgba(255,255,255,.15);
+.box{
+    background:rgba(0,0,0,.7);
+    padding:12px 18px;
+    border-radius:12px;
+    margin-bottom:8px;
 }
 
-#health {
-    width: 220px;
-    height: 18px;
-    background: #333;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-top: 5px;
+#vida{
+    width:200px;
+    height:16px;
+    background:#333;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:5px;
 }
 
-#healthBar {
-    width: 100%;
-    height: 100%;
-    background: #21d65a;
-    transition: .2s;
+#barra{
+    width:100%;
+    height:100%;
+    background:#19d85b;
 }
 
-#money {
-    color: #55ff75;
-    font-size: 20px;
-    font-weight: bold;
+#missao{
+    position:fixed;
+    top:15px;
+    right:15px;
+    z-index:10;
+    color:white;
+    background:rgba(0,0,0,.7);
+    padding:15px;
+    border-radius:12px;
 }
 
-#mission {
-    position: fixed;
-    top: 15px;
-    right: 15px;
-    color: white;
-    background: rgba(0,0,0,.65);
-    padding: 15px 20px;
-    border-radius: 12px;
-    z-index: 10;
-    max-width: 280px;
+#controles{
+    position:fixed;
+    bottom:15px;
+    left:15px;
+    z-index:10;
+    color:white;
+    background:rgba(0,0,0,.7);
+    padding:12px;
+    border-radius:12px;
+    line-height:1.6;
 }
 
-#controls {
-    position: fixed;
-    bottom: 15px;
-    left: 15px;
-    color: white;
-    background: rgba(0,0,0,.65);
-    padding: 12px 16px;
-    border-radius: 12px;
-    z-index: 10;
-    line-height: 1.6;
-}
-
-#message {
-    position: fixed;
-    left: 50%;
-    bottom: 25px;
-    transform: translateX(-50%);
-    color: white;
-    background: rgba(0,0,0,.8);
-    padding: 12px 22px;
-    border-radius: 20px;
-    opacity: 0;
-    transition: .3s;
-    z-index: 20;
-}
-
-#crosshair {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    width: 14px;
-    height: 14px;
-    transform: translate(-50%, -50%);
-    z-index: 5;
-    pointer-events: none;
-}
-
-#crosshair::before,
-#crosshair::after {
-    content: "";
-    position: absolute;
-    background: white;
-}
-
-#crosshair::before {
-    width: 14px;
-    height: 2px;
-    top: 6px;
-}
-
-#crosshair::after {
-    width: 2px;
-    height: 14px;
-    left: 6px;
+#mensagem{
+    position:fixed;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(0,0,0,.8);
+    color:white;
+    padding:12px 20px;
+    border-radius:20px;
+    opacity:0;
+    transition:.3s;
+    z-index:20;
 }
 </style>
 </head>
@@ -135,49 +95,45 @@ canvas {
 
 <div id="hud">
 
-    <div class="hud-box">
+    <div class="box">
         ❤️ VIDA
-        <div id="health">
-            <div id="healthBar"></div>
+        <div id="vida">
+            <div id="barra"></div>
         </div>
     </div>
 
-    <div class="hud-box">
-        💰 DINHEIRO
-        <div id="money">$1000</div>
+    <div class="box">
+        💰 DINHEIRO:
+        <b id="dinheiro">$1000</b>
     </div>
 
-    <div class="hud-box">
-        ⭐ PROCURADO: <span id="wanted">0</span>
+    <div class="box">
+        ⭐ PROCURADO:
+        <b id="procurado">0</b>
     </div>
 
 </div>
 
-<div id="mission">
-    <b>🎯 MISSÃO</b>
-    <p id="missionText">Vá até o marcador amarelo.</p>
+<div id="missao">
+    🎯 <b>MISSÃO</b>
+    <br><br>
+    Vá até o marcador amarelo.
 </div>
 
-<div id="controls">
+<div id="controles">
     <b>🎮 CONTROLES</b><br>
-    W A S D — Mover<br>
-    SHIFT — Correr<br>
-    E — Entrar/Sair do carro<br>
-    Mouse — Câmera<br>
-    Clique — Atirar
+    W A S D — andar<br>
+    SHIFT — correr<br>
+    E — entrar no carro<br>
+    Mouse — olhar
 </div>
 
-<div id="crosshair"></div>
-
-<div id="message"></div>
+<div id="mensagem"></div>
 
 <script type="module">
 
 import * as THREE from
 "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
-
-import { OrbitControls } from
-"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js";
 
 
 /* =========================
@@ -186,40 +142,45 @@ import { OrbitControls } from
 
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x87ceeb);
+scene.background =
+    new THREE.Color(0x87ceeb);
 
-scene.fog = new THREE.Fog(
-    0x87ceeb,
-    80,
-    500
-);
+scene.fog =
+    new THREE.Fog(
+        0x87ceeb,
+        100,
+        450
+    );
 
 
 /* =========================
    CÂMERA
 ========================= */
 
-const camera = new THREE.PerspectiveCamera(
-    70,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-);
+const camera =
+    new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth /
+        window.innerHeight,
+        0.1,
+        1000
+    );
 
 camera.position.set(
-    10,
+    12,
     8,
-    15
+    18
 );
 
 
 /* =========================
-   RENDER
+   RENDERIZADOR
 ========================= */
 
-const renderer = new THREE.WebGLRenderer({
-    antialias: true
-});
+const renderer =
+    new THREE.WebGLRenderer({
+        antialias:true
+    });
 
 renderer.setSize(
     window.innerWidth,
@@ -227,12 +188,13 @@ renderer.setSize(
 );
 
 renderer.setPixelRatio(
-    Math.min(window.devicePixelRatio, 2)
+    Math.min(
+        window.devicePixelRatio,
+        2
+    )
 );
 
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type =
-    THREE.PCFSoftShadowMap;
 
 document.body.appendChild(
     renderer.domElement
@@ -240,258 +202,190 @@ document.body.appendChild(
 
 
 /* =========================
-   LUZ
+   ILUMINAÇÃO
 ========================= */
 
-const sun = new THREE.DirectionalLight(
-    0xffffff,
-    2
-);
+const luz =
+    new THREE.DirectionalLight(
+        0xffffff,
+        2
+    );
 
-sun.position.set(
+luz.position.set(
     100,
     150,
     100
 );
 
-sun.castShadow = true;
+luz.castShadow = true;
 
-sun.shadow.mapSize.width = 2048;
-sun.shadow.mapSize.height = 2048;
-
-scene.add(sun);
+scene.add(luz);
 
 
-const ambient = new THREE.HemisphereLight(
-    0xffffff,
-    0x444444,
-    1.2
-);
+const ambiente =
+    new THREE.HemisphereLight(
+        0xffffff,
+        0x444444,
+        1.2
+    );
 
-scene.add(ambient);
+scene.add(ambiente);
 
 
 /* =========================
    CHÃO
 ========================= */
 
-const groundGeometry =
-    new THREE.PlaneGeometry(
-        500,
-        500
-    );
-
-const groundMaterial =
-    new THREE.MeshStandardMaterial({
-        color: 0x287a38
-    });
-
-const ground =
+const chao =
     new THREE.Mesh(
-        groundGeometry,
-        groundMaterial
+        new THREE.PlaneGeometry(
+            500,
+            500
+        ),
+        new THREE.MeshStandardMaterial({
+            color:0x287a38
+        })
     );
 
-ground.rotation.x =
+chao.rotation.x =
     -Math.PI / 2;
 
-ground.receiveShadow = true;
+chao.receiveShadow = true;
 
-scene.add(ground);
+scene.add(chao);
 
 
 /* =========================
    ESTRADAS
 ========================= */
 
-function createRoad(
+function estrada(
     x,
     z,
-    width,
-    depth
-) {
+    largura,
+    profundidade
+){
 
-    const geometry =
-        new THREE.BoxGeometry(
-            width,
-            0.08,
-            depth
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color: 0x252525
-        });
-
-    const road =
+    const rua =
         new THREE.Mesh(
-            geometry,
-            material
+            new THREE.BoxGeometry(
+                largura,
+                .1,
+                profundidade
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0x292929
+            })
         );
 
-    road.position.set(
+    rua.position.set(
         x,
-        0.04,
+        .05,
         z
     );
 
-    road.receiveShadow = true;
+    rua.receiveShadow = true;
 
-    scene.add(road);
-
-    return road;
+    scene.add(rua);
 }
 
+estrada(0,0,500,25);
+estrada(0,80,500,25);
+estrada(0,-80,500,25);
 
-/* ruas principais */
-
-createRoad(0, 0, 500, 25);
-createRoad(0, 80, 500, 25);
-createRoad(0, -80, 500, 25);
-
-createRoad(0, 0, 25, 500);
-createRoad(80, 0, 25, 500);
-createRoad(-80, 0, 25, 500);
+estrada(0,0,25,500);
+estrada(80,0,25,500);
+estrada(-80,0,25,500);
 
 
 /* =========================
    PRÉDIOS
 ========================= */
 
-const buildings = [];
-
-function createBuilding(
+function predio(
     x,
     z,
-    width,
-    height,
-    depth,
-    color
-) {
+    altura,
+    largura,
+    cor
+){
 
-    const geometry =
-        new THREE.BoxGeometry(
-            width,
-            height,
-            depth
-        );
-
-    const material =
-        new THREE.MeshStandardMaterial({
-            color: color
-        });
-
-    const building =
+    const edificio =
         new THREE.Mesh(
-            geometry,
-            material
+            new THREE.BoxGeometry(
+                largura,
+                altura,
+                largura
+            ),
+            new THREE.MeshStandardMaterial({
+                color:cor
+            })
         );
 
-    building.position.set(
+    edificio.position.set(
         x,
-        height / 2,
+        altura/2,
         z
     );
 
-    building.castShadow = true;
-    building.receiveShadow = true;
+    edificio.castShadow = true;
+    edificio.receiveShadow = true;
 
-    scene.add(building);
-
-    buildings.push(building);
-
-    /* janelas */
-
-    const windowMaterial =
-        new THREE.MeshBasicMaterial({
-            color: 0xffff88
-        });
-
-    for (
-        let y = 5;
-        y < height - 1;
-        y += 5
-    ) {
-
-        for (
-            let wx = -width / 2 + 2;
-            wx < width / 2 - 1;
-            wx += 4
-        ) {
-
-            const window =
-                new THREE.Mesh(
-                    new THREE.BoxGeometry(
-                        1.3,
-                        1.8,
-                        0.15
-                    ),
-                    windowMaterial
-                );
-
-            window.position.set(
-                x + wx,
-                y,
-                z - depth / 2 - 0.1
-            );
-
-            scene.add(window);
-        }
-    }
-
-    return building;
+    scene.add(edificio);
 }
 
 
 /* cidade */
 
-const colors = [
-    0x777777,
+const cores = [
+    0x666666,
     0x555577,
     0x884444,
-    0x666666,
-    0x3f596b,
+    0x426070,
     0x806040
 ];
 
-for (
-    let x = -200;
-    x <= 200;
-    x += 40
-) {
+for(
+    let x=-200;
+    x<=200;
+    x+=40
+){
 
-    for (
-        let z = -200;
-        z <= 200;
-        z += 40
-    ) {
+    for(
+        let z=-200;
+        z<=200;
+        z+=40
+    ){
 
-        if (
-            Math.abs(x) < 30 ||
-            Math.abs(z) < 30 ||
-            Math.abs(x - 80) < 30 ||
-            Math.abs(z - 80) < 30 ||
-            Math.abs(x + 80) < 30 ||
-            Math.abs(z + 80) < 30
-        ) {
+        if(
+            Math.abs(x)<30 ||
+            Math.abs(z)<30 ||
+            Math.abs(x-80)<30 ||
+            Math.abs(z-80)<30 ||
+            Math.abs(x+80)<30 ||
+            Math.abs(z+80)<30
+        ){
             continue;
         }
 
-        const height =
-            15 + Math.random() * 45;
+        const altura =
+            15 +
+            Math.random()*45;
 
-        createBuilding(
-            x + (Math.random() * 8 - 4),
-            z + (Math.random() * 8 - 4),
-            25,
-            height,
-            25,
-            colors[
+        const cor =
+            cores[
                 Math.floor(
-                    Math.random() *
-                    colors.length
+                    Math.random()*
+                    cores.length
                 )
-            ]
+            ];
+
+        predio(
+            x,
+            z,
+            altura,
+            25,
+            cor
         );
     }
 }
@@ -501,50 +395,55 @@ for (
    PERSONAGEM
 ========================= */
 
-const player =
+const jogador =
     new THREE.Group();
 
-scene.add(player);
+scene.add(jogador);
 
-const body =
+
+/* corpo */
+
+const corpo =
     new THREE.Mesh(
         new THREE.BoxGeometry(
             1.2,
             2,
-            0.7
+            .7
         ),
         new THREE.MeshStandardMaterial({
-            color: 0x2244aa
+            color:0x2255cc
         })
     );
 
-body.position.y = 1;
+corpo.position.y=1;
 
-body.castShadow = true;
+corpo.castShadow=true;
 
-player.add(body);
+jogador.add(corpo);
 
 
-const head =
+/* cabeça */
+
+const cabeca =
     new THREE.Mesh(
         new THREE.SphereGeometry(
-            0.45,
-            16,
-            16
+            .45,
+            20,
+            20
         ),
         new THREE.MeshStandardMaterial({
-            color: 0xc68642
+            color:0xc68642
         })
     );
 
-head.position.y = 2.35;
+cabeca.position.y=2.35;
 
-head.castShadow = true;
+cabeca.castShadow=true;
 
-player.add(head);
+jogador.add(cabeca);
 
 
-player.position.set(
+jogador.position.set(
     0,
     0,
     10
@@ -555,222 +454,119 @@ player.position.set(
    CARRO
 ========================= */
 
-function createCar(
-    color = 0xff2222
-) {
+function criarCarro(
+    cor
+){
 
-    const car =
+    const carro =
         new THREE.Group();
+
 
     const base =
         new THREE.Mesh(
             new THREE.BoxGeometry(
                 4,
-                0.8,
+                .8,
                 2
             ),
             new THREE.MeshStandardMaterial({
-                color: color
+                color:cor
             })
         );
 
-    base.position.y = 0.8;
-    base.castShadow = true;
+    base.position.y=.8;
 
-    car.add(base);
+    base.castShadow=true;
+
+    carro.add(base);
 
 
-    const cabin =
+    const teto =
         new THREE.Mesh(
             new THREE.BoxGeometry(
-                2.1,
-                0.9,
+                2.2,
+                .9,
                 1.7
             ),
             new THREE.MeshStandardMaterial({
-                color: 0x111827
+                color:0x111827
             })
         );
 
-    cabin.position.set(
-        0,
-        1.45,
-        0
-    );
+    teto.position.y=1.45;
 
-    cabin.castShadow = true;
+    teto.castShadow=true;
 
-    car.add(cabin);
+    carro.add(teto);
 
 
-    const wheelGeometry =
+    const rodaGeo =
         new THREE.CylinderGeometry(
-            0.45,
-            0.45,
-            0.35,
+            .45,
+            .45,
+            .35,
             16
         );
 
-    const wheelMaterial =
+    const rodaMat =
         new THREE.MeshStandardMaterial({
-            color: 0x111111
+            color:0x111111
         });
 
 
-    const wheelPositions = [
-        [-1.35, 0.45, -1],
-        [1.35, 0.45, -1],
-        [-1.35, 0.45, 1],
-        [1.35, 0.45, 1]
+    const rodas = [
+        [-1.35,.45,-1],
+        [1.35,.45,-1],
+        [-1.35,.45,1],
+        [1.35,.45,1]
     ];
 
 
-    wheelPositions.forEach(
-        position => {
+    rodas.forEach(
+        pos=>{
 
-            const wheel =
+            const roda =
                 new THREE.Mesh(
-                    wheelGeometry,
-                    wheelMaterial
+                    rodaGeo,
+                    rodaMat
                 );
 
-            wheel.rotation.z =
-                Math.PI / 2;
+            roda.rotation.z =
+                Math.PI/2;
 
-            wheel.position.set(
-                ...position
+            roda.position.set(
+                pos[0],
+                pos[1],
+                pos[2]
             );
 
-            wheel.castShadow = true;
-
-            car.add(wheel);
+            carro.add(roda);
         }
     );
 
-    return car;
+    return carro;
 }
 
 
-const car =
-    createCar(0xff2222);
+const carro =
+    criarCarro(
+        0xff2222
+    );
 
-car.position.set(
-    10,
+carro.position.set(
+    8,
     0,
     10
 );
 
-scene.add(car);
-
-
-/* =========================
-   CARROS DA CIDADE
-========================= */
-
-for (
-    let i = 0;
-    i < 12;
-    i++
-) {
-
-    const npcCar =
-        createCar(
-            colors[
-                Math.floor(
-                    Math.random() *
-                    colors.length
-                )
-            ]
-        );
-
-    npcCar.position.set(
-        (Math.random() - .5) * 350,
-        0,
-        (Math.random() - .5) * 350
-    );
-
-    npcCar.rotation.y =
-        Math.random() *
-        Math.PI *
-        2;
-
-    scene.add(npcCar);
-}
-
-
-/* =========================
-   NPCs
-========================= */
-
-const npcs = [];
-
-function createNPC() {
-
-    const npc =
-        new THREE.Group();
-
-    const npcBody =
-        new THREE.Mesh(
-            new THREE.BoxGeometry(
-                .8,
-                1.6,
-                .5
-            ),
-            new THREE.MeshStandardMaterial({
-                color:
-                    Math.random() *
-                    0xffffff
-            })
-        );
-
-    npcBody.position.y = .8;
-
-    npc.add(npcBody);
-
-
-    const npcHead =
-        new THREE.Mesh(
-            new THREE.SphereGeometry(
-                .3,
-                12,
-                12
-            ),
-            new THREE.MeshStandardMaterial({
-                color: 0xc68642
-            })
-        );
-
-    npcHead.position.y = 1.8;
-
-    npc.add(npcHead);
-
-
-    npc.position.set(
-        (Math.random() - .5) * 350,
-        0,
-        (Math.random() - .5) * 350
-    );
-
-    scene.add(npc);
-
-    npcs.push(npc);
-}
-
-
-for (
-    let i = 0;
-    i < 35;
-    i++
-) {
-    createNPC();
-}
+scene.add(carro);
 
 
 /* =========================
    MISSÃO
 ========================= */
 
-const mission =
+const marcador =
     new THREE.Mesh(
         new THREE.CylinderGeometry(
             5,
@@ -779,479 +575,365 @@ const mission =
             32
         ),
         new THREE.MeshBasicMaterial({
-            color: 0xffcc00
+            color:0xffcc00
         })
     );
 
-mission.position.set(
+marcador.position.set(
     -70,
     .2,
     -70
 );
 
-scene.add(mission);
-
-let missionCompleted = false;
+scene.add(marcador);
 
 
 /* =========================
    CONTROLES
 ========================= */
 
-const keys = {};
+const teclas={};
 
 window.addEventListener(
     "keydown",
-    event => {
+    e=>{
+        teclas[
+            e.key.toLowerCase()
+        ]=true;
 
-        keys[event.key.toLowerCase()] = true;
-
-        if (
-            event.key.toLowerCase() === "e"
-        ) {
-
-            toggleCar();
+        if(
+            e.key.toLowerCase()==="e"
+        ){
+            entrarCarro();
         }
     }
 );
 
-
 window.addEventListener(
     "keyup",
-    event => {
-
-        keys[event.key.toLowerCase()] =
-            false;
+    e=>{
+        teclas[
+            e.key.toLowerCase()
+        ]=false;
     }
 );
 
 
 /* =========================
-   ESTADO DO JOGADOR
+   ESTADO
 ========================= */
 
-let health = 100;
-let money = 1000;
-let wanted = 0;
+let dentroDoCarro=false;
 
-let inCar = false;
+let velocidadeCarro=0;
 
-let speed = 0.12;
+let dinheiro=1000;
 
-let carSpeed = 0;
+let vida=100;
 
-let velocity =
-    new THREE.Vector3();
+let procurado=0;
 
 
 /* =========================
    ENTRAR NO CARRO
 ========================= */
 
-function toggleCar() {
+function entrarCarro(){
 
-    const distance =
-        player.position.distanceTo(
-            car.position
+    const distancia =
+        jogador.position.distanceTo(
+            carro.position
         );
 
-    if (!inCar && distance < 5) {
+    if(
+        !dentroDoCarro &&
+        distancia<5
+    ){
 
-        inCar = true;
+        dentroDoCarro=true;
 
-        player.visible = false;
+        jogador.visible=false;
 
-        showMessage(
+        mensagem(
             "🚗 Você entrou no carro!"
         );
 
-    }
-    else if (inCar) {
+    }else if(
+        dentroDoCarro
+    ){
 
-        inCar = false;
+        dentroDoCarro=false;
 
-        player.visible = true;
+        jogador.visible=true;
 
-        player.position.copy(
-            car.position
+        jogador.position.copy(
+            carro.position
         );
 
-        player.position.x += 3;
+        jogador.position.x+=3;
 
-        showMessage(
-            "🚶 Você saiu do carro."
+        mensagem(
+            "🚶 Você saiu do carro!"
         );
     }
 }
 
 
 /* =========================
-   ATUALIZAR JOGADOR
+   MOVIMENTO
 ========================= */
 
-function updatePlayer() {
+function atualizar(){
 
-    if (inCar) {
+    if(dentroDoCarro){
 
-        updateCar();
+        moverCarro();
+
+        camera.position.lerp(
+            new THREE.Vector3(
+                carro.position.x,
+                carro.position.y+7,
+                carro.position.z+12
+            ),
+            .08
+        );
+
+        camera.lookAt(
+            carro.position
+        );
 
         return;
     }
 
-    const direction =
+
+    const direcao =
         new THREE.Vector3();
 
-    if (keys["w"])
-        direction.z -= 1;
 
-    if (keys["s"])
-        direction.z += 1;
+    if(teclas["w"])
+        direcao.z-=1;
 
-    if (keys["a"])
-        direction.x -= 1;
+    if(teclas["s"])
+        direcao.z+=1;
 
-    if (keys["d"])
-        direction.x += 1;
+    if(teclas["a"])
+        direcao.x-=1;
 
-    if (
-        direction.length() > 0
-    ) {
+    if(teclas["d"])
+        direcao.x+=1;
 
-        direction.normalize();
 
-        const currentSpeed =
-            keys["shift"]
-            ? speed * 2
-            : speed;
+    if(
+        direcao.length()>0
+    ){
 
-        player.position.add(
-            direction.multiplyScalar(
-                currentSpeed
+        direcao.normalize();
+
+        const velocidade =
+            teclas["shift"]
+            ? .25
+            : .12;
+
+        jogador.position.add(
+            direcao.multiplyScalar(
+                velocidade
             )
         );
 
-        player.rotation.y =
+        jogador.rotation.y =
             Math.atan2(
-                direction.x,
-                direction.z
+                direcao.x,
+                direcao.z
             );
     }
+
+
+    camera.position.lerp(
+        new THREE.Vector3(
+            jogador.position.x,
+            jogador.position.y+7,
+            jogador.position.z+12
+        ),
+        .08
+    );
+
+    camera.lookAt(
+        jogador.position
+    );
 }
 
 
 /* =========================
-   ATUALIZAR CARRO
+   MOVIMENTO DO CARRO
 ========================= */
 
-function updateCar() {
+function moverCarro(){
 
-    if (keys["w"])
-        carSpeed += .01;
+    if(teclas["w"])
+        velocidadeCarro+=.01;
 
-    if (keys["s"])
-        carSpeed -= .01;
+    if(teclas["s"])
+        velocidadeCarro-=.01;
 
-    carSpeed *= .97;
+    velocidadeCarro*=.97;
 
-    carSpeed =
-        THREE.MathUtils.clamp(
-            carSpeed,
+    velocidadeCarro=
+        Math.max(
             -.4,
-            .8
+            Math.min(
+                .8,
+                velocidadeCarro
+            )
         );
 
-    if (keys["a"])
-        car.rotation.y +=
-            .035 *
-            Math.abs(carSpeed);
 
-    if (keys["d"])
-        car.rotation.y -=
-            .035 *
-            Math.abs(carSpeed);
+    if(teclas["a"])
+        carro.rotation.y+=
+            .035*
+            Math.abs(
+                velocidadeCarro
+            );
+
+    if(teclas["d"])
+        carro.rotation.y-=
+            .035*
+            Math.abs(
+                velocidadeCarro
+            );
 
 
-    const forward =
+    const frente =
         new THREE.Vector3(
             0,
             0,
             -1
         );
 
-    forward.applyQuaternion(
-        car.quaternion
+    frente.applyQuaternion(
+        carro.quaternion
     );
 
-    car.position.add(
-        forward.multiplyScalar(
-            carSpeed
+    carro.position.add(
+        frente.multiplyScalar(
+            velocidadeCarro
         )
     );
 }
 
 
 /* =========================
-   CÂMERA
-========================= */
-
-const controls =
-    new OrbitControls(
-        camera,
-        renderer.domElement
-    );
-
-controls.enableDamping = true;
-
-controls.enablePan = false;
-
-controls.minDistance = 6;
-controls.maxDistance = 25;
-
-controls.maxPolarAngle =
-    Math.PI / 2.05;
-
-
-/* =========================
-   TIRO
-========================= */
-
-window.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target !==
-            renderer.domElement
-        ) return;
-
-        wanted++;
-
-        if (wanted > 5)
-            wanted = 5;
-
-        updateHUD();
-
-        showMessage(
-            "🔫 Disparo!"
-        );
-    }
-);
-
-
-/* =========================
    MISSÃO
 ========================= */
 
-function checkMission() {
+function verificarMissao(){
 
-    if (
-        missionCompleted
-    ) return;
-
-    const distance =
-        player.position.distanceTo(
-            mission.position
+    const distancia =
+        jogador.position.distanceTo(
+            marcador.position
         );
 
-    if (distance < 8) {
+    if(
+        distancia<8
+    ){
 
-        missionCompleted = true;
-
-        money += 500;
-
-        updateHUD();
-
-        mission.material.color
+        marcador.material.color
             .set(0x00ff55);
 
-        document.getElementById(
-            "missionText"
-        ).textContent =
-            "✅ Missão concluída! +$500";
+        dinheiro+=500;
 
-        showMessage(
-            "💰 Você ganhou $500!"
+        document.getElementById(
+            "dinheiro"
+        ).textContent=
+            "$"+dinheiro;
+
+        document.getElementById(
+            "missao"
+        ).innerHTML=
+            "✅ <b>MISSÃO CONCLUÍDA!</b><br><br>Você ganhou $500.";
+
+        mensagem(
+            "💰 +$500"
         );
     }
 }
 
 
 /* =========================
-   HUD
+   MENSAGEM
 ========================= */
 
-function updateHUD() {
+let timer;
 
-    document.getElementById(
-        "healthBar"
-    ).style.width =
-        health + "%";
+function mensagem(texto){
 
-    document.getElementById(
-        "money"
-    ).textContent =
-        "$" + money;
-
-    document.getElementById(
-        "wanted"
-    ).textContent =
-        wanted;
-}
-
-
-/* =========================
-   MENSAGENS
-========================= */
-
-let messageTimer;
-
-function showMessage(text) {
-
-    const element =
+    const elemento =
         document.getElementById(
-            "message"
+            "mensagem"
         );
 
-    element.textContent = text;
+    elemento.textContent=
+        texto;
 
-    element.style.opacity = 1;
+    elemento.style.opacity=1;
 
-    clearTimeout(messageTimer);
+    clearTimeout(timer);
 
-    messageTimer =
-        setTimeout(() => {
-
-            element.style.opacity = 0;
-
-        }, 2000);
+    timer=setTimeout(
+        ()=>{
+            elemento.style.opacity=0;
+        },
+        2000
+    );
 }
 
 
 /* =========================
-   DIA / NOITE
+   LIMITES
 ========================= */
 
-let time = 0;
+function limites(objeto){
 
-function updateDayNight() {
-
-    time += 0.0003;
-
-    const cycle =
-        Math.sin(time);
-
-    const brightness =
+    objeto.position.x=
         Math.max(
-            0.25,
-            cycle * .5 + .5
-        );
-
-    sun.intensity =
-        brightness * 2;
-
-    ambient.intensity =
-        .4 + brightness;
-
-    const sky =
-        new THREE.Color();
-
-    sky.setHSL(
-        .58,
-        .5,
-        .55 * brightness
-    );
-
-    scene.background =
-        sky;
-
-    scene.fog.color =
-        sky;
-}
-
-
-/* =========================
-   LIMITE DA CIDADE
-========================= */
-
-function limitPosition(object) {
-
-    object.position.x =
-        THREE.MathUtils.clamp(
-            object.position.x,
             -235,
-            235
+            Math.min(
+                235,
+                objeto.position.x
+            )
         );
 
-    object.position.z =
-        THREE.MathUtils.clamp(
-            object.position.z,
+    objeto.position.z=
+        Math.max(
             -235,
-            235
+            Math.min(
+                235,
+                objeto.position.z
+            )
         );
 }
 
 
 /* =========================
-   ANIMAÇÃO DOS NPCs
+   LOOP
 ========================= */
 
-function updateNPCs() {
-
-    npcs.forEach(
-        npc => {
-
-            npc.position.x +=
-                Math.sin(
-                    Date.now() * .001 +
-                    npc.id
-                ) * .005;
-
-            npc.position.z +=
-                Math.cos(
-                    Date.now() * .001 +
-                    npc.id
-                ) * .005;
-        }
-    );
-}
-
-
-/* =========================
-   LOOP PRINCIPAL
-========================= */
-
-function animate() {
+function animar(){
 
     requestAnimationFrame(
-        animate
+        animar
     );
 
-    updatePlayer();
+    atualizar();
 
-    if (inCar) {
+    limites(
+        dentroDoCarro
+        ? carro
+        : jogador
+    );
 
-        limitPosition(car);
+    verificarMissao();
 
-        controls.target.copy(
-            car.position
-        );
-
-    } else {
-
-        limitPosition(player);
-
-        controls.target.copy(
-            player.position
-        );
-    }
-
-    checkMission();
-
-    updateNPCs();
-
-    updateDayNight();
-
-    controls.update();
+    marcador.rotation.y+=.01;
 
     renderer.render(
         scene,
@@ -1261,15 +943,15 @@ function animate() {
 
 
 /* =========================
-   RESPONSIVIDADE
+   TELA
 ========================= */
 
 window.addEventListener(
     "resize",
-    () => {
+    ()=>{
 
-        camera.aspect =
-            window.innerWidth /
+        camera.aspect=
+            window.innerWidth/
             window.innerHeight;
 
         camera.updateProjectionMatrix();
@@ -1282,9 +964,11 @@ window.addEventListener(
 );
 
 
-updateHUD();
+/* =========================
+   INICIAR
+========================= */
 
-animate();
+animar();
 
 </script>
 
