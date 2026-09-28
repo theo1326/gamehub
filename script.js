@@ -5,30 +5,36 @@ const games = [
         icon: "🧟",
         description: "seja o melhor sobrevivente nesse mundo zumbi."
     },
+
     {
         name: "batalha naval",
         category: "Ação",
         icon: "🚢",
         description: "destrua seu inimigos usando seu navio e se torne o lider da marinha."
     },
+
     {
-        name: "plants vs zoombies",
-        category: "rpg",
-        icon: "🌱🧟",
-        description: "não deixe que os zumbis invadam seu territorio."
+        name: "Plants vs Zombies",
+        category: "Ação",
+        icon: "🌱",
+        description: "Defenda sua casa usando plantas contra ondas de zumbis.",
+        link: "jogos/plants-vs-zombies/index.html"
     },
+
     {
         name: "minecraft",
         category: "Aventura",
         icon: "🌴",
         description: "Explore um mundo cheio de desafios."
     },
+
     {
         name: "blox fruits",
         category: "Ação",
         icon: "🍈",
         description: "one piece."
     },
+
     {
         name: "gta5",
         category: "Corrida e ação",
