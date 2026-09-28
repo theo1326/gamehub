@@ -6,11 +6,19 @@
 
 html,
 body {
+
     width: 100%;
     height: 100%;
+
     overflow: hidden;
-    background: #07090c;
-    font-family: Arial, Helvetica, sans-serif;
+
+    background: #101318;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     color: white;
 }
 
@@ -18,195 +26,625 @@ body {
     user-select: none;
 }
 
+
 canvas {
+
     position: fixed;
+
     inset: 0;
+
     width: 100%;
     height: 100%;
+
     display: block;
-    background:
-        linear-gradient(#10151b, #080b0e);
+
+    background: #11151b;
 }
 
-#menu,
-#gameOver {
+
+/* ================= LOJA ================= */
+
+#shopScreen {
+
     position: fixed;
-    z-index: 10;
+
+    z-index: 20;
+
     inset: 0;
+
     display: flex;
-    flex-direction: column;
-    align-items: center;
+
     justify-content: center;
+
+    align-items: center;
+
     background:
-        radial-gradient(circle at center, rgba(45, 15, 15, .45), rgba(0,0,0,.94));
+
+        linear-gradient(
+            rgba(8, 10, 13, .86),
+            rgba(8, 10, 13, .95)
+        );
 }
 
-#menu h1,
-#gameOver h1 {
-    font-size: clamp(35px, 6vw, 80px);
-    letter-spacing: 5px;
-    color: #f2f2f2;
+
+.shop-container {
+
+    width: min(1100px, 94vw);
+
+    max-height: 94vh;
+
+    overflow-y: auto;
+
+    padding: 30px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #20262d,
+            #101419
+        );
+
+    border:
+
+        2px solid #454d55;
+
+    border-radius: 12px;
+
+    box-shadow:
+
+        0 20px 80px
+        rgba(0,0,0,.7);
+
+}
+
+
+.shop-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+    border-bottom:
+
+        1px solid #343b42;
+
+    padding-bottom: 20px;
+}
+
+
+.shop-header h1 {
+
+    font-size:
+        clamp(25px, 4vw, 45px);
+
+    letter-spacing: 3px;
+
+    color: #eee;
+
     text-shadow:
-        0 0 10px #ff2929,
-        0 0 30px rgba(255, 0, 0, .45);
+
+        0 3px 0 #000;
 }
 
-#menu p {
-    margin: 10px 0 25px;
-    color: #aaa;
-    font-size: 18px;
+
+.shop-header p {
+
+    color: #89939c;
+
+    letter-spacing: 5px;
+
+    margin-top: 5px;
 }
+
+
+.money {
+
+    padding: 14px 22px;
+
+    background: #151a1f;
+
+    border:
+
+        2px solid #6e7a84;
+
+    border-radius: 8px;
+
+    color: #ffd34e;
+
+    font-size: 25px;
+
+    font-weight: bold;
+}
+
+
+.player-box {
+
+    margin-bottom: 20px;
+}
+
 
 #playerName {
-    width: 260px;
+
+    width: 100%;
+
     padding: 14px;
-    margin-bottom: 15px;
-    border: 1px solid #555;
-    border-radius: 5px;
-    outline: none;
-    background: #111;
+
+    background: #0e1216;
+
     color: white;
-    text-align: center;
+
+    border:
+
+        1px solid #3f474f;
+
+    border-radius: 6px;
+
+    outline: none;
+
     font-size: 16px;
 }
 
-button {
-    border: 0;
-    border-radius: 5px;
-    padding: 14px 35px;
-    background: #c72525;
-    color: white;
-    font-weight: bold;
-    font-size: 16px;
-    cursor: pointer;
+
+.shop-container h2 {
+
+    margin-bottom: 15px;
+
+    color: #cbd1d6;
+}
+
+
+.shop-weapons {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(210px, 1fr)
+        );
+
+    gap: 15px;
+}
+
+
+.weapon-card {
+
+    position: relative;
+
+    min-height: 220px;
+
+    padding: 20px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            #292f36,
+            #171c21
+        );
+
+    border:
+
+        2px solid #3d454d;
+
+    border-radius: 8px;
+
     transition: .15s;
 }
 
-button:hover {
-    background: #ed3434;
-    transform: scale(1.04);
+
+.weapon-card:hover {
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        #78848e;
 }
 
-.controls {
-    margin-top: 30px;
-    padding: 18px 25px;
-    width: 300px;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    border: 1px solid #333;
-    background: rgba(10,10,10,.8);
-    color: #aaa;
+
+.weapon-card.owned {
+
+    border-color:
+        #6d9c5b;
 }
 
-.controls b {
+
+.weapon-icon {
+
+    font-size: 48px;
+
+    margin-bottom: 10px;
+}
+
+
+.weapon-card h3 {
+
+    margin-bottom: 7px;
+}
+
+
+.weapon-card p {
+
+    color: #9ba4ab;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+
+    margin-bottom: 12px;
+}
+
+
+.weapon-price {
+
+    color: #ffd34e;
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+}
+
+
+.weapon-button {
+
+    width: 100%;
+
+    padding: 10px;
+
+    border: 0;
+
+    border-radius: 5px;
+
+    background: #454f58;
+
     color: white;
-    margin-bottom: 5px;
+
+    font-weight: bold;
+
+    cursor: pointer;
 }
+
+
+.weapon-button:hover {
+
+    background: #5c6872;
+}
+
+
+.weapon-card.owned
+.weapon-button {
+
+    background: #466b3b;
+}
+
+
+.shop-actions {
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+
+.shop-button,
+.start-button {
+
+    flex: 1;
+
+    padding: 17px;
+
+    border: 0;
+
+    border-radius: 6px;
+
+    color: white;
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+.shop-button {
+
+    background: #343d45;
+}
+
+
+.shop-button:hover {
+
+    background: #46515b;
+}
+
+
+.start-button {
+
+    background: #a52c2c;
+}
+
+
+.start-button:hover {
+
+    background: #ca3636;
+}
+
+
+.shop-info {
+
+    margin-top: 20px;
+
+    padding-top: 15px;
+
+    border-top:
+
+        1px solid #343b42;
+
+    color: #8e979e;
+
+    line-height: 1.7;
+}
+
+
+.shop-info strong {
+
+    color: #ffd34e;
+}
+
+
+/* ================= HUD ================= */
 
 #hud {
+
     display: none;
+
     position: fixed;
-    z-index: 5;
+
+    z-index: 10;
+
     left: 0;
     right: 0;
     top: 0;
+
     padding: 18px 25px;
+
     pointer-events: none;
 
-    justify-content: space-between;
-    align-items: flex-start;
+    justify-content:
+        space-between;
 
-    background: linear-gradient(
-        rgba(0,0,0,.7),
-        transparent
-    );
+    align-items:
+        flex-start;
+
+    background:
+
+        linear-gradient(
+            rgba(0,0,0,.75),
+            transparent
+        );
 }
+
 
 .hud-left,
 .hud-right,
 .hud-center {
-    min-width: 160px;
+
+    min-width: 180px;
 }
 
+
 .hud-center {
+
     text-align: center;
 }
 
+
 .hud-right {
+
     text-align: right;
 }
 
+
 #nameHud {
+
     font-weight: bold;
+
     margin-bottom: 7px;
 }
 
-.health-box {
+
+.health-box,
+.armor-box {
+
     width: 220px;
-    height: 16px;
-    border: 2px solid #111;
-    background: #300;
+
+    height: 13px;
+
+    background: #260b0b;
+
+    border:
+        2px solid #111;
+
+    margin-bottom: 5px;
 }
+
 
 #healthBar {
+
     width: 100%;
+
     height: 100%;
-    background: #d92929;
-    transition: width .15s;
+
+    background: #d53232;
 }
 
-#weapon {
-    font-weight: bold;
+
+.armor-box {
+
+    background: #111d29;
 }
 
-#ammo {
-    margin-top: 6px;
-    font-size: 25px;
+
+#armorBar {
+
+    width: 100%;
+
+    height: 100%;
+
+    background: #4c8fc4;
 }
+
 
 #wave {
+
     font-size: 22px;
+
     font-weight: bold;
 }
 
+
 #enemies {
+
     margin-top: 5px;
-    color: #bbb;
+
+    color: #aaa;
 }
+
+
+#weapon {
+
+    font-weight: bold;
+}
+
+
+#ammo {
+
+    margin-top: 5px;
+
+    font-size: 23px;
+}
+
+
+#moneyHud {
+
+    margin-top: 5px;
+
+    color: #ffd34e;
+
+    font-weight: bold;
+}
+
+
+/* ================= MORTE ================= */
 
 #gameOver {
+
     display: none;
+
+    position: fixed;
+
+    z-index: 30;
+
+    inset: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    background:
+
+        rgba(0,0,0,.9);
 }
+
+
+#gameOver h1 {
+
+    font-size:
+        clamp(40px, 7vw, 80px);
+
+    color: #e83232;
+}
+
 
 #gameOver p {
+
     margin: 15px 0 25px;
-    color: #bbb;
+
+    color: #aaa;
+
+    font-size: 18px;
 }
 
-@media(max-width:600px) {
+
+#restartBtn {
+
+    padding: 15px 35px;
+
+    background: #a52c2c;
+
+    color: white;
+
+    border: 0;
+
+    border-radius: 5px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+@media(max-width:650px) {
+
+    .shop-container {
+
+        padding: 18px;
+    }
+
+    .shop-header {
+
+        align-items:
+            flex-start;
+    }
+
+    .money {
+
+        font-size: 18px;
+
+        padding: 10px;
+    }
+
+    .shop-actions {
+
+        flex-direction: column;
+    }
 
     #hud {
+
         padding: 10px;
-        font-size: 12px;
+    }
+
+    .health-box,
+    .armor-box {
+
+        width: 120px;
     }
 
     .hud-left,
     .hud-right,
     .hud-center {
-        min-width: auto;
-    }
 
-    .health-box {
-        width: 120px;
-        height: 12px;
-    }
-
-    #ammo {
-        font-size: 18px;
-    }
-
-    #wave {
-        font-size: 15px;
+        min-width: 0;
     }
 }
