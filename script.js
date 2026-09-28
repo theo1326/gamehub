@@ -37,7 +37,7 @@ const games = [
 
     {
        {
-    name: "Ludix City 3D",
+    name: "gta5",
     category: "Ação",
     icon: "🚗",
     description: "Explore uma cidade 3D, dirija carros e complete missões.",
