@@ -1,9 +1,12 @@
 const games = [
     {
-        name: "They Are Coming",
-        category: "Ação",
-        icon: "🧟",
-        description: "Seja o melhor sobrevivente nesse mundo zumbi."
+       {
+    name:"They Are Coming",
+    category:"Ação",
+    icon:"🧟",
+    description:"Sobreviva às hordas de zumbis usando armas e barricadas.",
+    link:"jogos/they-are-coming/"
+},
     },
 
     {
