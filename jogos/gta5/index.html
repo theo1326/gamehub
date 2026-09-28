@@ -7,16 +7,16 @@
 
 <style>
 *{
-    box-sizing:border-box;
     margin:0;
     padding:0;
+    box-sizing:border-box;
 }
 
 html,body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#111;
+    background:#101820;
     font-family:Arial,sans-serif;
 }
 
@@ -24,42 +24,108 @@ canvas{
     display:block;
 }
 
+#start{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(circle at center,#243b55,#080d13 75%);
+    color:white;
+    text-align:center;
+}
+
+.start-box{
+    width:min(520px,90%);
+    padding:40px;
+    border-radius:24px;
+    background:rgba(15,20,28,.88);
+    border:1px solid rgba(255,255,255,.15);
+    box-shadow:0 25px 80px rgba(0,0,0,.6);
+}
+
+.start-box h1{
+    font-size:42px;
+    margin-bottom:12px;
+}
+
+.start-box p{
+    color:#cbd5e1;
+    line-height:1.6;
+    margin-bottom:25px;
+}
+
+#startBtn{
+    border:0;
+    padding:15px 35px;
+    border-radius:12px;
+    background:#22c55e;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#startBtn:hover{
+    background:#16a34a;
+    transform:scale(1.03);
+}
+
 #hud{
     position:fixed;
     top:15px;
     left:15px;
-    z-index:10;
+    z-index:20;
+    min-width:250px;
+    padding:15px;
+    border-radius:15px;
+    background:rgba(5,10,15,.78);
     color:white;
-    background:rgba(0,0,0,.65);
-    padding:14px;
-    border-radius:12px;
-    min-width:230px;
-    box-shadow:0 5px 20px rgba(0,0,0,.35);
+    box-shadow:0 8px 30px rgba(0,0,0,.35);
+    backdrop-filter:blur(8px);
 }
 
-#hud h1{
-    font-size:20px;
+#hud h2{
     margin-bottom:8px;
 }
 
 #hud p{
-    margin:4px 0;
-    font-size:14px;
+    margin:5px 0;
 }
 
 #healthBox{
-    width:190px;
-    height:12px;
-    background:#333;
-    border-radius:10px;
+    width:210px;
+    height:13px;
+    margin-top:10px;
+    background:#252525;
+    border-radius:20px;
     overflow:hidden;
-    margin-top:8px;
 }
 
 #health{
-    height:100%;
     width:100%;
-    background:#35d46b;
+    height:100%;
+    background:linear-gradient(90deg,#16a34a,#4ade80);
+}
+
+#mission{
+    position:fixed;
+    right:15px;
+    top:15px;
+    z-index:20;
+    width:250px;
+    padding:15px;
+    color:white;
+    background:rgba(5,10,15,.78);
+    border-radius:15px;
+    backdrop-filter:blur(8px);
+}
+
+#mission p{
+    margin-top:7px;
+    color:#d1d5db;
 }
 
 #help{
@@ -67,70 +133,13 @@ canvas{
     bottom:15px;
     left:50%;
     transform:translateX(-50%);
-    z-index:10;
-    background:rgba(0,0,0,.7);
+    z-index:20;
     color:white;
-    padding:10px 16px;
-    border-radius:10px;
+    background:rgba(0,0,0,.7);
+    padding:10px 18px;
+    border-radius:12px;
     font-size:14px;
     text-align:center;
-}
-
-#mission{
-    position:fixed;
-    top:15px;
-    right:15px;
-    z-index:10;
-    color:white;
-    background:rgba(20,20,20,.75);
-    padding:15px;
-    border-radius:12px;
-    max-width:260px;
-}
-
-#start{
-    position:fixed;
-    inset:0;
-    z-index:100;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:linear-gradient(#101827,#080b10);
-    color:white;
-    text-align:center;
-}
-
-.startBox{
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.15);
-    padding:35px;
-    border-radius:20px;
-    max-width:450px;
-}
-
-.startBox h1{
-    font-size:38px;
-    margin-bottom:10px;
-}
-
-.startBox p{
-    margin:10px 0 20px;
-    line-height:1.5;
-    color:#ccc;
-}
-
-#startBtn{
-    border:0;
-    background:#22c55e;
-    color:white;
-    padding:14px 30px;
-    border-radius:10px;
-    font-size:18px;
-    cursor:pointer;
-}
-
-#startBtn:hover{
-    background:#16a34a;
 }
 </style>
 </head>
@@ -138,35 +147,54 @@ canvas{
 <body>
 
 <div id="start">
-    <div class="startBox">
+    <div class="start-box">
         <h1>🏙️ Ludix City 3D</h1>
+
         <p>
-            Explore uma cidade 3D original, caminhe pelas ruas,
-            dirija veículos, encontre personagens e complete missões.
+            Explore uma cidade 3D original com carros,
+            caminhões, casas, prédios, árvores, postes,
+            personagens e missões.
         </p>
-        <button id="startBtn">ENTRAR NA CIDADE</button>
+
+        <button id="startBtn">
+            ENTRAR NA CIDADE
+        </button>
     </div>
 </div>
 
+
 <div id="hud">
-    <h1>🏙️ Ludix City</h1>
+
+    <h2>🏙️ Ludix City</h2>
+
     <p>💰 Dinheiro: $<span id="money">500</span></p>
+
     <p>⭐ Procurado: <span id="wanted">0</span></p>
+
     <p>🚗 Veículo: <span id="vehicle">A pé</span></p>
 
     <div id="healthBox">
         <div id="health"></div>
     </div>
+
 </div>
+
 
 <div id="mission">
-    <b>📍 Missão</b>
-    <p id="missionText">Vá até o marcador verde.</p>
+
+    <b>📍 MISSÃO</b>
+
+    <p id="missionText">
+        Vá até o marcador verde.
+    </p>
+
 </div>
 
+
 <div id="help">
-    WASD = andar/dirigir • E = entrar/sair do carro • Mouse = câmera
+    WASD = movimentar • E = entrar/sair do carro • Mouse = câmera • Espaço = freio
 </div>
+
 
 <script type="module">
 
@@ -175,36 +203,56 @@ import * as THREE from
 
 
 /* =========================================================
+   CONFIGURAÇÃO
+========================================================= */
+
+const WORLD_SIZE = 700;
+
+
+/* =========================================================
    CENA
 ========================================================= */
 
 const scene = new THREE.Scene();
 
-scene.background = new THREE.Color(0x87b9e8);
+scene.background =
+new THREE.Color(0x83b7e6);
 
-scene.fog = new THREE.Fog(
-    0x87b9e8,
+scene.fog =
+new THREE.Fog(
+    0x83b7e6,
     180,
     650
 );
 
 
-const camera = new THREE.PerspectiveCamera(
-    70,
+/* =========================================================
+   CÂMERA
+========================================================= */
+
+const camera =
+new THREE.PerspectiveCamera(
+    68,
     innerWidth / innerHeight,
-    0.1,
-    1000
+    .1,
+    1200
 );
 
 camera.position.set(
     0,
-    7,
-    12
+    5,
+    10
 );
 
 
-const renderer = new THREE.WebGLRenderer({
-    antialias:true
+/* =========================================================
+   RENDERIZADOR 4K
+========================================================= */
+
+const renderer =
+new THREE.WebGLRenderer({
+    antialias:true,
+    powerPreference:"high-performance"
 });
 
 renderer.setSize(
@@ -213,50 +261,95 @@ renderer.setSize(
 );
 
 renderer.setPixelRatio(
-    Math.min(devicePixelRatio,2)
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    )
 );
 
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled=true;
 
 renderer.shadowMap.type =
 THREE.PCFSoftShadowMap;
 
-document.body.appendChild(renderer.domElement);
+renderer.outputColorSpace =
+THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure=1.15;
+
+document.body.appendChild(
+    renderer.domElement
+);
+
+
+/*
+   Em telas 4K o navegador pode fornecer
+   uma resolução muito maior.
+*/
+function ajustar4K(){
+
+    const pixelRatio =
+    Math.min(
+        window.devicePixelRatio || 1,
+        2
+    );
+
+    renderer.setPixelRatio(
+        pixelRatio
+    );
+
+    renderer.setSize(
+        innerWidth,
+        innerHeight,
+        false
+    );
+
+}
+
+ajustar4K();
 
 
 /* =========================================================
-   LUZES
+   ILUMINAÇÃO
 ========================================================= */
 
-const hemi = new THREE.HemisphereLight(
-    0xbfe4ff,
-    0x3b4937,
-    2
+const skyLight =
+new THREE.HemisphereLight(
+    0xc7e5ff,
+    0x43523b,
+    2.2
 );
 
-scene.add(hemi);
+scene.add(skyLight);
 
 
-const sun = new THREE.DirectionalLight(
+const sun =
+new THREE.DirectionalLight(
     0xffffff,
-    2.5
+    3
 );
 
 sun.position.set(
-    120,
     180,
-    80
+    260,
+    120
 );
 
-sun.castShadow = true;
+sun.castShadow=true;
 
-sun.shadow.mapSize.width = 2048;
-sun.shadow.mapSize.height = 2048;
+sun.shadow.mapSize.width=4096;
+sun.shadow.mapSize.height=4096;
 
-sun.shadow.camera.left = -250;
-sun.shadow.camera.right = 250;
-sun.shadow.camera.top = 250;
-sun.shadow.camera.bottom = -250;
+sun.shadow.camera.left=-320;
+sun.shadow.camera.right=320;
+sun.shadow.camera.top=320;
+sun.shadow.camera.bottom=-320;
+
+sun.shadow.camera.near=.5;
+sun.shadow.camera.far=800;
 
 scene.add(sun);
 
@@ -265,112 +358,143 @@ scene.add(sun);
    MATERIAIS
 ========================================================= */
 
-function mat(color,roughness=.8){
+function material(
+    color,
+    roughness=.75,
+    metalness=.05
+){
 
     return new THREE.MeshStandardMaterial({
         color,
         roughness,
-        metalness:.05
+        metalness
     });
 
 }
 
-const grassMat = mat(0x4f914b);
-const roadMat = mat(0x282c31);
-const sidewalkMat = mat(0x969696);
-const whiteMat = mat(0xffffff);
-const yellowMat = mat(0xf3d14b);
+
+const MAT = {
+
+    grass:material(0x4b9148),
+
+    road:material(
+        0x24272b,
+        .95
+    ),
+
+    sidewalk:material(
+        0x9b9b9b
+    ),
+
+    concrete:material(
+        0x777b80
+    ),
+
+    glass:material(
+        0x6db6d4,
+        .12,
+        .15
+    ),
+
+    black:material(
+        0x101214,
+        .45
+    ),
+
+    white:material(
+        0xffffff
+    ),
+
+    yellow:material(
+        0xf3ca32
+    ),
+
+    window:material(
+        0x6ec5e8,
+        .18
+    ),
+
+    wood:material(
+        0x613c27
+    )
+
+};
 
 
 /* =========================================================
-   CHÃO
+   TERRENO
 ========================================================= */
 
-const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(800,800),
-    grassMat
+const ground =
+new THREE.Mesh(
+    new THREE.PlaneGeometry(
+        WORLD_SIZE,
+        WORLD_SIZE
+    ),
+    MAT.grass
 );
 
-ground.rotation.x = -Math.PI/2;
+ground.rotation.x=
+-Math.PI/2;
 
-ground.receiveShadow = true;
+ground.receiveShadow=true;
 
 scene.add(ground);
 
 
 /* =========================================================
-   OBJETOS DO MUNDO
+   LISTA DE COLISÕES
 ========================================================= */
 
-const obstacles = [];
+const obstacles=[];
 
 
 /* =========================================================
-   ESTRADA
+   ESTRADAS
 ========================================================= */
 
-function criarEstradaHorizontal(z){
+function estradaHorizontal(z){
 
-    const road = new THREE.Mesh(
+    const road =
+    new THREE.Mesh(
         new THREE.BoxGeometry(
-            800,
-            .15,
-            18
+            WORLD_SIZE,
+            .12,
+            20
         ),
-        roadMat
+        MAT.road
     );
 
     road.position.set(
         0,
-        .08,
+        .05,
         z
     );
 
-    road.receiveShadow = true;
+    road.receiveShadow=true;
 
     scene.add(road);
 
 
-    const sidewalk1 = new THREE.Mesh(
-        new THREE.BoxGeometry(
-            800,
-            .3,
-            5
-        ),
-        sidewalkMat
-    );
+    for(
+        let x=-330;
+        x<330;
+        x+=14
+    ){
 
-    sidewalk1.position.set(
-        0,
-        .15,
-        z-11.5
-    );
-
-    scene.add(sidewalk1);
-
-
-    const sidewalk2 = sidewalk1.clone();
-
-    sidewalk2.position.z =
-    z+11.5;
-
-    scene.add(sidewalk2);
-
-
-    for(let x=-380;x<400;x+=12){
-
-        const line = new THREE.Mesh(
+        const line =
+        new THREE.Mesh(
             new THREE.BoxGeometry(
-                6,
-                .04,
+                7,
+                .035,
                 .18
             ),
-            yellowMat
+            MAT.yellow
         );
 
         line.position.set(
             x,
-            .18,
+            .13,
             z
         );
 
@@ -378,69 +502,78 @@ function criarEstradaHorizontal(z){
 
     }
 
+
+    for(
+        const side of [-1,1]
+    ){
+
+        const sidewalk =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                WORLD_SIZE,
+                .3,
+                5
+            ),
+            MAT.sidewalk
+        );
+
+        sidewalk.position.set(
+            0,
+            .15,
+            z+side*12.5
+        );
+
+        sidewalk.receiveShadow=true;
+
+        scene.add(sidewalk);
+
+    }
+
 }
 
 
-function criarEstradaVertical(x){
+function estradaVertical(x){
 
-    const road = new THREE.Mesh(
+    const road =
+    new THREE.Mesh(
         new THREE.BoxGeometry(
-            18,
-            .15,
-            800
+            20,
+            .12,
+            WORLD_SIZE
         ),
-        roadMat
+        MAT.road
     );
 
     road.position.set(
         x,
-        .08,
+        .05,
         0
     );
+
+    road.receiveShadow=true;
 
     scene.add(road);
 
 
-    const sidewalk1 = new THREE.Mesh(
-        new THREE.BoxGeometry(
-            5,
-            .3,
-            800
-        ),
-        sidewalkMat
-    );
+    for(
+        let z=-330;
+        z<330;
+        z+=14
+    ){
 
-    sidewalk1.position.set(
-        x-11.5,
-        .15,
-        0
-    );
-
-    scene.add(sidewalk1);
-
-
-    const sidewalk2 = sidewalk1.clone();
-
-    sidewalk2.position.x =
-    x+11.5;
-
-    scene.add(sidewalk2);
-
-
-    for(let z=-380;z<400;z+=12){
-
-        const line = new THREE.Mesh(
+        const line =
+        new THREE.Mesh(
             new THREE.BoxGeometry(
                 .18,
-                .04,
-                6
+                .035,
+                7
             ),
-            yellowMat
+            MAT.yellow
         );
 
         line.position.set(
             x,
-            .18,
+            .13,
             z
         );
 
@@ -448,128 +581,270 @@ function criarEstradaVertical(x){
 
     }
 
+
+    for(
+        const side of [-1,1]
+    ){
+
+        const sidewalk =
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                5,
+                .3,
+                WORLD_SIZE
+            ),
+            MAT.sidewalk
+        );
+
+        sidewalk.position.set(
+            x+side*12.5,
+            .15,
+            0
+        );
+
+        scene.add(sidewalk);
+
+    }
+
 }
 
 
-[-80,0,80].forEach(criarEstradaHorizontal);
-[-80,0,80].forEach(criarEstradaVertical);
+[-80,0,80].forEach(
+    estradaHorizontal
+);
+
+[-80,0,80].forEach(
+    estradaVertical
+);
 
 
 /* =========================================================
-   PRÉDIOS
+   PRÉDIOS COM MESMA LINGUAGEM VISUAL
 ========================================================= */
 
-function criarPredio(x,z,w,d,h,color){
+const buildingPalette=[
+    0xb9bec5,
+    0xa9b0b8,
+    0xc8c2b8,
+    0x9da9b3,
+    0xb7a99a
+];
+
+
+function criarPredio(
+    x,
+    z,
+    width,
+    depth,
+    height,
+    color
+){
 
     const group =
     new THREE.Group();
 
 
-    const body = new THREE.Mesh(
+    /* corpo */
+
+    const body =
+    new THREE.Mesh(
         new THREE.BoxGeometry(
-            w,
-            h,
-            d
+            width,
+            height,
+            depth
         ),
-        mat(color)
+        material(color)
     );
 
-    body.position.y =
-    h/2;
+    body.position.y=
+    height/2;
 
-    body.castShadow = true;
-    body.receiveShadow = true;
+    body.castShadow=true;
+    body.receiveShadow=true;
 
     group.add(body);
 
 
-    /* telhado */
+    /* base */
 
-    const roof = new THREE.Mesh(
+    const base =
+    new THREE.Mesh(
         new THREE.BoxGeometry(
-            w+.7,
-            .5,
-            d+.7
+            width+.7,
+            .6,
+            depth+.7
         ),
-        mat(0x30343b)
+        MAT.concrete
     );
 
-    roof.position.y =
-    h+.25;
+    base.position.y=.3;
 
-    roof.castShadow = true;
+    group.add(base);
+
+
+    /* topo */
+
+    const roof =
+    new THREE.Mesh(
+        new THREE.BoxGeometry(
+            width+.5,
+            .5,
+            depth+.5
+        ),
+        material(0x3a3d42)
+    );
+
+    roof.position.y=
+    height+.25;
+
+    roof.castShadow=true;
 
     group.add(roof);
 
 
-    /* janelas */
+    /* janelas frontais e traseiras */
 
-    const janelaMat =
-    mat(0x8ed7ef,.25);
+    const rows =
+    Math.max(
+        2,
+        Math.floor(height/3)
+    );
+
+    const cols =
+    Math.max(
+        2,
+        Math.floor(width/2.7)
+    );
+
 
     for(
-        let yy=3;
-        yy<h-1;
-        yy+=3
+        let row=0;
+        row<rows;
+        row++
     ){
 
+        const y=
+        2.2+row*3;
+
+        if(y>height-1)
+            continue;
+
+
         for(
-            let xx=-w/2+1.3;
-            xx<w/2-1;
-            xx+=2.5
+            let col=0;
+            col<cols;
+            col++
         ){
 
-            const janela =
+            const xOffset=
+            -width/2+
+            1.4+
+            col*2.7;
+
+
+            const win =
             new THREE.Mesh(
                 new THREE.BoxGeometry(
-                    1.25,
-                    1.3,
-                    .08
+                    1.5,
+                    1.45,
+                    .07
                 ),
-                janelaMat
+                MAT.window
             );
 
-            janela.position.set(
-                xx,
-                yy,
-                d/2+.05
+            win.position.set(
+                xOffset,
+                y,
+                depth/2+.05
             );
 
-            group.add(janela);
+            group.add(win);
 
 
-            const janela2 =
-            janela.clone();
+            const back=
+            win.clone();
 
-            janela2.position.z =
-            -d/2-.05;
+            back.position.z=
+            -depth/2-.05;
 
-            group.add(janela2);
+            group.add(back);
 
         }
 
     }
 
 
-    /* porta */
+    /* janelas laterais */
 
-    const porta =
+    for(
+        let row=0;
+        row<rows;
+        row++
+    ){
+
+        const y=
+        2.2+row*3;
+
+        if(y>height-1)
+            continue;
+
+
+        for(
+            let side=-1;
+            side<=1;
+            side+=2
+        ){
+
+            for(
+                let k=-2;
+                k<=2;
+                k++
+            ){
+
+                const win=
+                new THREE.Mesh(
+                    new THREE.BoxGeometry(
+                        .07,
+                        1.45,
+                        1.4
+                    ),
+                    MAT.window
+                );
+
+                win.position.set(
+                    side*(width/2+.05),
+                    y,
+                    k*2.5
+                );
+
+                group.add(win);
+
+            }
+
+        }
+
+    }
+
+
+    /* entrada */
+
+    const entrance =
     new THREE.Mesh(
         new THREE.BoxGeometry(
-            1.5,
-            2.7,
-            .12
+            2.2,
+            3.3,
+            .15
         ),
-        mat(0x422d20)
+        MAT.wood
     );
 
-    porta.position.set(
+    entrance.position.set(
         0,
-        1.35,
-        d/2+.08
+        1.65,
+        depth/2+.1
     );
 
-    group.add(porta);
+    group.add(entrance);
 
 
     group.position.set(
@@ -580,54 +855,71 @@ function criarPredio(x,z,w,d,h,color){
 
     scene.add(group);
 
+
     obstacles.push({
         x,
         z,
-        w:w+.8,
-        d:d+.8
+        w:width+.8,
+        d:depth+.8
     });
 
 }
 
 
-const buildingColors = [
-    0xc6c8cc,
-    0xb5a48d,
-    0x8896a8,
-    0xd4b48c,
-    0x9caaa0,
-    0x777d88
-];
+/* =========================================================
+   DISTRIBUIÇÃO DOS PRÉDIOS
+========================================================= */
+
+for(
+    let x=-280;
+    x<=280;
+    x+=42
+){
+
+    for(
+        let z=-280;
+        z<=280;
+        z+=42
+    ){
+
+        /*
+           Espaço reservado para as ruas.
+        */
+
+        if(
+            Math.abs(
+                x%80
+            )<22 ||
+            Math.abs(
+                z%80
+            )<22
+        ){
+
+            continue;
+
+        }
 
 
-for(let bx=-140;bx<=140;bx+=40){
+        const width =
+        20+Math.random()*7;
 
-    for(let bz=-140;bz<=140;bz+=40){
+        const depth =
+        20+Math.random()*7;
 
-        const nearRoad =
-        Math.abs(bx%80)<20 ||
-        Math.abs(bz%80)<20;
+        const height =
+        15+Math.random()*35;
 
-        if(nearRoad) continue;
-
-        const w =
-        18+Math.random()*9;
-
-        const d =
-        18+Math.random()*9;
-
-        const h =
-        12+Math.random()*35;
 
         criarPredio(
-            bx,
-            bz,
-            w,
-            d,
-            h,
-            buildingColors[
+            x,
+            z,
+            width,
+            depth,
+            height,
+            buildingPalette[
                 Math.floor(
-                    Math.random()*buildingColors.length
+                    Math.random()*
+                    buildingPalette.length
                 )
             ]
         );
@@ -641,7 +933,11 @@ for(let bx=-140;bx<=140;bx+=40){
    CASAS
 ========================================================= */
 
-function criarCasa(x,z,cor){
+function criarCasa(
+    x,
+    z,
+    color
+){
 
     const g =
     new THREE.Group();
@@ -650,11 +946,11 @@ function criarCasa(x,z,cor){
     const base =
     new THREE.Mesh(
         new THREE.BoxGeometry(
-            14,
+            15,
             6,
-            11
+            12
         ),
-        mat(cor)
+        material(color)
     );
 
     base.position.y=3;
@@ -667,19 +963,19 @@ function criarCasa(x,z,cor){
     const roof =
     new THREE.Mesh(
         new THREE.ConeGeometry(
-            10,
+            10.5,
             5,
             4
         ),
-        mat(0x6b3b2b)
+        material(0x653829)
     );
 
-    roof.rotation.y =
+    roof.rotation.y=
     Math.PI/4;
 
     roof.position.y=8.5;
 
-    roof.scale.z=.7;
+    roof.scale.z=.72;
 
     roof.castShadow=true;
 
@@ -689,61 +985,61 @@ function criarCasa(x,z,cor){
     const door =
     new THREE.Mesh(
         new THREE.BoxGeometry(
-            1.5,
-            3,
+            1.6,
+            3.1,
             .15
         ),
-        mat(0x533322)
+        MAT.wood
     );
 
     door.position.set(
         0,
-        1.5,
-        5.6
+        1.55,
+        6.1
     );
 
     g.add(door);
 
 
-    for(const xw of [-4,4]){
+    for(
+        const xx of [-4.2,4.2]
+    ){
 
-        const window =
+        const win =
         new THREE.Mesh(
             new THREE.BoxGeometry(
-                2.2,
+                2.3,
                 1.7,
-                .15
+                .12
             ),
-            mat(0x8dd9e8,.2)
+            MAT.window
         );
 
-        window.position.set(
-            xw,
+        win.position.set(
+            xx,
             3.5,
-            5.6
+            6.1
         );
 
-        g.add(window);
+        g.add(win);
 
     }
 
 
-    /* chaminé */
-
     const chimney =
     new THREE.Mesh(
         new THREE.BoxGeometry(
-            1.5,
+            1.4,
             3,
-            1.5
+            1.4
         ),
-        mat(0x8a4e3c)
+        material(0x824b39)
     );
 
     chimney.position.set(
         3,
         9,
-        -2
+        -1
     );
 
     g.add(chimney);
@@ -757,43 +1053,56 @@ function criarCasa(x,z,cor){
 
     scene.add(g);
 
+
     obstacles.push({
         x,
         z,
-        w:15,
-        d:12
+        w:16,
+        d:13
     });
 
 }
 
 
 const houseColors=[
-    0xe0c39d,
-    0xc7d7b7,
-    0xd8a7a7,
-    0xb7c8d9
+    0xd8c09d,
+    0xc8d6bd,
+    0xd6aaa5,
+    0xb8cad5
 ];
 
 
-for(let i=0;i<24;i++){
+for(
+    let i=0;
+    i<30;
+    i++
+){
 
-    const x =
-    (Math.floor(Math.random()*18)-9)*20;
+    const x=
+    (Math.floor(
+        Math.random()*13
+    )-6)*40+20;
 
-    const z =
-    (Math.floor(Math.random()*18)-9)*20;
+    const z=
+    (Math.floor(
+        Math.random()*13
+    )-6)*40+20;
+
 
     if(
-        Math.abs(x%80)<25 ||
-        Math.abs(z%80)<25
-    ) continue;
+        Math.abs(x)<120 ||
+        Math.abs(z)<120
+    )
+        continue;
+
 
     criarCasa(
         x,
         z,
         houseColors[
             Math.floor(
-                Math.random()*houseColors.length
+                Math.random()*
+                houseColors.length
             )
         ]
     );
@@ -805,21 +1114,25 @@ for(let i=0;i<24;i++){
    ÁRVORES
 ========================================================= */
 
-function criarArvore(x,z,tipo=0){
+function criarArvore(
+    x,
+    z,
+    tipo
+){
 
-    const g =
+    const g=
     new THREE.Group();
 
 
-    const trunk =
+    const trunk=
     new THREE.Mesh(
         new THREE.CylinderGeometry(
-            .45,
-            .65,
+            .35,
+            .55,
             4,
-            8
+            10
         ),
-        mat(0x6a4025)
+        material(0x694229)
     );
 
     trunk.position.y=2;
@@ -831,47 +1144,65 @@ function criarArvore(x,z,tipo=0){
 
     if(tipo===0){
 
-        for(let i=0;i<5;i++){
+        for(
+            let i=0;
+            i<6;
+            i++
+        ){
 
-            const folha =
+            const leaf=
             new THREE.Mesh(
                 new THREE.SphereGeometry(
-                    2.2+Math.random(),
-                    10,
-                    8
+                    2+Math.random(),
+                    12,
+                    10
                 ),
-                mat(0x2f7d3d)
+                material(
+                    i%2?
+                    0x347e3c:
+                    0x286c34
+                )
             );
 
-            folha.position.set(
-                (Math.random()-.5)*2,
-                4.5+Math.random()*2,
-                (Math.random()-.5)*2
+            leaf.position.set(
+                (Math.random()-.5)*2.5,
+                4.3+
+                Math.random()*2.5,
+                (Math.random()-.5)*2.5
             );
 
-            folha.castShadow=true;
+            leaf.castShadow=true;
 
-            g.add(folha);
+            g.add(leaf);
 
         }
 
     }else{
 
-        const crown =
-        new THREE.Mesh(
-            new THREE.ConeGeometry(
-                3,
-                7,
-                9
-            ),
-            mat(0x276b38)
-        );
+        for(
+            let i=0;
+            i<3;
+            i++
+        ){
 
-        crown.position.y=6;
+            const leaf=
+            new THREE.Mesh(
+                new THREE.ConeGeometry(
+                    2.8-i*.5,
+                    4,
+                    10
+                ),
+                material(0x28683a)
+            );
 
-        crown.castShadow=true;
+            leaf.position.y=
+            4+i*2.2;
 
-        g.add(crown);
+            leaf.castShadow=true;
+
+            g.add(leaf);
+
+        }
 
     }
 
@@ -887,47 +1218,58 @@ function criarArvore(x,z,tipo=0){
 }
 
 
-for(let i=0;i<100;i++){
+for(
+    let i=0;
+    i<130;
+    i++
+){
 
-    const x =
-    (Math.random()-.5)*600;
+    const x=
+    (Math.random()-.5)*620;
 
-    const z =
-    (Math.random()-.5)*600;
+    const z=
+    (Math.random()-.5)*620;
+
 
     if(
         Math.abs(x)<125 ||
         Math.abs(z)<125
-    ) continue;
+    )
+        continue;
+
 
     criarArvore(
         x,
         z,
-        Math.random()<.5?0:1
+        Math.random()<.65?0:1
     );
 
 }
 
 
 /* =========================================================
-   POSTES DE RUA
+   POSTES
 ========================================================= */
 
-function criarPoste(x,z){
+function criarPoste(
+    x,
+    z,
+    rot=0
+){
 
-    const g =
+    const g=
     new THREE.Group();
 
 
-    const pole =
+    const pole=
     new THREE.Mesh(
         new THREE.CylinderGeometry(
             .12,
-            .18,
+            .2,
             7,
-            8
+            10
         ),
-        mat(0x25282c)
+        material(0x25272a,.5)
     );
 
     pole.position.y=3.5;
@@ -937,14 +1279,14 @@ function criarPoste(x,z){
     g.add(pole);
 
 
-    const arm =
+    const arm=
     new THREE.Mesh(
         new THREE.BoxGeometry(
             2,
             .12,
             .12
         ),
-        mat(0x25282c)
+        material(0x25272a,.5)
     );
 
     arm.position.set(
@@ -956,40 +1298,30 @@ function criarPoste(x,z){
     g.add(arm);
 
 
-    const lamp =
+    const lamp=
     new THREE.Mesh(
         new THREE.SphereGeometry(
             .35,
-            10,
-            10
+            16,
+            12
         ),
-        mat(0xffed9c)
+        new THREE.MeshStandardMaterial({
+            color:0xffe8a1,
+            emissive:0xffb52e,
+            emissiveIntensity:1.4
+        })
     );
 
     lamp.position.set(
-        1.7,
-        6.3,
+        1.8,
+        6.35,
         0
     );
 
     g.add(lamp);
 
 
-    const light =
-    new THREE.PointLight(
-        0xffdf8a,
-        .6,
-        18
-    );
-
-    light.position.set(
-        1.7,
-        6.2,
-        0
-    );
-
-    g.add(light);
-
+    g.rotation.y=rot;
 
     g.position.set(
         x,
@@ -1002,143 +1334,187 @@ function criarPoste(x,z){
 }
 
 
-for(let x=-240;x<=240;x+=40){
+for(
+    let x=-280;
+    x<=280;
+    x+=40
+){
 
-    criarPoste(x,-13);
+    criarPoste(
+        x,
+        -13,
+        0
+    );
 
-    criarPoste(x,13);
+    criarPoste(
+        x,
+        13,
+        Math.PI
+    );
 
 }
 
 
-for(let z=-240;z<=240;z+=40){
+for(
+    let z=-280;
+    z<=280;
+    z+=40
+){
 
-    criarPoste(-13,z);
+    criarPoste(
+        -13,
+        z,
+        Math.PI/2
+    );
 
-    criarPoste(13,z);
+    criarPoste(
+        13,
+        z,
+        -Math.PI/2
+    );
 
 }
 
 
 /* =========================================================
-   PERSONAGEM HUMANO
+   PERSONAGENS
 ========================================================= */
 
 const skinColors=[
-    0xf1c7a5,
-    0xd99b72,
-    0xb87850,
-    0x8e563d,
-    0x633c2c
+    0xf0c7a6,
+    0xd99a70,
+    0xb97850,
+    0x92583e,
+    0x683c2d
 ];
 
 const hairColors=[
-    0x17120f,
-    0x352116,
-    0x6b3c20,
-    0x9b7650
+    0x15110e,
+    0x302016,
+    0x633b22,
+    0x8a633f
 ];
 
 
 function criarPessoa(){
 
-    const g =
+    const g=
     new THREE.Group();
 
-    const skin =
-    mat(
+
+    const skin=
+    material(
         skinColors[
             Math.floor(
-                Math.random()*skinColors.length
+                Math.random()*
+                skinColors.length
             )
         ]
     );
 
-    const hair =
-    mat(
+
+    const hair=
+    material(
         hairColors[
             Math.floor(
-                Math.random()*hairColors.length
+                Math.random()*
+                hairColors.length
             )
         ]
     );
 
-    const shirt =
-    mat(
-        [
-            0x263c91,
-            0x9d2d2d,
-            0x27734b,
-            0x9c7227,
-            0x6e3f91
-        ][
-            Math.floor(Math.random()*5)
+
+    const shirtColors=[
+        0x284aa5,
+        0xb52e38,
+        0x2c7c50,
+        0x9a6d25,
+        0x70449a,
+        0xdddddd
+    ];
+
+
+    const pantsColors=[
+        0x202735,
+        0x34425c,
+        0x47372d,
+        0x17191c
+    ];
+
+
+    const shirt=
+    material(
+        shirtColors[
+            Math.floor(
+                Math.random()*
+                shirtColors.length
+            )
         ]
     );
 
-    const pants =
-    mat(
-        [
-            0x20252d,
-            0x343d55,
-            0x4b382c
-        ][
-            Math.floor(Math.random()*3)
+
+    const pants=
+    material(
+        pantsColors[
+            Math.floor(
+                Math.random()*
+                pantsColors.length
+            )
         ]
     );
 
 
-    /* corpo */
+    /* tronco */
 
-    const body =
+    const torso=
     new THREE.Mesh(
         new THREE.CapsuleGeometry(
             .55,
-            1.25,
-            5,
-            10
+            1.2,
+            6,
+            12
         ),
         shirt
     );
 
-    body.position.y=2.2;
+    torso.position.y=2.25;
 
-    body.castShadow=true;
+    torso.castShadow=true;
 
-    g.add(body);
+    g.add(torso);
 
 
     /* pescoço */
 
-    const neck =
+    const neck=
     new THREE.Mesh(
         new THREE.CylinderGeometry(
-            .18,
+            .17,
             .2,
             .35,
-            8
+            10
         ),
         skin
     );
 
-    neck.position.y=3.1;
+    neck.position.y=3.12;
 
     g.add(neck);
 
 
     /* cabeça */
 
-    const head =
+    const head=
     new THREE.Mesh(
         new THREE.SphereGeometry(
-            .52,
-            16,
-            12
+            .53,
+            20,
+            16
         ),
         skin
     );
 
-    head.position.y=3.65;
+    head.position.y=3.7;
 
     head.scale.y=1.12;
 
@@ -1149,12 +1525,12 @@ function criarPessoa(){
 
     /* cabelo */
 
-    const hairMesh =
+    const hairMesh=
     new THREE.Mesh(
         new THREE.SphereGeometry(
-            .54,
-            16,
-            8,
+            .55,
+            20,
+            12,
             0,
             Math.PI*2,
             0,
@@ -1163,29 +1539,31 @@ function criarPessoa(){
         hair
     );
 
-    hairMesh.position.y=3.9;
+    hairMesh.position.y=3.95;
 
     g.add(hairMesh);
 
 
     /* olhos */
 
-    for(const ex of [-.18,.18]){
+    for(
+        const side of [-1,1]
+    ){
 
-        const eye =
+        const eye=
         new THREE.Mesh(
             new THREE.SphereGeometry(
                 .055,
                 8,
                 8
             ),
-            mat(0x111111)
+            material(0x111111)
         );
 
         eye.position.set(
-            ex,
-            3.68,
-            -.48
+            side*.18,
+            3.72,
+            -.49
         );
 
         g.add(eye);
@@ -1197,27 +1575,29 @@ function criarPessoa(){
 
     const arms=[];
 
-    for(const side of [-1,1]){
+    for(
+        const side of [-1,1]
+    ){
 
-        const arm =
+        const arm=
         new THREE.Mesh(
             new THREE.CapsuleGeometry(
-                .16,
-                .75,
-                5,
-                8
+                .17,
+                .82,
+                6,
+                9
             ),
             shirt
         );
 
         arm.position.set(
-            side*.7,
+            side*.72,
             2.35,
             0
         );
 
-        arm.rotation.z =
-        side*.12;
+        arm.rotation.z=
+        side*.1;
 
         arm.castShadow=true;
 
@@ -1228,26 +1608,55 @@ function criarPessoa(){
     }
 
 
+    /* mãos */
+
+    for(
+        const side of [-1,1]
+    ){
+
+        const hand=
+        new THREE.Mesh(
+            new THREE.SphereGeometry(
+                .19,
+                10,
+                8
+            ),
+            skin
+        );
+
+        hand.position.set(
+            side*.78,
+            1.65,
+            0
+        );
+
+        g.add(hand);
+
+    }
+
+
     /* pernas */
 
     const legs=[];
 
-    for(const side of [-1,1]){
+    for(
+        const side of [-1,1]
+    ){
 
-        const leg =
+        const leg=
         new THREE.Mesh(
             new THREE.CapsuleGeometry(
-                .19,
-                .8,
-                5,
-                8
+                .2,
+                .85,
+                6,
+                9
             ),
             pants
         );
 
         leg.position.set(
-            side*.28,
-            .9,
+            side*.29,
+            .85,
             0
         );
 
@@ -1258,20 +1667,20 @@ function criarPessoa(){
         legs.push(leg);
 
 
-        const shoe =
+        const shoe=
         new THREE.Mesh(
             new THREE.BoxGeometry(
-                .38,
-                .2,
-                .65
+                .42,
+                .22,
+                .72
             ),
-            mat(0x171717)
+            material(0x111214,.45)
         );
 
         shoe.position.set(
-            side*.28,
-            .2,
-            -.12
+            side*.29,
+            .18,
+            -.13
         );
 
         g.add(shoe);
@@ -1281,7 +1690,8 @@ function criarPessoa(){
 
     g.userData.arms=arms;
     g.userData.legs=legs;
-    g.userData.walkTime=Math.random()*10;
+    g.userData.walkTime=
+    Math.random()*20;
 
     return g;
 
@@ -1289,16 +1699,22 @@ function criarPessoa(){
 
 
 /* =========================================================
-   PLAYER
+   JOGADOR
 ========================================================= */
 
-const player =
+const player=
 criarPessoa();
 
+
+/*
+   POSIÇÃO INICIAL GARANTIDAMENTE NA RUA.
+   Rua horizontal em z = 0.
+*/
+
 player.position.set(
-    15,
+    18,
     0,
-    15
+    5
 );
 
 scene.add(player);
@@ -1310,22 +1726,56 @@ scene.add(player);
 
 const npcs=[];
 
-for(let i=0;i<32;i++){
 
-    const npc =
+for(
+    let i=0;
+    i<36;
+    i++
+){
+
+    const npc=
     criarPessoa();
 
-    npc.position.set(
-        (Math.random()-.5)*250,
-        0,
-        (Math.random()-.5)*250
-    );
 
-    npc.userData.speed =
-    .8+Math.random()*.8;
+    /*
+       NPCs começam em áreas próximas às ruas.
+    */
 
-    npc.userData.angle =
+    const road=
+    [-80,0,80][
+        Math.floor(
+            Math.random()*3
+        )
+    ];
+
+
+    if(Math.random()<.5){
+
+        npc.position.set(
+            (Math.random()-.5)*500,
+            0,
+            road+
+            (Math.random()<.5?15:-15)
+        );
+
+    }else{
+
+        npc.position.set(
+            road+
+            (Math.random()<.5?15:-15),
+            0,
+            (Math.random()-.5)*500
+        );
+
+    }
+
+
+    npc.userData.speed=
+    .7+Math.random()*.7;
+
+    npc.userData.angle=
     Math.random()*Math.PI*2;
+
 
     scene.add(npc);
 
@@ -1338,38 +1788,70 @@ for(let i=0;i<32;i++){
    VEÍCULOS
 ========================================================= */
 
-function criarVeiculo(tipo,cor){
+function criarVeiculo(
+    tipo,
+    cor
+){
 
-    const g =
+    const g=
     new THREE.Group();
 
-    const bodyMat =
-    mat(cor,.55);
 
-    const glassMat =
-    mat(0x8bd1df,.15);
+    const bodyMat=
+    material(
+        cor,
+        .42,
+        .12
+    );
 
-    const tireMat =
-    mat(0x111111);
+
+    const glassMat=
+    material(
+        0x6fbfd8,
+        .1,
+        .2
+    );
+
+
+    const tireMat=
+    material(
+        0x08090a,
+        .35
+    );
+
+
+    const chrome=
+    material(
+        0xb9c0c7,
+        .2,
+        .75
+    );
 
 
     function box(
-        w,h,d,
-        x,y,z,
-        material,
-        bevel=false
+        w,
+        h,
+        d,
+        x,
+        y,
+        z,
+        m
     ){
 
-        const mesh =
+        const mesh=
         new THREE.Mesh(
             new THREE.BoxGeometry(
-                w,h,d
+                w,
+                h,
+                d
             ),
-            material
+            m
         );
 
         mesh.position.set(
-            x,y,z
+            x,
+            y,
+            z
         );
 
         mesh.castShadow=true;
@@ -1382,125 +1864,163 @@ function criarVeiculo(tipo,cor){
     }
 
 
-    /* SEDAN */
+    /* =====================================================
+       SEDAN
+    ===================================================== */
 
     if(tipo==="sedan"){
 
         box(
             2.5,
-            .7,
-            4.6,
+            .65,
+            4.8,
             0,
-            .8,
+            .75,
             0,
             bodyMat
         );
 
         box(
-            2.05,
+            2.1,
             .75,
-            2.2,
+            2.35,
             0,
-            1.45,
+            1.38,
             .15,
             bodyMat
         );
 
         box(
-            1.85,
-            .55,
-            1.8,
+            1.9,
+            .52,
+            2.05,
             0,
-            1.48,
-            -.05,
+            1.45,
+            .05,
             glassMat
+        );
+
+        box(
+            2.35,
+            .12,
+            .25,
+            0,
+            .98,
+            -2.25,
+            chrome
         );
 
     }
 
 
-    /* ESPORTIVO */
+    /* =====================================================
+       ESPORTIVO
+    ===================================================== */
 
     if(tipo==="esportivo"){
 
         box(
-            2.6,
-            .5,
-            4.8,
+            2.55,
+            .48,
+            5,
             0,
-            .65,
+            .62,
             0,
             bodyMat
         );
 
         box(
-            1.85,
+            2.05,
             .55,
-            1.7,
+            1.8,
             0,
-            1.18,
-            -.25,
+            1.15,
+            .15,
+            bodyMat
+        );
+
+        box(
+            1.82,
+            .48,
+            1.65,
+            0,
+            1.2,
+            .05,
             glassMat
         );
 
         box(
-            2.3,
-            .18,
-            .25,
+            2.1,
+            .15,
+            .3,
             0,
-            1.05,
-            -2.35,
+            1.02,
+            -2.45,
             bodyMat
         );
 
     }
 
 
-    /* SUV */
+    /* =====================================================
+       SUV
+    ===================================================== */
 
     if(tipo==="suv"){
 
         box(
-            2.7,
-            1,
-            4.5,
+            2.75,
+            .9,
+            4.7,
             0,
-            1,
+            .9,
             0,
             bodyMat
         );
 
         box(
-            2.25,
-            1.1,
-            2.5,
+            2.3,
+            1.15,
+            2.55,
             0,
-            1.9,
+            1.78,
             .15,
             bodyMat
         );
 
         box(
             2.05,
-            .75,
-            2,
+            .72,
+            2.2,
             0,
-            1.95,
-            -.05,
+            1.86,
+            .05,
             glassMat
+        );
+
+        box(
+            2.45,
+            .18,
+            .25,
+            0,
+            .98,
+            -2.35,
+            chrome
         );
 
     }
 
 
-    /* PICKUP */
+    /* =====================================================
+       PICKUP
+    ===================================================== */
 
     if(tipo==="pickup"){
 
         box(
-            2.6,
-            .75,
-            2.2,
+            2.65,
+            .8,
+            2.1,
             0,
             .9,
             1.05,
@@ -1508,116 +2028,153 @@ function criarVeiculo(tipo,cor){
         );
 
         box(
-            2.25,
-            1.15,
-            1.8,
+            2.35,
+            1.2,
+            1.9,
             0,
             1.45,
-            -.8,
+            -.85,
             bodyMat
         );
 
         box(
             2.05,
-            .7,
+            .72,
             1.5,
             0,
-            1.7,
-            -.75,
+            1.72,
+            -.85,
             glassMat
         );
 
         box(
             2.4,
-            .35,
-            2,
+            .32,
+            2.1,
             0,
             .9,
-            1.6,
-            mat(0x333333)
+            1.55,
+            material(0x343434)
+        );
+
+        box(
+            2.7,
+            .15,
+            .2,
+            0,
+            1.25,
+            2.1,
+            chrome
         );
 
     }
 
 
-    /* VAN */
+    /* =====================================================
+       VAN
+    ===================================================== */
 
     if(tipo==="van"){
 
         box(
-            2.7,
-            1.5,
-            4.8,
+            2.8,
+            1.45,
+            4.9,
             0,
-            1.35,
+            1.25,
             0,
             bodyMat
         );
 
         box(
             2.35,
-            .8,
+            .85,
             2.8,
             0,
-            1.85,
-            -.4,
+            1.88,
+            -.45,
             glassMat
+        );
+
+        box(
+            2.35,
+            .08,
+            1.7,
+            0,
+            1.42,
+            1.35,
+            chrome
         );
 
     }
 
 
-    /* CAMINHÃO */
+    /* =====================================================
+       CAMINHÃO
+    ===================================================== */
 
     if(tipo==="truck"){
 
         box(
-            2.8,
-            1.8,
-            2.1,
+            2.85,
+            1.65,
+            2.2,
             0,
-            1.45,
-            -1.35,
+            1.35,
+            -1.45,
             bodyMat
         );
 
         box(
             2.35,
-            1,
-            1.7,
+            .9,
+            1.75,
             0,
-            2.1,
-            -1.35,
+            2.05,
+            -1.45,
             glassMat
         );
 
         box(
-            2.9,
-            2.4,
-            3.2,
+            2.95,
+            2.35,
+            3.4,
             0,
-            1.7,
+            1.65,
             1.35,
-            mat(0xc5c5c5)
+            material(0xbfc3c7)
+        );
+
+        box(
+            2.98,
+            .12,
+            3.3,
+            0,
+            2.85,
+            1.35,
+            chrome
         );
 
     }
 
 
-    /* RODAS */
+    /* =====================================================
+       RODAS
+    ===================================================== */
 
     const wheelPositions=[
-        [-1.25,.55,-1.55],
-        [1.25,.55,-1.55],
-        [-1.25,.55,1.55],
-        [1.25,.55,1.55]
+        [-1.3,.5,-1.6],
+        [1.3,.5,-1.6],
+        [-1.3,.5,1.6],
+        [1.3,.5,1.6]
     ];
+
 
     if(tipo==="truck"){
 
         wheelPositions.push(
-            [-1.25,.55,2.25],
-            [1.25,.55,2.25]
+            [-1.3,.5,2.35],
+            [1.3,.5,2.35]
         );
 
     }
@@ -1625,20 +2182,23 @@ function criarVeiculo(tipo,cor){
 
     const wheels=[];
 
-    for(const p of wheelPositions){
 
-        const wheel =
+    for(
+        const p of wheelPositions
+    ){
+
+        const wheel=
         new THREE.Mesh(
             new THREE.CylinderGeometry(
-                .42,
-                .42,
-                .28,
-                16
+                .43,
+                .43,
+                .3,
+                20
             ),
             tireMat
         );
 
-        wheel.rotation.z =
+        wheel.rotation.z=
         Math.PI/2;
 
         wheel.position.set(
@@ -1653,11 +2213,65 @@ function criarVeiculo(tipo,cor){
 
         wheels.push(wheel);
 
+
+        /* aro */
+
+        const rim=
+        new THREE.Mesh(
+            new THREE.CylinderGeometry(
+                .2,
+                .2,
+                .315,
+                16
+            ),
+            chrome
+        );
+
+        rim.rotation.z=
+        Math.PI/2;
+
+        rim.position.copy(
+            wheel.position
+        );
+
+        g.add(rim);
+
     }
 
 
-    g.userData.wheels=wheels;
+    /* faróis */
+
+    for(
+        const side of [-1,1]
+    ){
+
+        const headlight=
+        new THREE.Mesh(
+            new THREE.BoxGeometry(
+                .45,
+                .18,
+                .08
+            ),
+            new THREE.MeshStandardMaterial({
+                color:0xffffdd,
+                emissive:0xffffaa,
+                emissiveIntensity:.8
+            })
+        );
+
+        headlight.position.set(
+            side*.75,
+            .88,
+            -2.48
+        );
+
+        g.add(headlight);
+
+    }
+
+
     g.userData.type=tipo;
+    g.userData.wheels=wheels;
 
     return g;
 
@@ -1668,29 +2282,34 @@ function criarVeiculo(tipo,cor){
    CARRO DO JOGADOR
 ========================================================= */
 
-const carro =
+const carro=
 criarVeiculo(
     "esportivo",
-    0xd62828
+    0xd52232
 );
 
+
+/*
+   Também começa em uma rua.
+*/
+
 carro.position.set(
-    20,
+    25,
     0,
-    10
+    5
 );
 
 scene.add(carro);
 
-carro.userData.velocity =
+
+carro.userData.velocity=
 new THREE.Vector3();
 
-carro.userData.maxSpeed=28;
+carro.userData.maxSpeed=30;
 carro.userData.reverseSpeed=10;
-carro.userData.acceleration=18;
-carro.userData.brake=25;
-carro.userData.friction=7;
-carro.userData.steering=0;
+carro.userData.acceleration=20;
+carro.userData.friction=5;
+carro.userData.brake=20;
 
 let noCarro=false;
 
@@ -1710,38 +2329,42 @@ const vehicleTypes=[
     "truck"
 ];
 
-const colors=[
-    0x2463d4,
-    0xf0c419,
-    0xeeeeee,
-    0x171717,
-    0x28a745,
-    0xd97706,
-    0x8b5cf6
+const vehicleColors=[
+    0x2266cc,
+    0xe3b21d,
+    0xf1f1f1,
+    0x17191d,
+    0x23934b,
+    0xd36d21,
+    0x793dc0,
+    0xb83232
 ];
 
 
-function criarTransito(){
+function criarCarroTransito(){
 
-    const tipo =
+    const type=
     vehicleTypes[
         Math.floor(
-            Math.random()*vehicleTypes.length
+            Math.random()*
+            vehicleTypes.length
         )
     ];
 
-    const car =
+
+    const car=
     criarVeiculo(
-        tipo,
-        colors[
+        type,
+        vehicleColors[
             Math.floor(
-                Math.random()*colors.length
+                Math.random()*
+                vehicleColors.length
             )
         ]
     );
 
 
-    const horizontal =
+    const horizontal=
     Math.random()<.5;
 
 
@@ -1750,23 +2373,27 @@ function criarTransito(){
 
     if(horizontal){
 
-        const z =
+        const road=
         [-80,0,80][
             Math.floor(
                 Math.random()*3
             )
         ];
 
-        const positive =
+
+        const positive=
         Math.random()<.5;
 
+
         car.position.set(
-            positive?-320:320,
+            positive?-330:330,
             0,
-            z+(Math.random()<.5?3.5:-3.5)
+            road+
+            (Math.random()<.5?3.8:-3.8)
         );
 
-        direction =
+
+        direction=
         new THREE.Vector3(
             positive?1:-1,
             0,
@@ -1775,23 +2402,27 @@ function criarTransito(){
 
     }else{
 
-        const x =
+        const road=
         [-80,0,80][
             Math.floor(
                 Math.random()*3
             )
         ];
 
-        const positive =
+
+        const positive=
         Math.random()<.5;
 
+
         car.position.set(
-            x+(Math.random()<.5?3.5:-3.5),
+            road+
+            (Math.random()<.5?3.8:-3.8),
             0,
-            positive?-320:320
+            positive?-330:330
         );
 
-        direction =
+
+        direction=
         new THREE.Vector3(
             0,
             0,
@@ -1803,22 +2434,23 @@ function criarTransito(){
 
     direction.normalize();
 
-    car.userData.direction =
+
+    car.userData.direction=
     direction;
 
-    car.userData.speed =
-    8+Math.random()*9;
+    car.userData.speed=
+    8+Math.random()*10;
+
 
     /*
-       IMPORTANTE:
-       A frente de TODOS os veículos é -Z.
-       A direção real é usada para orientar o carro.
+       TODOS os carros têm a frente no eixo -Z.
+       A orientação é calculada pela direção real.
     */
 
-    const target =
-    car.position.clone().add(direction);
-
-    car.lookAt(target);
+    car.lookAt(
+        car.position.clone()
+        .add(direction)
+    );
 
 
     scene.add(car);
@@ -1828,8 +2460,14 @@ function criarTransito(){
 }
 
 
-for(let i=0;i<24;i++){
-    criarTransito();
+for(
+    let i=0;
+    i<28;
+    i++
+){
+
+    criarCarroTransito();
+
 }
 
 
@@ -1839,57 +2477,61 @@ for(let i=0;i<24;i++){
 
 const keys={};
 
+
 window.addEventListener(
 "keydown",
-e=>{
-    keys[e.key.toLowerCase()]=true;
+event=>{
+
+    keys[
+        event.key.toLowerCase()
+    ]=true;
+
 });
+
 
 window.addEventListener(
 "keyup",
-e=>{
-    keys[e.key.toLowerCase()]=false;
+event=>{
+
+    keys[
+        event.key.toLowerCase()
+    ]=false;
+
 });
 
 
 /* =========================================================
-   CÂMERA / MOUSE
+   CÂMERA
 ========================================================= */
 
 let yaw=0;
-let pitch=-.18;
+
+let pitch=-.15;
+
 
 document.addEventListener(
 "mousemove",
-e=>{
-
-    if(document.pointerLockElement){
-
-        yaw -= e.movementX*.0025;
-
-        pitch -= e.movementY*.0025;
-
-        pitch =
-        Math.max(
-            -.8,
-            Math.min(.45,pitch)
-        );
-
-    }
-
-});
-
-
-document.addEventListener(
-"click",
-()=>{
+event=>{
 
     if(
-        !document.pointerLockElement &&
-        document.getElementById("start").style.display==="none"
+        document.pointerLockElement
     ){
 
-        document.body.requestPointerLock();
+        yaw -=
+        event.movementX*.0025;
+
+        pitch -=
+        event.movementY*.0025;
+
+
+        pitch=
+        Math.max(
+            -.75,
+            Math.min(
+                .4,
+                pitch
+            )
+        );
 
     }
 
@@ -1902,54 +2544,65 @@ document.addEventListener(
 
 window.addEventListener(
 "keydown",
-e=>{
+event=>{
 
     if(
-        e.key.toLowerCase()!=="e"
-    ) return;
+        event.key.toLowerCase()!=="e"
+    )
+        return;
 
 
     if(noCarro){
 
-        const forward =
+        player.visible=true;
+
+        const exitDirection=
         new THREE.Vector3(
             1,
             0,
             0
         );
 
-        forward.applyQuaternion(
+        exitDirection.applyQuaternion(
             carro.quaternion
         );
+
 
         player.position.copy(
             carro.position
         );
 
         player.position.addScaledVector(
-            forward,
+            exitDirection,
             3
         );
 
+
         noCarro=false;
+
 
         document.getElementById(
             "vehicle"
-        ).textContent="A pé";
+        ).textContent=
+        "A pé";
+
 
     }else{
 
         if(
             player.position.distanceTo(
                 carro.position
-            )<5
+            )<6
         ){
 
             noCarro=true;
 
+            player.visible=false;
+
             document.getElementById(
                 "vehicle"
-            ).textContent="Esportivo";
+            ).textContent=
+            "Esportivo";
 
         }
 
@@ -1959,17 +2612,16 @@ e=>{
 
 
 /* =========================================================
-   MOVIMENTO DO JOGADOR
+   MOVIMENTO DO PERSONAGEM
 ========================================================= */
 
-function moverPessoa(dt){
+function moverPlayer(dt){
 
-    if(noCarro) return;
+    if(noCarro)
+        return;
 
 
-    const speed=8;
-
-    const direction =
+    const direction=
     new THREE.Vector3();
 
 
@@ -1986,32 +2638,48 @@ function moverPessoa(dt){
         direction.x+=1;
 
 
-    if(direction.length()>0){
+    if(
+        direction.length()>0
+    ){
 
         direction.normalize();
 
+
         direction.applyAxisAngle(
-            new THREE.Vector3(0,1,0),
+            new THREE.Vector3(
+                0,
+                1,
+                0
+            ),
             yaw
         );
 
-        const next =
+
+        const next=
         player.position.clone();
+
 
         next.addScaledVector(
             direction,
-            speed*dt
+            7.5*dt
         );
 
 
-        if(!colideObstaculo(next,.8)){
+        if(
+            !colisaoObstaculo(
+                next,
+                .7
+            )
+        ){
 
-            player.position.copy(next);
+            player.position.copy(
+                next
+            );
 
         }
 
 
-        player.rotation.y =
+        player.rotation.y=
         Math.atan2(
             direction.x,
             direction.z
@@ -2043,20 +2711,21 @@ function moverPessoa(dt){
 
 function moverCarro(dt){
 
-    const data =
+    const data=
     carro.userData;
 
 
-    const velocity =
+    const velocity=
     data.velocity;
 
 
-    const forward =
+    const forward=
     new THREE.Vector3(
         0,
         0,
         -1
     );
+
 
     forward.applyQuaternion(
         carro.quaternion
@@ -2065,14 +2734,13 @@ function moverCarro(dt){
 
     let throttle=0;
 
+
     if(keys["w"])
         throttle=1;
 
     if(keys["s"])
         throttle=-1;
 
-
-    /* aceleração */
 
     if(throttle>0){
 
@@ -2088,45 +2756,45 @@ function moverCarro(dt){
 
         velocity.addScaledVector(
             forward,
-            -data.acceleration*.65*dt
+            -data.acceleration*.6*dt
         );
 
     }
 
 
-    /* limite */
-
-    const forwardSpeed =
-    velocity.dot(forward);
+    const forwardSpeed=
+    velocity.dot(
+        forward
+    );
 
 
     if(
-        forwardSpeed >
+        forwardSpeed>
         data.maxSpeed
     ){
 
         velocity.addScaledVector(
             forward,
-            data.maxSpeed-forwardSpeed
+            data.maxSpeed-
+            forwardSpeed
         );
 
     }
 
 
     if(
-        forwardSpeed <
+        forwardSpeed<
         -data.reverseSpeed
     ){
 
         velocity.addScaledVector(
             forward,
-            -data.reverseSpeed-forwardSpeed
+            -data.reverseSpeed-
+            forwardSpeed
         );
 
     }
 
-
-    /* atrito */
 
     if(
         throttle===0
@@ -2142,27 +2810,26 @@ function moverCarro(dt){
     }
 
 
-    /* freio */
+    if(keys[" "] ){
 
-    if(keys[" "]){
         velocity.multiplyScalar(
             Math.max(
                 0,
-                1-data.brake*dt*.05
+                1-data.brake*dt*.06
             )
         );
+
     }
 
 
-    /* direção */
-
-    const speed =
+    const speed=
     velocity.length();
 
 
     if(speed>.5){
 
         let steer=0;
+
 
         if(keys["a"])
             steer=1;
@@ -2171,25 +2838,25 @@ function moverCarro(dt){
             steer=-1;
 
 
-        const steerStrength =
+        const amount=
         Math.min(
             1,
-            speed/data.maxSpeed
-        )*.055;
+            speed/
+            data.maxSpeed
+        )*.065;
 
 
         carro.rotation.y +=
-        steer *
-        steerStrength *
+        steer*
+        amount*
         (forwardSpeed>=0?1:-1);
 
     }
 
 
-    /* movimento */
-
-    const next =
+    const next=
     carro.position.clone();
+
 
     next.addScaledVector(
         velocity,
@@ -2197,38 +2864,40 @@ function moverCarro(dt){
     );
 
 
-    /* limites */
-
-    next.x =
-    Math.max(
-        -370,
-        Math.min(370,next.x)
+    next.x=
+    THREE.MathUtils.clamp(
+        next.x,
+        -340,
+        340
     );
 
-    next.z =
-    Math.max(
-        -370,
-        Math.min(370,next.z)
+    next.z=
+    THREE.MathUtils.clamp(
+        next.z,
+        -340,
+        340
     );
 
 
     if(
-        !colideObstaculo(
+        !colisaoObstaculo(
             next,
             1.8
         )
     ){
 
-        carro.position.copy(next);
+        carro.position.copy(
+            next
+        );
 
     }else{
 
-        velocity.multiplyScalar(-.25);
+        velocity.multiplyScalar(
+            -.25
+        );
 
     }
 
-
-    /* rodas */
 
     for(
         const wheel of
@@ -2244,42 +2913,57 @@ function moverCarro(dt){
 
 
 /* =========================================================
-   COLISÃO
+   COLISÃO COM PRÉDIOS
 ========================================================= */
 
-function colideObstaculo(pos,radius){
+function colisaoObstaculo(
+    position,
+    radius
+){
 
     for(
-        const o of obstacles
+        const obstacle of
+        obstacles
     ){
 
-        const closestX =
+        const closestX=
         Math.max(
-            o.x-o.w/2,
+            obstacle.x-
+            obstacle.w/2,
+
             Math.min(
-                pos.x,
-                o.x+o.w/2
+                position.x,
+                obstacle.x+
+                obstacle.w/2
             )
         );
 
-        const closestZ =
+
+        const closestZ=
         Math.max(
-            o.z-o.d/2,
+            obstacle.z-
+            obstacle.d/2,
+
             Math.min(
-                pos.z,
-                o.z+o.d/2
+                position.z,
+                obstacle.z+
+                obstacle.d/2
             )
         );
 
-        const dx =
-        pos.x-closestX;
 
-        const dz =
-        pos.z-closestZ;
+        const dx=
+        position.x-
+        closestX;
+
+        const dz=
+        position.z-
+        closestZ;
+
 
         if(
             dx*dx+
-            dz*dz <
+            dz*dz<
             radius*radius
         ){
 
@@ -2288,6 +2972,7 @@ function colideObstaculo(pos,radius){
         }
 
     }
+
 
     return false;
 
@@ -2298,33 +2983,51 @@ function colideObstaculo(pos,radius){
    COLISÃO ENTRE CARROS
 ========================================================= */
 
-function colisaoCarros(){
+function colisaoVeiculos(){
 
     for(
-        const other of traffic
+        const other of
+        traffic
     ){
 
-        const distance =
+        const distance=
         carro.position.distanceTo(
             other.position
         );
 
-        if(distance<3.5){
 
-            const push =
+        if(
+            distance<3.5
+        ){
+
+            const push=
             carro.position.clone()
-            .sub(other.position)
-            .normalize();
+            .sub(
+                other.position
+            );
+
+
+            if(
+                push.length()===0
+            )
+                push.set(
+                    1,
+                    0,
+                    0
+                );
+
+
+            push.normalize();
 
 
             carro.position.addScaledVector(
                 push,
-                .4
+                .5
             );
 
-            carro.userData.velocity.multiplyScalar(
-                .35
-            );
+
+            carro.userData.velocity
+            .multiplyScalar(.35);
 
         }
 
@@ -2340,17 +3043,13 @@ function colisaoCarros(){
 function atualizarTransito(dt){
 
     for(
-        const car of traffic
+        const car of
+        traffic
     ){
 
-        const direction =
+        const direction=
         car.userData.direction;
 
-
-        /*
-           O carro anda exatamente na direção
-           para a qual sua frente aponta.
-        */
 
         car.position.addScaledVector(
             direction,
@@ -2359,15 +3058,14 @@ function atualizarTransito(dt){
 
 
         /*
-           Garante novamente que a frente
-           esteja alinhada com o movimento.
+           Mantém a frente do carro
+           apontada exatamente para o movimento.
         */
 
-        const target =
-        car.position.clone()
-        .add(direction);
-
-        car.lookAt(target);
+        car.lookAt(
+            car.position.clone()
+            .add(direction)
+        );
 
 
         for(
@@ -2376,42 +3074,73 @@ function atualizarTransito(dt){
         ){
 
             wheel.rotation.x -=
-            car.userData.speed*dt*1.8;
+            car.userData.speed*
+            dt*1.8;
 
         }
 
 
         if(
-            Math.abs(car.position.x)>360 ||
-            Math.abs(car.position.z)>360
+            Math.abs(
+                car.position.x
+            )>350 ||
+            Math.abs(
+                car.position.z
+            )>350
         ){
 
-            car.position.copy(
-                direction.clone()
-                .multiplyScalar(-350)
-            );
-
             /*
-               Ajusta para uma rua válida.
+               Recoloca o carro no início
+               da mesma estrada.
             */
 
-            if(Math.abs(direction.x)>0){
+            if(
+                Math.abs(
+                    direction.x
+                )>0
+            ){
 
-                car.position.z =
+                const road=
                 [-80,0,80][
                     Math.floor(
                         Math.random()*3
                     )
                 ];
+
+                car.position.set(
+                    direction.x>0?
+                    -340:
+                    340,
+
+                    0,
+
+                    road+
+                    (Math.random()<.5?
+                    3.8:-3.8)
+                );
 
             }else{
 
-                car.position.x =
+                const road=
                 [-80,0,80][
                     Math.floor(
                         Math.random()*3
                     )
                 ];
+
+                car.position.set(
+
+                    road+
+                    (Math.random()<.5?
+                    3.8:-3.8),
+
+                    0,
+
+                    direction.z>0?
+                    -340:
+                    340
+
+                );
 
             }
 
@@ -2426,17 +3155,19 @@ function atualizarTransito(dt){
    NPC
 ========================================================= */
 
-function atualizarNPC(dt){
+function atualizarNPCs(dt){
 
     for(
-        const npc of npcs
+        const npc of
+        npcs
     ){
 
         npc.userData.angle +=
-        (Math.random()-.5)*dt*.4;
+        (Math.random()-.5)*
+        dt*.5;
 
 
-        const direction =
+        const direction=
         new THREE.Vector3(
             Math.sin(
                 npc.userData.angle
@@ -2448,8 +3179,9 @@ function atualizarNPC(dt){
         );
 
 
-        const next =
+        const next=
         npc.position.clone();
+
 
         next.addScaledVector(
             direction,
@@ -2458,25 +3190,29 @@ function atualizarNPC(dt){
 
 
         if(
-            !colideObstaculo(
+            !colisaoObstaculo(
                 next,
                 .7
-            ) &&
-            Math.abs(next.x)<300 &&
-            Math.abs(next.z)<300
+            )
+        &&
+            Math.abs(next.x)<320
+        &&
+            Math.abs(next.z)<320
         ){
 
-            npc.position.copy(next);
+            npc.position.copy(
+                next
+            );
 
         }else{
 
-            npc.userData.angle +=
+            npc.userData.angle+=
             Math.PI/2;
 
         }
 
 
-        npc.rotation.y =
+        npc.rotation.y=
         Math.atan2(
             direction.x,
             direction.z
@@ -2494,6 +3230,10 @@ function atualizarNPC(dt){
 }
 
 
+/* =========================================================
+   ANIMAÇÃO HUMANA
+========================================================= */
+
 function animarPessoa(
     person,
     dt,
@@ -2504,36 +3244,46 @@ function animarPessoa(
     dt*8;
 
 
-    const t =
+    const t=
     person.userData.walkTime;
 
 
-    const amount =
+    const amount=
     walking?.45:0;
 
 
-    if(person.userData.legs){
+    if(
+        person.userData.legs
+    ){
 
         person.userData.legs[0]
-        .rotation.x =
-        Math.sin(t)*amount;
+        .rotation.x=
+        Math.sin(t)*
+        amount;
+
 
         person.userData.legs[1]
-        .rotation.x =
-        -Math.sin(t)*amount;
+        .rotation.x=
+        -Math.sin(t)*
+        amount;
 
     }
 
 
-    if(person.userData.arms){
+    if(
+        person.userData.arms
+    ){
 
         person.userData.arms[0]
-        .rotation.x =
-        -Math.sin(t)*amount;
+        .rotation.x=
+        -Math.sin(t)*
+        amount;
+
 
         person.userData.arms[1]
-        .rotation.x =
-        Math.sin(t)*amount;
+        .rotation.x=
+        Math.sin(t)*
+        amount;
 
     }
 
@@ -2546,46 +3296,63 @@ function animarPessoa(
 
 function atualizarCamera(dt){
 
-    const target =
-    noCarro
-    ? carro.position
-    : player.position;
+    const target=
+    noCarro?
+    carro.position:
+    player.position;
 
 
-    const distance =
-    noCarro?10:7;
+    const distance=
+    noCarro?
+    11:
+    7;
 
-    const height =
-    noCarro?5:4.5;
+
+    const height=
+    noCarro?
+    5.2:
+    4.6;
 
 
-    const offset =
+    const offset=
     new THREE.Vector3(
-        Math.sin(yaw)*distance,
+        Math.sin(yaw)*
+        distance,
+
         height,
-        Math.cos(yaw)*distance
+
+        Math.cos(yaw)*
+        distance
     );
 
 
-    const desired =
+    const desired=
     target.clone()
     .add(offset);
 
 
     camera.position.lerp(
         desired,
-        Math.min(1,dt*6)
+        Math.min(
+            1,
+            dt*7
+        )
     );
 
 
-    const look =
+    const look=
     target.clone();
 
+
     look.y +=
-    noCarro?1.5:2;
+    noCarro?
+    1.5:
+    2;
 
 
-    camera.lookAt(look);
+    camera.lookAt(
+        look
+    );
 
 }
 
@@ -2594,7 +3361,7 @@ function atualizarCamera(dt){
    MISSÃO
 ========================================================= */
 
-const missionPos =
+const missionPosition=
 new THREE.Vector3(
     -70,
     0,
@@ -2602,71 +3369,81 @@ new THREE.Vector3(
 );
 
 
-const marker =
+const missionMarker=
 new THREE.Mesh(
     new THREE.CylinderGeometry(
-        3,
-        3,
+        3.5,
+        3.5,
         .3,
-        32
+        40
     ),
-    new THREE.MeshBasicMaterial({
-        color:0x27ff63,
+    new THREE.MeshStandardMaterial({
+        color:0x22ff62,
+        emissive:0x00aa35,
+        emissiveIntensity:.7,
         transparent:true,
-        opacity:.65
+        opacity:.7
     })
 );
 
-marker.position.copy(
-    missionPos
+
+missionMarker.position.copy(
+    missionPosition
 );
 
-marker.position.y=.3;
+missionMarker.position.y=.3;
 
-scene.add(marker);
+scene.add(
+    missionMarker
+);
 
 
-let missionDone=false;
+let missionComplete=false;
 
 
 function atualizarMissao(){
 
-    if(missionDone)
+    if(
+        missionComplete
+    )
         return;
 
 
-    const pos =
-    noCarro
-    ? carro.position
-    : player.position;
+    const position=
+    noCarro?
+    carro.position:
+    player.position;
 
 
     if(
-        pos.distanceTo(
-            missionPos
-        )<6
+        position.distanceTo(
+            missionPosition
+        )<7
     ){
 
-        missionDone=true;
+        missionComplete=true;
+
 
         document.getElementById(
             "missionText"
-        ).textContent =
+        ).textContent=
         "✅ Missão concluída! +$500";
 
 
-        const money =
+        const money=
         document.getElementById(
             "money"
         );
 
-        money.textContent =
-        Number(money.textContent)+500;
+
+        money.textContent=
+        Number(
+            money.textContent
+        )+500;
 
 
-        marker.material.color.set(
-            0xffd21f
-        );
+        missionMarker.material.color
+        .set(0xffd21f);
 
     }
 
@@ -2674,23 +3451,7 @@ function atualizarMissao(){
 
 
 /* =========================================================
-   ANIMAÇÃO DO MARCADOR
-========================================================= */
-
-function animarMarker(time){
-
-    marker.rotation.y =
-    time*.001;
-
-    marker.position.y =
-    .3+
-    Math.sin(time*.003)*.2;
-
-}
-
-
-/* =========================================================
-   INICIALIZAÇÃO
+   INICIAR
 ========================================================= */
 
 document.getElementById(
@@ -2703,7 +3464,14 @@ document.getElementById(
             "start"
         ).style.display="none";
 
-        document.body.requestPointerLock();
+
+        if(
+            document.body.requestPointerLock
+        ){
+
+            document.body.requestPointerLock();
+
+        }
 
     }
 );
@@ -2717,15 +3485,13 @@ window.addEventListener(
 "resize",
 ()=>{
 
-    camera.aspect =
-    innerWidth/innerHeight;
+    camera.aspect=
+    innerWidth/
+    innerHeight;
 
     camera.updateProjectionMatrix();
 
-    renderer.setSize(
-        innerWidth,
-        innerHeight
-    );
+    ajustar4K();
 
 });
 
@@ -2734,7 +3500,7 @@ window.addEventListener(
    LOOP
 ========================================================= */
 
-const clock =
+const clock=
 new THREE.Clock();
 
 
@@ -2745,7 +3511,7 @@ function animate(time){
     );
 
 
-    const dt =
+    const dt=
     Math.min(
         clock.getDelta(),
         .05
@@ -2756,32 +3522,37 @@ function animate(time){
 
         moverCarro(dt);
 
-        /*
-           Esconde o personagem dentro do carro.
-        */
-
         player.visible=false;
 
     }else{
 
         player.visible=true;
 
-        moverPessoa(dt);
+        moverPlayer(dt);
 
     }
 
 
     atualizarTransito(dt);
 
-    atualizarNPC(dt);
+    atualizarNPCs(dt);
 
-    colisaoCarros();
+    colisaoVeiculos();
 
     atualizarCamera(dt);
 
     atualizarMissao();
 
-    animarMarker(time);
+
+    missionMarker.rotation.y=
+    time*.001;
+
+
+    missionMarker.position.y=
+    .3+
+    Math.sin(
+        time*.003
+    )*.2;
 
 
     renderer.render(
