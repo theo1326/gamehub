@@ -8,9 +8,165 @@
     <title>They Are Coming - GameHub</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* ================================
+           RANKING GLOBAL
+           ================================ */
+
+        #rankingScreen {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background:
+                radial-gradient(circle at center, #20251f 0%, #080a08 75%);
+            color: white;
+            overflow-y: auto;
+            padding: 30px 15px;
+        }
+
+        .ranking-container {
+            width: min(900px, 100%);
+            margin: auto;
+            background: rgba(12, 15, 12, .96);
+            border: 1px solid #4c564c;
+            box-shadow: 0 0 40px rgba(0, 0, 0, .8);
+            padding: 25px;
+        }
+
+        .ranking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .ranking-header h1 {
+            margin: 0;
+            font-size: clamp(24px, 5vw, 42px);
+        }
+
+        .ranking-header p {
+            color: #aaa;
+            margin: 5px 0 0;
+        }
+
+        #closeRankingBtn {
+            border: 1px solid #666;
+            background: #171a17;
+            color: white;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #closeRankingBtn:hover {
+            background: #292d29;
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ranking-table th,
+        .ranking-table td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #303530;
+            text-align: left;
+        }
+
+        .ranking-table th {
+            color: #aaa;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .ranking-table td {
+            font-size: 16px;
+        }
+
+        .ranking-position {
+            width: 65px;
+            font-weight: bold;
+        }
+
+        .ranking-player {
+            font-weight: bold;
+        }
+
+        .ranking-money {
+            color: #72d572;
+            font-weight: bold;
+        }
+
+        .ranking-loading,
+        .ranking-empty,
+        .ranking-error {
+            text-align: center;
+            padding: 35px 10px;
+            color: #aaa;
+        }
+
+        .ranking-error {
+            color: #ff7777;
+        }
+
+        #rankingBtn {
+            width: 100%;
+            margin: 15px 0;
+            padding: 15px;
+            background: #242924;
+            color: white;
+            border: 1px solid #596259;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        #rankingBtn:hover {
+            background: #343a34;
+        }
+
+        /* NOME OBRIGATÓRIO */
+
+        #nameWarning {
+            display: none;
+            color: #ff7777;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+
+            .ranking-container {
+                padding: 15px;
+            }
+
+            .ranking-table th,
+            .ranking-table td {
+                padding: 10px 5px;
+                font-size: 13px;
+            }
+
+            .ranking-header {
+                align-items: flex-start;
+            }
+
+            .ranking-header h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
+
+<!-- =====================================================
+     MENU / LOJA
+     ===================================================== -->
 
 <div id="shopScreen">
 
@@ -29,7 +185,6 @@
 
         </div>
 
-
         <div class="player-box">
 
             <input
@@ -37,10 +192,20 @@
                 type="text"
                 maxlength="16"
                 placeholder="Nome do jogador"
+                autocomplete="off"
             >
+
+            <div id="nameWarning">
+                Digite seu nome para começar.
+            </div>
 
         </div>
 
+        <!-- RANKING -->
+
+        <button id="rankingBtn">
+            🏆 RANKING GLOBAL
+        </button>
 
         <div class="categories">
 
@@ -86,9 +251,7 @@
 
         </div>
 
-
         <div id="shopContent"></div>
-
 
         <div class="inventory-menu">
 
@@ -100,7 +263,6 @@
             </div>
 
         </div>
-
 
         <div class="shop-actions">
 
@@ -114,17 +276,21 @@
 
         </div>
 
-
         <div class="shop-info">
 
             <p>
                 🧟 Cada zumbi eliminado:
-                <strong>$100</strong>
+                <strong>$100+</strong>
             </p>
 
             <p>
                 ❤️ Vida máxima:
-                <strong>100</strong>
+                <strong>100+</strong>
+            </p>
+
+            <p>
+                ❤️ +5 de Vida:
+                <strong>aumenta permanentemente</strong>
             </p>
 
             <p>
@@ -133,12 +299,23 @@
             </p>
 
             <p>
-                💡 Kits médicos só funcionam no menu.
+                💡 Kits médicos funcionam no menu.
             </p>
 
             <p>
                 🪤 Armadilhas e barricadas podem ser
-                utilizadas durante a onda.
+                colocadas durante a preparação.
+            </p>
+
+            <p>
+                ⏱️ Você tem:
+                <strong>30 segundos</strong>
+                antes de cada onda.
+            </p>
+
+            <p>
+                🧟 Os zumbis chegam:
+                <strong>pela direita.</strong>
             </p>
 
         </div>
@@ -148,8 +325,50 @@
 </div>
 
 
+<!-- =====================================================
+     RANKING GLOBAL
+     ===================================================== -->
+
+<div id="rankingScreen">
+
+    <div class="ranking-container">
+
+        <div class="ranking-header">
+
+            <div>
+                <h1>🏆 RANKING GLOBAL</h1>
+                <p>Sobreviva o maior número de ondas possível.</p>
+            </div>
+
+            <button id="closeRankingBtn">
+                ✕ FECHAR
+            </button>
+
+        </div>
+
+        <div id="rankingContent">
+
+            <div class="ranking-loading">
+                Carregando ranking...
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     CANVAS
+     ===================================================== -->
+
 <canvas id="game"></canvas>
 
+
+<!-- =====================================================
+     HUD
+     ===================================================== -->
 
 <div id="hud">
 
@@ -167,7 +386,6 @@
             <div id="healthBar"></div>
         </div>
 
-
         <div id="armorHud">
 
             <div class="bar-title">
@@ -182,7 +400,6 @@
 
     </div>
 
-
     <div class="hud-center">
 
         <div id="wave">
@@ -194,7 +411,6 @@
         </div>
 
     </div>
-
 
     <div class="hud-right">
 
@@ -215,6 +431,10 @@
 </div>
 
 
+<!-- =====================================================
+     INVENTÁRIO DURANTE O JOGO
+     ===================================================== -->
+
 <div id="gameInventory">
 
     <div
@@ -224,6 +444,10 @@
 
 </div>
 
+
+<!-- =====================================================
+     GAME OVER
+     ===================================================== -->
 
 <div id="gameOver">
 
@@ -237,6 +461,32 @@
 
 </div>
 
+
+<!-- =====================================================
+     SUPABASE
+     ===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+    /*
+     * COLOQUE AQUI OS MESMOS DADOS DO SEU SUPABASE
+     * QUE VOCÊ USOU NO JOGO SNAKE.
+     */
+
+    const SUPABASE_URL = "https://vkswxahmirkhcynwlzys.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+        "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_PUBLISHABLE_KEY
+        );
+
+</script>
 
 <script src="game.js"></script>
 
