@@ -1,12 +1,10 @@
 const games = [
     {
-       {
-    name:"They Are Coming",
-    category:"Ação",
-    icon:"🧟",
-    description:"Sobreviva às hordas de zumbis usando armas e barricadas.",
-    link:"jogos/they-are-coming/"
-},
+        name: "They Are Coming",
+        category: "Ação",
+        icon: "🧟",
+        description: "Sobreviva às hordas de zumbis usando armas e barricadas.",
+        link: "jogos/they-are-coming/"
     },
 
     {
@@ -76,11 +74,11 @@ function render() {
 
             const matchesSearch =
                 game.name
-                .toLowerCase()
-                .includes(query) ||
+                    .toLowerCase()
+                    .includes(query) ||
                 game.description
-                .toLowerCase()
-                .includes(query);
+                    .toLowerCase()
+                    .includes(query);
 
             const matchesCategory =
                 category === "Todos" ||
@@ -160,7 +158,7 @@ function playGame(game) {
     } else {
 
         alert(
-            "Esse jogo ainda não foi adicionado ao Ludix."
+            "Esse jogo ainda não foi adicionado ao GameHub."
         );
     }
 }
