@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,152 +12,238 @@
 
 <body>
 
-<!-- ================= MENU / LOJA ================= -->
+    <!-- =========================
+         MENU
+    ========================== -->
 
-<div id="shopScreen">
+    <div id="shopScreen">
 
-    <div class="shop-container">
+        <div class="shop-container">
 
-        <div class="shop-header">
+            <div class="shop-header">
 
-            <div>
-                <h1>THEY ARE COMING</h1>
-                <p>PREPARAÇÃO</p>
+                <div>
+                    <h1>THEY ARE COMING</h1>
+                    <p>PREPARAÇÃO</p>
+                </div>
+
+                <div class="money">
+                    💵 $<span id="money">1000</span>
+                </div>
+
             </div>
 
-            <div class="money">
-                💵 <span id="money">0</span>
+
+            <!-- NOME -->
+
+            <div class="player-box">
+
+                <input
+                    id="playerName"
+                    type="text"
+                    maxlength="16"
+                    placeholder="Nome do jogador"
+                >
+
+            </div>
+
+
+            <!-- CATEGORIAS -->
+
+            <div class="categories">
+
+                <button class="category-btn active" data-category="armadura">
+                    🛡️ Armadura
+                </button>
+
+                <button class="category-btn" data-category="amigo">
+                    🐕 Amigo
+                </button>
+
+                <button class="category-btn" data-category="armas">
+                    🔫 Armas
+                </button>
+
+                <button class="category-btn" data-category="kits">
+                    🩹 Kits
+                </button>
+
+                <button class="category-btn" data-category="bombas">
+                    💣 Bombas
+                </button>
+
+                <button class="category-btn" data-category="armadilhas">
+                    🪤 Armadilhas
+                </button>
+
+                <button class="category-btn" data-category="barricadas">
+                    🧱 Barricadas
+                </button>
+
+            </div>
+
+
+            <!-- PRODUTOS -->
+
+            <div id="shopContent"></div>
+
+
+            <!-- INVENTÁRIO -->
+
+            <div class="inventory-menu">
+
+                <h2>🎒 INVENTÁRIO</h2>
+
+                <div id="menuInventory" class="inventory-slots"></div>
+
+            </div>
+
+
+            <!-- AÇÕES -->
+
+            <div class="shop-actions">
+
+                <button id="startWaveBtn" class="start-button">
+                    ▶ INICIAR ONDA
+                </button>
+
+            </div>
+
+
+            <div class="shop-info">
+
+                <p>
+                    🧟 Cada zumbi eliminado:
+                    <strong>$100</strong>
+                </p>
+
+                <p>
+                    ❤️ Vida:
+                    <strong>100</strong>
+                </p>
+
+                <p>
+                    💡 Kits médicos só podem ser usados no menu.
+                </p>
+
+                <p>
+                    🪤 Armadilhas e barricadas podem ser colocadas durante a onda.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         JOGO
+    ========================== -->
+
+    <canvas id="game"></canvas>
+
+
+    <!-- =========================
+         HUD
+    ========================== -->
+
+    <div id="hud">
+
+        <div class="hud-left">
+
+            <div id="nameHud">
+                Jogador
+            </div>
+
+            <div class="bar-title">
+                ❤️ VIDA
+            </div>
+
+            <div class="health-box">
+                <div id="healthBar"></div>
+            </div>
+
+
+            <!-- ARMADURA FICA OCULTA -->
+
+            <div id="armorHud">
+
+                <div class="bar-title">
+                    🛡️ ARMADURA
+                </div>
+
+                <div class="armor-box">
+                    <div id="armorBar"></div>
+                </div>
+
             </div>
 
         </div>
 
 
-        <div class="player-box">
+        <div class="hud-center">
 
-            <input
-                id="playerName"
-                type="text"
-                maxlength="16"
-                placeholder="Nome do jogador"
-            >
+            <div id="wave">
+                ONDA 1
+            </div>
 
-        </div>
-
-
-        <h2>LOJA DE ARMAS</h2>
-
-        <div id="shopWeapons" class="shop-weapons"></div>
-
-
-        <div class="shop-actions">
-
-            <button id="ammoBtn" class="shop-button">
-                📦 COMPRAR MUNIÇÃO — $250
-            </button>
-
-            <button id="startWaveBtn" class="start-button">
-                ▶ INICIAR ONDA
-            </button>
+            <div id="enemies">
+                Zumbis: 0
+            </div>
 
         </div>
 
 
-        <div class="shop-info">
+        <div class="hud-right">
 
-            <p>
-                🧟 Cada zumbi eliminado:
-                <strong>$100</strong>
-            </p>
+            <div id="weapon">
+                PISTOLA
+            </div>
 
-            <p>
-                💡 Compre armas e munição antes da próxima onda.
-            </p>
+            <div id="ammo">
+                12 / 60
+            </div>
 
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- ================= JOGO ================= -->
-
-<canvas id="game"></canvas>
-
-
-<!-- ================= HUD ================= -->
-
-<div id="hud">
-
-    <div class="hud-left">
-
-        <div id="nameHud">
-            Jogador
-        </div>
-
-        <div class="health-box">
-
-            <div id="healthBar"></div>
-
-        </div>
-
-        <div class="armor-box">
-
-            <div id="armorBar"></div>
+            <div id="moneyHud">
+                💵 $1000
+            </div>
 
         </div>
 
     </div>
 
 
-    <div class="hud-center">
+    <!-- =========================
+         INVENTÁRIO DO JOGO
+    ========================== -->
 
-        <div id="wave">
-            ONDA 1
-        </div>
+    <div id="gameInventory">
 
-        <div id="enemies">
-            Zumbis: 0
-        </div>
+        <div class="inventory-slots" id="gameInventorySlots"></div>
 
     </div>
 
 
-    <div class="hud-right">
+    <!-- =========================
+         GAME OVER
+    ========================== -->
 
-        <div id="weapon">
-            PISTOLA
-        </div>
+    <div id="gameOver">
 
-        <div id="ammo">
-            12 / 60
-        </div>
+        <h1>VOCÊ MORREU</h1>
 
-        <div id="moneyHud">
-            💵 $0
-        </div>
+        <p id="finalScore"></p>
+
+        <button id="restartBtn">
+            VOLTAR À LOJA
+        </button>
 
     </div>
 
-</div>
 
-
-<!-- ================= MORTE ================= -->
-
-<div id="gameOver">
-
-    <h1>VOCÊ MORREU</h1>
-
-    <p id="finalScore"></p>
-
-    <button id="restartBtn">
-        VOLTAR À LOJA
-    </button>
-
-</div>
-
-
-<script src="game.js"></script>
+    <script src="game.js"></script>
 
 </body>
+
 </html>
