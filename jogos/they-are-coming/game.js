@@ -2088,6 +2088,10 @@ function usePlacementItem() {
    FIM DA ONDA
    ========================================================= */
 
+/* =========================================================
+   FIM DA ONDA
+   ========================================================= */
+
 function checkWaveComplete() {
 
     if (
@@ -2095,22 +2099,61 @@ function checkWaveComplete() {
         zombies.length === 0
     ) {
 
+        // A onda terminou
         waveActive = false;
 
+        // Próxima onda
         wave++;
 
-
+        // Pequeno intervalo antes de voltar ao menu
         setTimeout(() => {
 
-            if (!gameEnded) {
+            if (gameEnded)
+                return;
 
-                startPreparation();
+
+            // Para completamente a partida
+            gameRunning = false;
+
+            preparation = false;
+
+            waveActive = false;
+
+
+            // Esconde o HUD do jogo
+            if (hud) {
+
+                hud.style.display =
+                    "none";
             }
+
+
+            // Esconde o inventário durante o menu
+            if (gameInventory) {
+
+                gameInventory.style.display =
+                    "none";
+            }
+
+
+            // Mostra novamente a loja/menu
+            if (shopScreen) {
+
+                shopScreen.style.display =
+                    "block";
+            }
+
+
+            // Atualiza a loja
+            renderItems();
+
+            renderInventory();
+
+            updateHUD();
 
         },1200);
     }
 }
-
 
 /* =========================================================
    PRÓXIMA PREPARAÇÃO
