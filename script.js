@@ -36,10 +36,13 @@ const games = [
     },
 
     {
-        name: "gta5",
-        category: "Corrida e ação",
-        icon: "🏎️",
-        description: "Controle seu foguete e supere seus adversários."
+       {
+    name: "Ludix City 3D",
+    category: "Ação",
+    icon: "🚗",
+    description: "Explore uma cidade 3D, dirija carros e complete missões.",
+    link: "jogos/gta5/index.html"
+},
     },
 
     // 🐍 NOSSO PRIMEIRO JOGO REAL
