@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>They Are Coming - GameHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="menu">
+    <h1>THEY ARE COMING</h1>
+    <p>Sobreviva às hordas.</p>
+
+    <input id="playerName" type="text" maxlength="16" placeholder="Seu nome">
+
+    <button id="startBtn">COMEÇAR</button>
+
+    <div class="controls">
+        <b>CONTROLES</b>
+        <span>A / D — mover</span>
+        <span>W — pular</span>
+        <span>Mouse — mirar</span>
+        <span>Botão esquerdo — atirar</span>
+        <span>1 / 2 / 3 — trocar arma</span>
+        <span>R — recarregar</span>
+    </div>
+</div>
+
+<canvas id="game"></canvas>
+
+<div id="hud">
+    <div class="hud-left">
+        <div id="nameHud">Jogador</div>
+        <div class="health-box">
+            <div id="healthBar"></div>
+        </div>
+    </div>
+
+    <div class="hud-center">
+        <div id="wave">ONDA 1</div>
+        <div id="enemies">Zumbis: 0</div>
+    </div>
+
+    <div class="hud-right">
+        <div id="weapon">PISTOLA</div>
+        <div id="ammo">12 / 60</div>
+    </div>
+</div>
+
+<div id="gameOver">
+    <h1>VOCÊ MORREU</h1>
+    <p id="finalScore"></p>
+    <button id="restartBtn">JOGAR NOVAMENTE</button>
+</div>
+
+<script src="game.js"></script>
+
+</body>
+</html>
