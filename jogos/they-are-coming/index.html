@@ -3,57 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>They Are Coming - GameHub</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div id="menu">
-    <h1>THEY ARE COMING</h1>
-    <p>Sobreviva às hordas.</p>
+<!-- ================= MENU / LOJA ================= -->
 
-    <input id="playerName" type="text" maxlength="16" placeholder="Seu nome">
+<div id="shopScreen">
 
-    <button id="startBtn">COMEÇAR</button>
+    <div class="shop-container">
 
-    <div class="controls">
-        <b>CONTROLES</b>
-        <span>A / D — mover</span>
-        <span>W — pular</span>
-        <span>Mouse — mirar</span>
-        <span>Botão esquerdo — atirar</span>
-        <span>1 / 2 / 3 — trocar arma</span>
-        <span>R — recarregar</span>
+        <div class="shop-header">
+
+            <div>
+                <h1>THEY ARE COMING</h1>
+                <p>PREPARAÇÃO</p>
+            </div>
+
+            <div class="money">
+                💵 <span id="money">0</span>
+            </div>
+
+        </div>
+
+
+        <div class="player-box">
+
+            <input
+                id="playerName"
+                type="text"
+                maxlength="16"
+                placeholder="Nome do jogador"
+            >
+
+        </div>
+
+
+        <h2>LOJA DE ARMAS</h2>
+
+        <div id="shopWeapons" class="shop-weapons"></div>
+
+
+        <div class="shop-actions">
+
+            <button id="ammoBtn" class="shop-button">
+                📦 COMPRAR MUNIÇÃO — $250
+            </button>
+
+            <button id="startWaveBtn" class="start-button">
+                ▶ INICIAR ONDA
+            </button>
+
+        </div>
+
+
+        <div class="shop-info">
+
+            <p>
+                🧟 Cada zumbi eliminado:
+                <strong>$100</strong>
+            </p>
+
+            <p>
+                💡 Compre armas e munição antes da próxima onda.
+            </p>
+
+        </div>
+
     </div>
+
 </div>
+
+
+<!-- ================= JOGO ================= -->
 
 <canvas id="game"></canvas>
 
+
+<!-- ================= HUD ================= -->
+
 <div id="hud">
+
     <div class="hud-left">
-        <div id="nameHud">Jogador</div>
-        <div class="health-box">
-            <div id="healthBar"></div>
+
+        <div id="nameHud">
+            Jogador
         </div>
+
+        <div class="health-box">
+
+            <div id="healthBar"></div>
+
+        </div>
+
+        <div class="armor-box">
+
+            <div id="armorBar"></div>
+
+        </div>
+
     </div>
+
 
     <div class="hud-center">
-        <div id="wave">ONDA 1</div>
-        <div id="enemies">Zumbis: 0</div>
+
+        <div id="wave">
+            ONDA 1
+        </div>
+
+        <div id="enemies">
+            Zumbis: 0
+        </div>
+
     </div>
+
 
     <div class="hud-right">
-        <div id="weapon">PISTOLA</div>
-        <div id="ammo">12 / 60</div>
+
+        <div id="weapon">
+            PISTOLA
+        </div>
+
+        <div id="ammo">
+            12 / 60
+        </div>
+
+        <div id="moneyHud">
+            💵 $0
+        </div>
+
     </div>
+
 </div>
 
+
+<!-- ================= MORTE ================= -->
+
 <div id="gameOver">
+
     <h1>VOCÊ MORREU</h1>
+
     <p id="finalScore"></p>
-    <button id="restartBtn">JOGAR NOVAMENTE</button>
+
+    <button id="restartBtn">
+        VOLTAR À LOJA
+    </button>
+
 </div>
+
 
 <script src="game.js"></script>
 
