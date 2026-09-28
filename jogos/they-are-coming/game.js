@@ -1,266 +1,581 @@
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas =
+    document.getElementById("game");
 
-const menu = document.getElementById("menu");
-const hud = document.getElementById("hud");
-const gameOverScreen = document.getElementById("gameOver");
+const ctx =
+    canvas.getContext("2d");
 
-const startBtn = document.getElementById("startBtn");
-const restartBtn = document.getElementById("restartBtn");
 
-const playerNameInput = document.getElementById("playerName");
+let W =
+    window.innerWidth;
 
-const healthBar = document.getElementById("healthBar");
-const ammoText = document.getElementById("ammo");
-const weaponText = document.getElementById("weapon");
-const waveText = document.getElementById("wave");
-const enemiesText = document.getElementById("enemies");
-const nameHud = document.getElementById("nameHud");
-const finalScore = document.getElementById("finalScore");
+let H =
+    window.innerHeight;
 
-let W = window.innerWidth;
-let H = window.innerHeight;
 
 canvas.width = W;
 canvas.height = H;
 
-window.addEventListener("resize", () => {
 
-    W = window.innerWidth;
-    H = window.innerHeight;
+// =====================================================
+// ELEMENTOS
+// =====================================================
 
-    canvas.width = W;
-    canvas.height = H;
+const shopScreen =
+    document.getElementById("shopScreen");
 
-    if (player) {
-        player.y = Math.min(player.y, H - 100);
-    }
-});
+const shopWeapons =
+    document.getElementById("shopWeapons");
+
+const moneyText =
+    document.getElementById("money");
+
+const ammoBtn =
+    document.getElementById("ammoBtn");
+
+const startWaveBtn =
+    document.getElementById("startWaveBtn");
+
+const playerNameInput =
+    document.getElementById("playerName");
+
+const hud =
+    document.getElementById("hud");
+
+const nameHud =
+    document.getElementById("nameHud");
+
+const healthBar =
+    document.getElementById("healthBar");
+
+const armorBar =
+    document.getElementById("armorBar");
+
+const waveText =
+    document.getElementById("wave");
+
+const enemiesText =
+    document.getElementById("enemies");
+
+const weaponText =
+    document.getElementById("weapon");
+
+const ammoText =
+    document.getElementById("ammo");
+
+const moneyHud =
+    document.getElementById("moneyHud");
+
+const gameOver =
+    document.getElementById("gameOver");
+
+const finalScore =
+    document.getElementById("finalScore");
+
+const restartBtn =
+    document.getElementById("restartBtn");
 
 
-// ======================================================
-// UTILIDADES
-// ======================================================
+// =====================================================
+// ESTADO
+// =====================================================
 
-function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-}
+let gameRunning = false;
 
-function random(min, max) {
-    return Math.random() * (max - min) + min;
-}
+let player = null;
 
-function distance(a, b) {
-    return Math.hypot(a.x - b.x, a.y - b.y);
-}
+let zombies = [];
 
-function normalize(x, y) {
+let bullets = [];
 
-    const length = Math.hypot(x, y);
+let objects = [];
 
-    if (length === 0) {
-        return { x: 0, y: 0 };
-    }
+let particles = [];
 
-    return {
-        x: x / length,
-        y: y / length
-    };
-}
+let wave = 1;
+
+let zombiesToSpawn = 0;
+
+let spawnTimer = 0;
+
+let waveActive = false;
+
+let money = 1000;
+
+let score = 0;
+
+let lastTime = 0;
+
+let currentWeapon = 0;
+
+let reloading = false;
+
+let lastShot = 0;
 
 
-// ======================================================
+// =====================================================
 // INPUT
-// ======================================================
+// =====================================================
 
 const keys = {};
 
 const mouse = {
+
     x: 0,
+
     y: 0,
+
     down: false
+
 };
 
-window.addEventListener("keydown", e => {
 
-    keys[e.key.toLowerCase()] = true;
+window.addEventListener(
+    "keydown",
+    e => {
 
-    if (e.key.toLowerCase() === "r") {
-        reload();
+        keys[
+            e.key.toLowerCase()
+        ] = true;
+
+        if (
+            e.key.toLowerCase()
+            === "r"
+        ) {
+
+            reload();
+        }
+
+        if (e.key === "1") {
+
+            equipWeapon(0);
+        }
+
+        if (e.key === "2") {
+
+            equipWeapon(1);
+        }
+
+        if (e.key === "3") {
+
+            equipWeapon(2);
+        }
+
     }
+);
 
-    if (e.key === "1") {
-        equipWeapon(0);
+
+window.addEventListener(
+    "keyup",
+    e => {
+
+        keys[
+            e.key.toLowerCase()
+        ] = false;
+
     }
+);
 
-    if (e.key === "2") {
-        equipWeapon(1);
+
+canvas.addEventListener(
+    "mousemove",
+    e => {
+
+        mouse.x =
+            e.clientX;
+
+        mouse.y =
+            e.clientY;
+
     }
+);
 
-    if (e.key === "3") {
-        equipWeapon(2);
+
+canvas.addEventListener(
+    "mousedown",
+    e => {
+
+        if (e.button === 0) {
+
+            mouse.down = true;
+        }
+
     }
+);
 
-    if (e.key === " ") {
-        e.preventDefault();
+
+canvas.addEventListener(
+    "mouseup",
+    e => {
+
+        if (e.button === 0) {
+
+            mouse.down = false;
+        }
+
     }
-});
-
-window.addEventListener("keyup", e => {
-    keys[e.key.toLowerCase()] = false;
-});
-
-canvas.addEventListener("mousemove", e => {
-
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-});
-
-canvas.addEventListener("mousedown", e => {
-
-    if (e.button === 0) {
-        mouse.down = true;
-    }
-});
-
-canvas.addEventListener("mouseup", e => {
-
-    if (e.button === 0) {
-        mouse.down = false;
-    }
-});
+);
 
 
-// ======================================================
+// =====================================================
 // ARMAS
-// ======================================================
+// =====================================================
 
 const weapons = [
 
     {
         name: "PISTOLA",
+
+        icon: "🔫",
+
+        price: 0,
+
         damage: 35,
+
         fireRate: 280,
+
         magazine: 12,
-        ammo: 60,
-        bulletSpeed: 950,
-        spread: 0.025,
-        recoil: 130,
-        reloadTime: 850,
-        pellets: 1
+
+        reserve: 60,
+
+        bulletSpeed: 1000,
+
+        spread: .025,
+
+        recoil: 120,
+
+        reloadTime: 800
     },
 
     {
-        name: "SHOTGUN",
-        damage: 20,
+        name: "ESCOPETA",
+
+        icon: "💥",
+
+        price: 1500,
+
+        damage: 24,
+
         fireRate: 750,
+
         magazine: 6,
-        ammo: 30,
+
+        reserve: 30,
+
         bulletSpeed: 850,
-        spread: 0.28,
-        recoil: 360,
-        reloadTime: 1200,
-        pellets: 7
+
+        spread: .22,
+
+        pellets: 8,
+
+        recoil: 350,
+
+        reloadTime: 1100
     },
 
     {
         name: "SMG",
-        damage: 17,
-        fireRate: 85,
+
+        icon: "🔫",
+
+        price: 2500,
+
+        damage: 18,
+
+        fireRate: 90,
+
         magazine: 30,
-        ammo: 120,
-        bulletSpeed: 1050,
-        spread: 0.075,
-        recoil: 45,
-        reloadTime: 1050,
-        pellets: 1
+
+        reserve: 120,
+
+        bulletSpeed: 1100,
+
+        spread: .07,
+
+        pellets: 1,
+
+        recoil: 40,
+
+        reloadTime: 1000
+    },
+
+    {
+        name: "RIFLE",
+
+        icon: "🎯",
+
+        price: 4000,
+
+        damage: 85,
+
+        fireRate: 500,
+
+        magazine: 8,
+
+        reserve: 40,
+
+        bulletSpeed: 1500,
+
+        spread: .01,
+
+        pellets: 1,
+
+        recoil: 240,
+
+        reloadTime: 1300
     }
 
 ];
 
-let currentWeapon = 0;
 
-let weaponState = weapons.map(w => ({
-    magazine: w.magazine,
-    reserve: w.ammo
-}));
+let weaponState =
+    weapons.map(
+        weapon => ({
 
-let lastShot = 0;
-let reloading = false;
+            owned:
+                weapon.price === 0,
 
-function equipWeapon(index) {
+            magazine:
+                weapon.magazine,
 
-    if (index < 0 || index >= weapons.length) return;
+            reserve:
+                weapon.reserve
 
-    currentWeapon = index;
+        })
+    );
 
-    updateWeaponUI();
+
+// =====================================================
+// LOJA
+// =====================================================
+
+function renderShop() {
+
+    moneyText.textContent =
+        money.toLocaleString(
+            "pt-BR"
+        );
+
+
+    shopWeapons.innerHTML =
+        "";
+
+
+    weapons.forEach(
+        (weapon, index) => {
+
+            const state =
+                weaponState[index];
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "weapon-card";
+
+
+            if (state.owned) {
+
+                card.classList.add(
+                    "owned"
+                );
+            }
+
+
+            const buttonText =
+                state.owned
+                    ? "EQUIPAR"
+                    : `COMPRAR — $${weapon.price}`;
+
+
+            card.innerHTML = `
+
+                <div class="weapon-icon">
+                    ${weapon.icon}
+                </div>
+
+                <h3>
+                    ${weapon.name}
+                </h3>
+
+                <p>
+                    Dano: ${weapon.damage}<br>
+                    Carregador: ${weapon.magazine}<br>
+                    Munição: ${weapon.reserve}
+                </p>
+
+                <div class="weapon-price">
+                    ${
+                        state.owned
+                        ? "✓ DESBLOQUEADA"
+                        : "$" +
+                          weapon.price
+                    }
+                </div>
+
+                <button
+                    class="weapon-button"
+                    data-index="${index}">
+                    ${buttonText}
+                </button>
+
+            `;
+
+
+            const button =
+                card.querySelector(
+                    ".weapon-button"
+                );
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    buyOrEquipWeapon(
+                        index
+                    );
+
+                }
+            );
+
+
+            shopWeapons.appendChild(
+                card
+            );
+
+        }
+    );
 }
 
-function updateWeaponUI() {
 
-    const weapon = weapons[currentWeapon];
-    const state = weaponState[currentWeapon];
+function buyOrEquipWeapon(index) {
 
-    weaponText.textContent = weapon.name;
+    const weapon =
+        weapons[index];
 
-    ammoText.textContent =
-        `${state.magazine} / ${state.reserve}`;
-}
+    const state =
+        weaponState[index];
 
-function reload() {
 
-    if (!gameRunning || reloading) return;
+    if (state.owned) {
 
-    const weapon = weapons[currentWeapon];
-    const state = weaponState[currentWeapon];
+        currentWeapon =
+            index;
 
-    if (
-        state.magazine >= weapon.magazine ||
-        state.reserve <= 0
-    ) {
+        renderShop();
+
         return;
     }
 
-    reloading = true;
 
-    setTimeout(() => {
+    if (
+        money <
+        weapon.price
+    ) {
 
-        const needed =
-            weapon.magazine - state.magazine;
+        alert(
+            "Dinheiro insuficiente!"
+        );
 
-        const amount =
-            Math.min(needed, state.reserve);
+        return;
+    }
 
-        state.magazine += amount;
-        state.reserve -= amount;
 
-        reloading = false;
+    money -=
+        weapon.price;
 
-        updateWeaponUI();
 
-    }, weapon.reloadTime);
+    state.owned =
+        true;
+
+
+    currentWeapon =
+        index;
+
+
+    renderShop();
+
+    updateUI();
 }
 
 
-// ======================================================
-// JOGADOR
-// ======================================================
+ammoBtn.addEventListener(
+    "click",
+    () => {
 
-let player;
+        const state =
+            weaponState[
+                currentWeapon
+            ];
+
+        const weapon =
+            weapons[
+                currentWeapon
+            ];
+
+
+        const price = 250;
+
+
+        if (
+            money <
+            price
+        ) {
+
+            alert(
+                "Você não tem dinheiro suficiente."
+            );
+
+            return;
+        }
+
+
+        money -= price;
+
+
+        state.reserve +=
+            weapon.reserve;
+
+
+        renderShop();
+
+        updateUI();
+
+    }
+);
+
+
+startWaveBtn.addEventListener(
+    "click",
+    startWave
+);
+
+
+// =====================================================
+// PLAYER
+// =====================================================
 
 function createPlayer() {
 
     return {
 
-        x: W / 2,
-        y: H - 150,
+        x:
+            W / 2,
+
+        y:
+            H - 170,
 
         vx: 0,
+
         vy: 0,
 
-        width: 35,
-        height: 70,
+        width: 38,
+
+        height: 72,
 
         speed: 650,
 
@@ -268,833 +583,917 @@ function createPlayer() {
 
         gravity: 1900,
 
-        health: 100,
-        maxHealth: 100,
-
         grounded: false,
 
         facing: 1,
 
-        invulnerable: 0,
+        health: 100,
 
-        score: 0
+        maxHealth: 100,
+
+        armor: 100,
+
+        maxArmor: 100,
+
+        invulnerable: 0
+
     };
+
 }
 
 
-// ======================================================
-// ZUMBIS
-// ======================================================
+// =====================================================
+// OBJETOS DO PLAYGROUND
+// =====================================================
 
-let zombies = [];
+function createObjects() {
 
-let zombieTypes = [
+    objects = [];
 
-    {
-        name: "walker",
-        health: 100,
-        speed: 70,
-        damage: 10,
-        radius: 23,
-        mass: 1,
-        color: "#7f9b68"
-    },
 
-    {
-        name: "runner",
-        health: 70,
-        speed: 135,
-        damage: 14,
-        radius: 19,
-        mass: 0.75,
-        color: "#9d7c67"
-    },
+    // caixas
 
-    {
-        name: "brute",
-        health: 300,
-        speed: 45,
-        damage: 25,
-        radius: 34,
-        mass: 2.8,
-        color: "#555e48"
+    for (
+        let i = 0;
+        i < 8;
+        i++
+    ) {
+
+        objects.push({
+
+            type: "box",
+
+            x:
+                100 +
+                i * 130,
+
+            y:
+                H - 135 -
+
+                (
+                    i % 2
+                ) * 60,
+
+            width: 50,
+
+            height: 50,
+
+            vx: 0,
+
+            vy: 0,
+
+            mass: 1,
+
+            health: 100
+
+        });
+
     }
+
+
+    // barris
+
+    for (
+        let i = 0;
+        i < 5;
+        i++
+    ) {
+
+        objects.push({
+
+            type: "barrel",
+
+            x:
+                150 +
+                i * 190,
+
+            y:
+                H - 135,
+
+            radius: 25,
+
+            vx: 0,
+
+            vy: 0,
+
+            mass: 1.3,
+
+            health: 150
+
+        });
+
+    }
+
+
+    // plataformas
+
+    objects.push({
+
+        type: "platform",
+
+        x: 40,
+
+        y: H - 300,
+
+        width: 220,
+
+        height: 22,
+
+        vx: 0,
+
+        vy: 0,
+
+        mass: 999,
+
+        health: 1000
+
+    });
+
+
+    objects.push({
+
+        type: "platform",
+
+        x: W - 260,
+
+        y: H - 300,
+
+        width: 220,
+
+        height: 22,
+
+        vx: 0,
+
+        vy: 0,
+
+        mass: 999,
+
+        health: 1000
+
+    });
+
+}
+
+
+// =====================================================
+// ZUMBIS
+// =====================================================
+
+const zombieTypes = [
+
+    {
+
+        type: "walker",
+
+        health: 100,
+
+        speed: 65,
+
+        damage: 10,
+
+        radius: 23,
+
+        mass: 1,
+
+        color: "#758b62"
+
+    },
+
+    {
+
+        type: "runner",
+
+        health: 70,
+
+        speed: 135,
+
+        damage: 15,
+
+        radius: 19,
+
+        mass: .7,
+
+        color: "#9c755d"
+
+    },
+
+    {
+
+        type: "brute",
+
+        health: 350,
+
+        speed: 42,
+
+        damage: 25,
+
+        radius: 34,
+
+        mass: 3,
+
+        color: "#566044"
+
+    }
+
 ];
+
 
 function spawnZombie() {
 
     const side =
-        Math.random() < 0.5 ? -1 : 1;
+        Math.random() <
+        .5
+            ? -1
+            : 1;
+
+
+    const roll =
+        Math.random();
+
 
     let type;
 
-    const roll = Math.random();
 
-    if (wave >= 4 && roll < 0.18) {
-        type = zombieTypes[2];
+    if (
+        wave >= 4 &&
+        roll < .15
+    ) {
+
+        type =
+            zombieTypes[2];
+
     }
-    else if (wave >= 2 && roll < 0.45) {
-        type = zombieTypes[1];
+    else if (
+        wave >= 2 &&
+        roll < .45
+    ) {
+
+        type =
+            zombieTypes[1];
+
     }
     else {
-        type = zombieTypes[0];
+
+        type =
+            zombieTypes[0];
+
     }
 
-    const x = side === -1
-        ? -80
-        : W + 80;
 
-    const zombie = {
+    zombies.push({
 
-        x: x,
-        y: H - 100 - type.radius,
+        x:
+            side === -1
+                ? -80
+                : W + 80,
 
-        vx: side === -1 ? 50 : -50,
+        y:
+            H -
+            100 -
+            type.radius,
+
+        vx:
+            side === -1
+                ? 50
+                : -50,
+
         vy: 0,
 
-        radius: type.radius,
+        radius:
+            type.radius,
 
-        health: type.health,
-        maxHealth: type.health,
+        health:
+            type.health,
 
-        speed: type.speed,
-        damage: type.damage,
+        maxHealth:
+            type.health,
 
-        mass: type.mass,
+        speed:
+            type.speed,
 
-        type: type.name,
-        color: type.color,
+        damage:
+            type.damage,
 
-        hitFlash: 0,
+        mass:
+            type.mass,
+
+        type:
+            type.type,
+
+        color:
+            type.color,
 
         ragdoll: false,
 
-        parts: []
-    };
+        parts: [],
 
-    zombies.push(zombie);
+        hitFlash: 0
+
+    });
+
 }
 
 
-// ======================================================
-// FÍSICA DO RAGDOLL
-// ======================================================
+// =====================================================
+// RAGDOLL
+// =====================================================
 
-function createRagdoll(zombie, impactX, impactY) {
+function createRagdoll(
+    zombie,
+    impactX,
+    impactY
+) {
 
-    zombie.ragdoll = true;
+    zombie.ragdoll =
+        true;
+
+
+    const forceX =
+        (
+            zombie.x -
+            impactX
+        ) * 3;
+
 
     zombie.parts = [
 
         {
-            name: "head",
-            x: zombie.x,
-            y: zombie.y - zombie.radius - 12,
-            vx: (zombie.x - impactX) * 4,
-            vy: -random(200, 500),
-            radius: zombie.radius * .45,
-            mass: .7,
-            angle: random(0, Math.PI * 2),
-            angularVelocity: random(-10, 10)
+
+            type: "head",
+
+            x:
+                zombie.x,
+
+            y:
+                zombie.y -
+                30,
+
+            vx:
+                forceX,
+
+            vy:
+                -350,
+
+            radius:
+                10,
+
+            angle: 0,
+
+            angular:
+                random(
+                    -8,
+                    8
+                )
+
         },
 
         {
-            name: "body",
-            x: zombie.x,
-            y: zombie.y,
-            vx: (zombie.x - impactX) * 3,
-            vy: -random(80, 300),
-            width: zombie.radius * 1.2,
-            height: zombie.radius * 1.7,
-            mass: 2,
-            angle: random(0, Math.PI * 2),
-            angularVelocity: random(-8, 8)
+
+            type: "body",
+
+            x:
+                zombie.x,
+
+            y:
+                zombie.y,
+
+            vx:
+                forceX,
+
+            vy:
+                -220,
+
+            width:
+                28,
+
+            height:
+                42,
+
+            angle: 0,
+
+            angular:
+                random(
+                    -8,
+                    8
+                )
+
         },
 
         {
-            name: "arm",
-            x: zombie.x - zombie.radius,
-            y: zombie.y,
-            vx: random(-250, 250),
-            vy: random(-300, 100),
-            length: zombie.radius * 1.6,
-            mass: .6,
-            angle: random(0, Math.PI * 2),
-            angularVelocity: random(-12, 12)
+
+            type: "limb",
+
+            x:
+                zombie.x -
+                20,
+
+            y:
+                zombie.y,
+
+            vx:
+                forceX -
+                150,
+
+            vy:
+                -180,
+
+            length:
+                40,
+
+            angle: 0,
+
+            angular:
+                random(
+                    -10,
+                    10
+                )
+
         },
 
         {
-            name: "arm2",
-            x: zombie.x + zombie.radius,
-            y: zombie.y,
-            vx: random(-250, 250),
-            vy: random(-300, 100),
-            length: zombie.radius * 1.6,
-            mass: .6,
-            angle: random(0, Math.PI * 2),
-            angularVelocity: random(-12, 12)
+
+            type: "limb",
+
+            x:
+                zombie.x +
+                20,
+
+            y:
+                zombie.y,
+
+            vx:
+                forceX +
+                150,
+
+            vy:
+                -180,
+
+            length:
+                40,
+
+            angle: 0,
+
+            angular:
+                random(
+                    -10,
+                    10
+                )
+
         },
 
         {
-            name: "leg",
-            x: zombie.x - 10,
-            y: zombie.y + zombie.radius,
-            vx: random(-150, 150),
-            vy: random(-200, 50),
-            length: zombie.radius * 1.8,
-            mass: .8,
-            angle: random(0, Math.PI * 2),
-            angularVelocity: random(-10, 10)
+
+            type: "limb",
+
+            x:
+                zombie.x -
+                10,
+
+            y:
+                zombie.y +
+                35,
+
+            vx:
+                forceX -
+                80,
+
+            vy:
+                -100,
+
+            length:
+                48,
+
+            angle: 0,
+
+            angular:
+                random(
+                    -10,
+                    10
+                )
+
         },
 
         {
-            name: "leg2",
-            x: zombie.x + 10,
-            y: zombie.y + zombie.radius,
-            vx: random(-150, 150),
-            vy: random(-200, 50),
-            length: zombie.radius * 1.8,
-            mass: .8,
-            angle: random(0, Math.PI * 2),
-            angularVelocity: random(-10, 10)
+
+            type: "limb",
+
+            x:
+                zombie.x +
+                10,
+
+            y:
+                zombie.y +
+                35,
+
+            vx:
+                forceX +
+                80,
+
+            vy:
+                -100,
+
+            length:
+                48,
+
+            angle: 0,
+
+            angular:
+                random(
+                    -10,
+                    10
+                )
+
         }
 
     ];
+
 }
 
-function updateRagdoll(zombie, dt) {
 
-    for (const part of zombie.parts) {
+function updateRagdoll(
+    zombie,
+    dt
+) {
 
-        part.vy += 1800 * dt;
+    let moving =
+        false;
 
-        part.vx *= Math.pow(.985, dt * 60);
-        part.vy *= Math.pow(.995, dt * 60);
 
-        part.x += part.vx * dt;
-        part.y += part.vy * dt;
+    for (
+        const part
+        of zombie.parts
+    ) {
+
+        part.vy +=
+            1800 * dt;
+
+
+        part.vx *=
+            .985;
+
+
+        part.vy *=
+            .995;
+
+
+        part.x +=
+            part.vx * dt;
+
+
+        part.y +=
+            part.vy * dt;
+
 
         part.angle +=
-            part.angularVelocity * dt;
+            part.angular * dt;
 
-        part.angularVelocity *= .99;
 
-        const floor = H - 100;
+        part.angular *=
+            .985;
+
+
+        const floor =
+            H - 100;
+
 
         const radius =
             part.radius ||
-            Math.max(part.width || 10, part.length || 10) / 2;
+            10;
 
-        if (part.y + radius > floor) {
 
-            part.y = floor - radius;
+        if (
+            part.y +
+            radius >
+            floor
+        ) {
 
-            part.vy *= -.35;
-            part.vx *= .82;
+            part.y =
+                floor -
+                radius;
 
-            part.angularVelocity *= .8;
+
+            part.vy *=
+                -.35;
+
+
+            part.vx *=
+                .82;
+
+
+            part.angular *=
+                .8;
+
         }
+
+
+        if (
+            Math.abs(
+                part.vx
+            ) > 10 ||
+            Math.abs(
+                part.vy
+            ) > 10
+        ) {
+
+            moving =
+                true;
+
+        }
+
     }
+
+
+    if (!moving) {
+
+        zombie.deadTime =
+            (
+                zombie.deadTime ||
+                0
+            ) + dt;
+
+    }
+
 }
 
 
-// ======================================================
+// =====================================================
 // BALAS
-// ======================================================
-
-let bullets = [];
+// =====================================================
 
 function shoot() {
 
-    if (!gameRunning || reloading) return;
+    if (
+        !gameRunning ||
+        reloading
+    ) return;
 
-    const now = performance.now();
 
-    const weapon = weapons[currentWeapon];
-    const state = weaponState[currentWeapon];
+    const now =
+        performance.now();
+
+
+    const weapon =
+        weapons[
+            currentWeapon
+        ];
+
+
+    const state =
+        weaponState[
+            currentWeapon
+        ];
+
 
     if (
-        now - lastShot <
+        now -
+        lastShot <
         weapon.fireRate
     ) {
+
         return;
+
     }
 
-    if (state.magazine <= 0) {
+
+    if (
+        state.magazine <= 0
+    ) {
 
         reload();
+
         return;
+
     }
+
 
     state.magazine--;
 
-    lastShot = now;
 
-    const originX = player.x + player.facing * 28;
-    const originY = player.y - 10;
+    lastShot =
+        now;
 
-    const targetX = mouse.x;
-    const targetY = mouse.y;
+
+    const originX =
+        player.x +
+        player.facing *
+        25;
+
+
+    const originY =
+        player.y -
+        12;
+
 
     const direction =
         normalize(
-            targetX - originX,
-            targetY - originY
+
+            mouse.x -
+            originX,
+
+            mouse.y -
+            originY
+
         );
+
 
     player.vx -=
         direction.x *
         weapon.recoil /
-        player.speed;
+        5;
+
 
     player.vy -=
         direction.y *
         weapon.recoil /
-        player.speed;
+        10;
 
-    for (let i = 0; i < weapon.pellets; i++) {
+
+    const pellets =
+        weapon.pellets ||
+        1;
+
+
+    for (
+        let i = 0;
+        i < pellets;
+        i++
+    ) {
 
         const angle =
-            Math.atan2(direction.y, direction.x) +
-            random(-weapon.spread, weapon.spread);
+            Math.atan2(
+                direction.y,
+                direction.x
+            ) +
+            random(
+                -weapon.spread,
+                weapon.spread
+            );
+
 
         bullets.push({
 
-            x: originX,
-            y: originY,
+            x:
+                originX,
 
-            vx: Math.cos(angle) *
+            y:
+                originY,
+
+            vx:
+                Math.cos(angle) *
                 weapon.bulletSpeed,
 
-            vy: Math.sin(angle) *
+            vy:
+                Math.sin(angle) *
                 weapon.bulletSpeed,
 
             damage:
                 weapon.damage *
-                random(.85, 1.15),
+                random(
+                    .85,
+                    1.15
+                ),
 
-            life: 1.5,
+            life:
+                1.5
 
-            radius:
-                currentWeapon === 1 ? 3 : 2
         });
+
     }
 
-    updateWeaponUI();
+
+    updateUI();
+
 }
 
 
-// ======================================================
-// BARRICADA
-// ======================================================
+function reload() {
 
-let barricades = [];
+    if (
+        reloading ||
+        !gameRunning
+    ) return;
 
-function createBarricades() {
 
-    barricades = [
+    const weapon =
+        weapons[
+            currentWeapon
+        ];
 
-        {
-            x: W / 2 - 130,
-            y: H - 150,
-            width: 260,
-            height: 28,
-            health: 800,
-            maxHealth: 800
-        },
 
-        {
-            x: 100,
-            y: H - 260,
-            width: 170,
-            height: 25,
-            health: 450,
-            maxHealth: 450
-        },
+    const state =
+        weaponState[
+            currentWeapon
+        ];
 
-        {
-            x: W - 270,
-            y: H - 260,
-            width: 170,
-            height: 25,
-            health: 450,
-            maxHealth: 450
-        }
-    ];
-}
 
-
-// ======================================================
-// ONDAS
-// ======================================================
-
-let wave = 1;
-let zombiesToSpawn = 0;
-let spawnTimer = 0;
-let waveDelay = 0;
-
-function startWave() {
-
-    zombiesToSpawn =
-        5 + wave * 3;
-
-    waveText.textContent =
-        `ONDA ${wave}`;
-}
-
-function updateWaves(dt) {
-
-    if (zombiesToSpawn > 0) {
-
-        spawnTimer -= dt;
-
-        if (spawnTimer <= 0) {
-
-            spawnZombie();
-
-            zombiesToSpawn--;
-
-            spawnTimer =
-                Math.max(
-                    .25,
-                    .9 - wave * .035
-                );
-        }
-    }
-
-    else if (zombies.length === 0) {
-
-        waveDelay += dt;
-
-        if (waveDelay > 3) {
-
-            wave++;
-
-            waveDelay = 0;
-
-            repairBarricades();
-
-            startWave();
-        }
-    }
-}
-
-function repairBarricades() {
-
-    for (const b of barricades) {
-
-        b.health =
-            Math.min(
-                b.maxHealth,
-                b.health + b.maxHealth * .25
-            );
-    }
-}
-
-
-// ======================================================
-// COLISÕES
-// ======================================================
-
-function resolveZombieCollisions() {
-
-    for (let i = 0; i < zombies.length; i++) {
-
-        const a = zombies[i];
-
-        if (a.ragdoll) continue;
-
-        for (let j = i + 1; j < zombies.length; j++) {
-
-            const b = zombies[j];
-
-            if (b.ragdoll) continue;
-
-            let dx = b.x - a.x;
-            let dy = b.y - a.y;
-
-            let dist = Math.hypot(dx, dy);
-
-            const minDist =
-                a.radius + b.radius;
-
-            if (dist < minDist) {
-
-                if (dist === 0) {
-                    dx = 1;
-                    dy = 0;
-                    dist = 1;
-                }
-
-                const nx = dx / dist;
-                const ny = dy / dist;
-
-                const overlap =
-                    minDist - dist;
-
-                const totalMass =
-                    a.mass + b.mass;
-
-                a.x -=
-                    nx *
-                    overlap *
-                    (b.mass / totalMass);
-
-                a.y -=
-                    ny *
-                    overlap *
-                    (b.mass / totalMass);
-
-                b.x +=
-                    nx *
-                    overlap *
-                    (a.mass / totalMass);
-
-                b.y +=
-                    ny *
-                    overlap *
-                    (a.mass / totalMass);
-
-                const relativeVelocity =
-                    (b.vx - a.vx) * nx +
-                    (b.vy - a.vy) * ny;
-
-                if (relativeVelocity < 0) {
-
-                    const impulse =
-                        -relativeVelocity * .8;
-
-                    a.vx -=
-                        nx *
-                        impulse *
-                        (b.mass / totalMass);
-
-                    b.vx +=
-                        nx *
-                        impulse *
-                        (a.mass / totalMass);
-                }
-            }
-        }
-    }
-}
-
-
-// ======================================================
-// DANO
-// ======================================================
-
-function damagePlayer(amount) {
-
-    if (player.invulnerable > 0) {
-        return;
-    }
-
-    player.health -= amount;
-
-    player.invulnerable = .35;
-
-    healthBar.style.width =
-        `${clamp(player.health, 0, 100)}%`;
-
-    if (player.health <= 0) {
-        endGame();
-    }
-}
-
-function damageBarricade(barricade, amount) {
-
-    barricade.health -= amount;
-
-    if (barricade.health < 0) {
-        barricade.health = 0;
-    }
-}
-
-
-// ======================================================
-// UPDATE ZUMBIS
-// ======================================================
-
-function updateZombies(dt) {
-
-    for (let i = zombies.length - 1; i >= 0; i--) {
-
-        const z = zombies[i];
-
-        if (z.ragdoll) {
-
-            updateRagdoll(z, dt);
-
-            let allSlow = true;
-
-            for (const p of z.parts) {
-
-                if (
-                    Math.abs(p.vx) > 10 ||
-                    Math.abs(p.vy) > 10
-                ) {
-                    allSlow = false;
-                    break;
-                }
-            }
-
-            if (allSlow) {
-
-                z.deadTimer =
-                    (z.deadTimer || 0) + dt;
-
-                if (z.deadTimer > 3) {
-                    zombies.splice(i, 1);
-                }
-            }
-
-            continue;
-        }
-
-        z.hitFlash =
-            Math.max(
-                0,
-                z.hitFlash - dt
-            );
-
-        const direction =
-            normalize(
-                player.x - z.x,
-                0
-            );
-
-        z.vx =
-            direction.x *
-            z.speed;
-
-        z.x += z.vx * dt;
-
-        // chão
-        z.y =
-            H - 100 -
-            z.radius;
-
-        // ataque ao jogador
-        if (
-            Math.abs(z.x - player.x) <
-            z.radius + 30
-        ) {
-
-            damagePlayer(
-                z.damage * dt
-            );
-
-            // pequeno empurrão
-            player.vx +=
-                direction.x *
-                -80 *
-                dt;
-        }
-
-        // ataque às barricadas
-        for (const b of barricades) {
-
-            const closestX =
-                clamp(
-                    z.x,
-                    b.x,
-                    b.x + b.width
-                );
-
-            const closestY =
-                clamp(
-                    z.y,
-                    b.y,
-                    b.y + b.height
-                );
-
-            const dx =
-                z.x - closestX;
-
-            const dy =
-                z.y - closestY;
-
-            if (
-                Math.hypot(dx, dy) <
-                z.radius
-            ) {
-
-                damageBarricade(
-                    b,
-                    z.damage * dt
-                );
-
-                z.vx *= .3;
-            }
-        }
-    }
-
-    resolveZombieCollisions();
-
-    enemiesText.textContent =
-        `Zumbis: ${zombies.length + zombiesToSpawn}`;
-}
-
-
-// ======================================================
-// UPDATE BALAS
-// ======================================================
-
-function updateBullets(dt) {
-
-    for (
-        let i = bullets.length - 1;
-        i >= 0;
-        i--
+    if (
+        state.magazine >=
+        weapon.magazine ||
+        state.reserve <= 0
     ) {
 
-        const b = bullets[i];
+        return;
 
-        b.x += b.vx * dt;
-        b.y += b.vy * dt;
-
-        b.life -= dt;
-
-        let remove = false;
-
-        // colisão com zumbis
-        for (const z of zombies) {
-
-            if (z.ragdoll) continue;
-
-            const dx =
-                b.x - z.x;
-
-            const dy =
-                b.y - z.y;
-
-            if (
-                Math.hypot(dx, dy) <
-                z.radius
-            ) {
-
-                z.health -=
-                    b.damage;
-
-                z.hitFlash = .1;
-
-                const impact =
-                    normalize(
-                        b.vx,
-                        b.vy
-                    );
-
-                z.vx +=
-                    impact.x *
-                    b.damage *
-                    2 /
-                    z.mass;
-
-                if (z.health <= 0) {
-
-                    player.score +=
-                        z.type === "brute"
-                            ? 100
-                            : z.type === "runner"
-                                ? 40
-                                : 20;
-
-                    createRagdoll(
-                        z,
-                        b.x,
-                        b.y
-                    );
-                }
-
-                remove = true;
-
-                break;
-            }
-        }
-
-        // colisão com barricadas
-        if (!remove) {
-
-            for (const barricade of barricades) {
-
-                if (
-                    b.x > barricade.x &&
-                    b.x <
-                    barricade.x +
-                    barricade.width &&
-                    b.y >
-                    barricade.y &&
-                    b.y <
-                    barricade.y +
-                    barricade.height
-                ) {
-
-                    damageBarricade(
-                        barricade,
-                        8
-                    );
-
-                    remove = true;
-                    break;
-                }
-            }
-        }
-
-        if (
-            b.life <= 0 ||
-            b.x < -100 ||
-            b.x > W + 100 ||
-            b.y < -100 ||
-            b.y > H + 100
-        ) {
-            remove = true;
-        }
-
-        if (remove) {
-            bullets.splice(i, 1);
-        }
     }
+
+
+    reloading =
+        true;
+
+
+    setTimeout(
+        () => {
+
+            const needed =
+                weapon.magazine -
+                state.magazine;
+
+
+            const amount =
+                Math.min(
+                    needed,
+                    state.reserve
+                );
+
+
+            state.magazine +=
+                amount;
+
+
+            state.reserve -=
+                amount;
+
+
+            reloading =
+                false;
+
+
+            updateUI();
+
+        },
+
+        weapon.reloadTime
+    );
+
 }
 
 
-// ======================================================
+// =====================================================
 // UPDATE PLAYER
-// ======================================================
+// =====================================================
 
 function updatePlayer(dt) {
 
-    if (player.invulnerable > 0) {
-        player.invulnerable -= dt;
+    if (
+        player.invulnerable >
+        0
+    ) {
+
+        player.invulnerable -=
+            dt;
+
     }
 
-    let movement = 0;
 
-    if (keys["a"] || keys["arrowleft"]) {
-        movement -= 1;
+    let movement =
+        0;
+
+
+    if (
+        keys["a"] ||
+        keys["arrowleft"]
+    ) {
+
+        movement--;
+
     }
 
-    if (keys["d"] || keys["arrowright"]) {
-        movement += 1;
+
+    if (
+        keys["d"] ||
+        keys["arrowright"]
+    ) {
+
+        movement++;
+
     }
 
-    const acceleration =
-        player.grounded
-            ? 4200
-            : 2400;
 
     player.vx +=
         movement *
-        acceleration *
+        4000 *
         dt;
 
-    const friction =
-        player.grounded
-            ? .78
-            : .97;
 
     player.vx *=
-        Math.pow(friction, dt * 60);
+        Math.pow(
+            player.grounded
+                ? .78
+                : .96,
+
+            dt * 60
+        );
+
 
     player.vx =
         clamp(
@@ -1103,41 +1502,51 @@ function updatePlayer(dt) {
             player.speed
         );
 
+
     if (
-        (keys["w"] ||
-        keys["arrowup"] ||
-        keys[" "]) &&
+        (
+            keys["w"] ||
+            keys["arrowup"] ||
+            keys[" "]
+        ) &&
         player.grounded
     ) {
 
         player.vy =
             -player.jumpForce;
 
-        player.grounded = false;
+        player.grounded =
+            false;
+
     }
+
 
     player.vy +=
         player.gravity *
         dt;
 
+
     player.x +=
         player.vx *
         dt;
+
 
     player.y +=
         player.vy *
         dt;
 
-    // limites
+
     player.x =
         clamp(
             player.x,
-            30,
-            W - 30
+            25,
+            W - 25
         );
+
 
     const floor =
         H - 100;
+
 
     if (
         player.y +
@@ -1149,27 +1558,1006 @@ function updatePlayer(dt) {
             floor -
             player.height / 2;
 
-        player.vy = 0;
+        player.vy =
+            0;
 
-        player.grounded = true;
+        player.grounded =
+            true;
+
     }
 
-    if (mouse.x > player.x) {
-        player.facing = 1;
-    }
-    else {
-        player.facing = -1;
-    }
+
+    player.facing =
+        mouse.x >
+        player.x
+            ? 1
+            : -1;
+
 
     if (mouse.down) {
+
         shoot();
+
     }
+
+
+    updateObjectCollisions();
+
 }
 
 
-// ======================================================
-// DESENHO
-// ======================================================
+// =====================================================
+// OBJETOS FÍSICOS
+// =====================================================
+
+function updateObjects(dt) {
+
+    for (
+        const object
+        of objects
+    ) {
+
+        if (
+            object.type ===
+            "platform"
+        ) continue;
+
+
+        object.vy +=
+            1800 * dt;
+
+
+        object.vx *=
+            .985;
+
+
+        object.vy *=
+            .995;
+
+
+        object.x +=
+            object.vx * dt;
+
+
+        object.y +=
+            object.vy * dt;
+
+
+        if (
+            object.type ===
+            "box"
+        ) {
+
+            const floor =
+                H - 100;
+
+
+            if (
+                object.y +
+                object.height >
+                floor
+            ) {
+
+                object.y =
+                    floor -
+                    object.height;
+
+                object.vy *=
+                    -.25;
+
+                object.vx *=
+                    .8;
+
+            }
+
+        }
+
+
+        if (
+            object.type ===
+            "barrel"
+        ) {
+
+            const floor =
+                H - 100;
+
+
+            if (
+                object.y +
+                object.radius >
+                floor
+            ) {
+
+                object.y =
+                    floor -
+                    object.radius;
+
+                object.vy *=
+                    -.3;
+
+                object.vx *=
+                    .8;
+
+            }
+
+        }
+
+    }
+
+}
+
+
+function updateObjectCollisions() {
+
+    for (
+        const object
+        of objects
+    ) {
+
+        if (
+            object.type ===
+            "platform"
+        ) {
+
+            if (
+                player.x >
+                object.x &&
+                player.x <
+                object.x +
+                object.width &&
+                player.y +
+                player.height /
+                2 >
+                object.y &&
+                player.y +
+                player.height /
+                2 <
+                object.y +
+                30 &&
+                player.vy >= 0
+            ) {
+
+                player.y =
+                    object.y -
+                    player.height /
+                    2;
+
+                player.vy =
+                    0;
+
+                player.grounded =
+                    true;
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// ZUMBIS
+// =====================================================
+
+function updateZombies(dt) {
+
+    for (
+        let i =
+        zombies.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const z =
+            zombies[i];
+
+
+        if (
+            z.ragdoll
+        ) {
+
+            updateRagdoll(
+                z,
+                dt
+            );
+
+
+            if (
+                z.deadTime >
+                3
+            ) {
+
+                zombies.splice(
+                    i,
+                    1
+                );
+
+            }
+
+            continue;
+
+        }
+
+
+        z.hitFlash =
+            Math.max(
+                0,
+                z.hitFlash - dt
+            );
+
+
+        const dir =
+            normalize(
+                player.x -
+                z.x,
+                0
+            );
+
+
+        z.vx =
+            dir.x *
+            z.speed;
+
+
+        z.x +=
+            z.vx * dt;
+
+
+        z.y =
+            H -
+            100 -
+            z.radius;
+
+
+        if (
+            Math.abs(
+                z.x -
+                player.x
+            ) <
+            z.radius +
+            28
+        ) {
+
+            damagePlayer(
+                z.damage *
+                dt
+            );
+
+        }
+
+    }
+
+
+    resolveZombieCollisions();
+
+
+    enemiesText.textContent =
+        `Zumbis: ${
+            zombies.length +
+            zombiesToSpawn
+        }`;
+
+}
+
+
+// =====================================================
+// COLISÕES ENTRE ZUMBIS
+// =====================================================
+
+function resolveZombieCollisions() {
+
+    for (
+        let i = 0;
+        i < zombies.length;
+        i++
+    ) {
+
+        const a =
+            zombies[i];
+
+
+        if (
+            a.ragdoll
+        ) continue;
+
+
+        for (
+            let j =
+            i + 1;
+
+            j <
+            zombies.length;
+
+            j++
+        ) {
+
+            const b =
+                zombies[j];
+
+
+            if (
+                b.ragdoll
+            ) continue;
+
+
+            const dx =
+                b.x -
+                a.x;
+
+
+            const distance =
+                Math.abs(dx);
+
+
+            const minimum =
+                a.radius +
+                b.radius;
+
+
+            if (
+                distance <
+                minimum
+            ) {
+
+                const push =
+                    (
+                        minimum -
+                        distance
+                    ) / 2;
+
+
+                if (
+                    dx > 0
+                ) {
+
+                    a.x -=
+                        push;
+
+                    b.x +=
+                        push;
+
+                }
+                else {
+
+                    a.x +=
+                        push;
+
+                    b.x -=
+                        push;
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// BALAS
+// =====================================================
+
+function updateBullets(dt) {
+
+    for (
+        let i =
+        bullets.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const bullet =
+            bullets[i];
+
+
+        bullet.x +=
+            bullet.vx *
+            dt;
+
+
+        bullet.y +=
+            bullet.vy *
+            dt;
+
+
+        bullet.life -=
+            dt;
+
+
+        let remove =
+            false;
+
+
+        for (
+            const z
+            of zombies
+        ) {
+
+            if (
+                z.ragdoll
+            ) continue;
+
+
+            const d =
+                Math.hypot(
+
+                    bullet.x -
+                    z.x,
+
+                    bullet.y -
+                    z.y
+
+                );
+
+
+            if (
+                d <
+                z.radius
+            ) {
+
+                z.health -=
+                    bullet.damage;
+
+
+                z.hitFlash =
+                    .12;
+
+
+                const direction =
+                    normalize(
+                        bullet.vx,
+                        bullet.vy
+                    );
+
+
+                z.vx +=
+                    direction.x *
+                    bullet.damage *
+                    2 /
+                    z.mass;
+
+
+                createHitParticles(
+                    bullet.x,
+                    bullet.y
+                );
+
+
+                if (
+                    z.health <=
+                    0
+                ) {
+
+                    killZombie(
+                        z,
+                        bullet.x,
+                        bullet.y
+                    );
+
+                }
+
+
+                remove =
+                    true;
+
+                break;
+
+            }
+
+        }
+
+
+        if (
+            bullet.life <=
+            0 ||
+            bullet.x <
+            -100 ||
+            bullet.x >
+            W + 100 ||
+            bullet.y <
+            -100 ||
+            bullet.y >
+            H + 100
+        ) {
+
+            remove =
+                true;
+
+        }
+
+
+        if (remove) {
+
+            bullets.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// MORTE DO ZUMBI
+// =====================================================
+
+function killZombie(
+    zombie,
+    x,
+    y
+) {
+
+    if (
+        zombie.ragdoll
+    ) return;
+
+
+    // 💰 CADA ZUMBI = $100
+
+    money +=
+        100;
+
+
+    score +=
+        100;
+
+
+    createRagdoll(
+        zombie,
+        x,
+        y
+    );
+
+
+    createHitParticles(
+        x,
+        y,
+        12
+    );
+
+
+    updateUI();
+
+}
+
+
+// =====================================================
+// DANO
+// =====================================================
+
+function damagePlayer(
+    amount
+) {
+
+    if (
+        player.invulnerable >
+        0
+    ) return;
+
+
+    let damage =
+        amount;
+
+
+    if (
+        player.armor >
+        0
+    ) {
+
+        const armorDamage =
+            Math.min(
+                player.armor,
+                damage
+            );
+
+
+        player.armor -=
+            armorDamage;
+
+
+        damage -=
+            armorDamage;
+
+    }
+
+
+    player.health -=
+        damage;
+
+
+    player.invulnerable =
+        .25;
+
+
+    if (
+        player.health <=
+        0
+    ) {
+
+        endGame();
+
+    }
+
+
+    updateUI();
+
+}
+
+
+// =====================================================
+// PARTÍCULAS
+// =====================================================
+
+function createHitParticles(
+    x,
+    y,
+    amount = 5
+) {
+
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
+
+        particles.push({
+
+            x,
+
+            y,
+
+            vx:
+                random(
+                    -250,
+                    250
+                ),
+
+            vy:
+                random(
+                    -300,
+                    50
+                ),
+
+            life:
+                random(
+                    .2,
+                    .6
+                ),
+
+            size:
+                random(
+                    2,
+                    5
+                )
+
+        });
+
+    }
+
+}
+
+
+function updateParticles(dt) {
+
+    for (
+        let i =
+        particles.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const p =
+            particles[i];
+
+
+        p.vy +=
+            900 *
+            dt;
+
+
+        p.x +=
+            p.vx *
+            dt;
+
+
+        p.y +=
+            p.vy *
+            dt;
+
+
+        p.life -=
+            dt;
+
+
+        if (
+            p.life <=
+            0
+        ) {
+
+            particles.splice(
+                i,
+                1
+            );
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// ONDAS
+// =====================================================
+
+function startWave() {
+
+    if (
+        waveActive
+    ) return;
+
+
+    shopScreen.style.display =
+        "none";
+
+
+    hud.style.display =
+        "flex";
+
+
+    if (
+        !player
+    ) {
+
+        player =
+            createPlayer();
+
+    }
+
+
+    player.health =
+        player.maxHealth;
+
+
+    player.armor =
+        player.maxArmor;
+
+
+    zombies = [];
+
+    bullets = [];
+
+
+    zombiesToSpawn =
+        5 +
+        wave * 3;
+
+
+    spawnTimer =
+        0;
+
+
+    waveActive =
+        true;
+
+
+    gameRunning =
+        true;
+
+
+    updateUI();
+
+
+    lastTime =
+        performance.now();
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+function updateWave(dt) {
+
+    if (
+        zombiesToSpawn >
+        0
+    ) {
+
+        spawnTimer -=
+            dt;
+
+
+        if (
+            spawnTimer <=
+            0
+        ) {
+
+            spawnZombie();
+
+
+            zombiesToSpawn--;
+
+
+            spawnTimer =
+                Math.max(
+
+                    .25,
+
+                    .9 -
+                    wave *
+                    .035
+
+                );
+
+        }
+
+    }
+
+
+    else if (
+        zombies.length ===
+        0
+    ) {
+
+        finishWave();
+
+    }
+
+}
+
+
+function finishWave() {
+
+    if (
+        !waveActive
+    ) return;
+
+
+    waveActive =
+        false;
+
+
+    gameRunning =
+        false;
+
+
+    hud.style.display =
+        "none";
+
+
+    wave++;
+
+
+    // pequena recompensa
+    money +=
+        250;
+
+
+    renderShop();
+
+
+    shopScreen.style.display =
+        "flex";
+
+
+    updateUI();
+
+}
+
+
+// =====================================================
+// UI
+// =====================================================
+
+function updateUI() {
+
+    moneyText.textContent =
+        money.toLocaleString(
+            "pt-BR"
+        );
+
+
+    moneyHud.textContent =
+        `💵 $${money.toLocaleString(
+            "pt-BR"
+        )}`;
+
+
+    healthBar.style.width =
+        `${clamp(
+            player
+                ? player.health
+                : 100,
+            0,
+            100
+        )}%`;
+
+
+    armorBar.style.width =
+        `${clamp(
+            player
+                ? player.armor
+                : 100,
+            0,
+            100
+        )}%`;
+
+
+    const weapon =
+        weapons[
+            currentWeapon
+        ];
+
+
+    const state =
+        weaponState[
+            currentWeapon
+        ];
+
+
+    weaponText.textContent =
+        weapon.name;
+
+
+    ammoText.textContent =
+        `${state.magazine} / ${state.reserve}`;
+
+
+    waveText.textContent =
+        `ONDA ${wave}`;
+
+
+    nameHud.textContent =
+        playerNameInput.value
+        .trim() ||
+        "Jogador";
+
+}
+
+
+// =====================================================
+// EQUIPAR
+// =====================================================
+
+function equipWeapon(
+    index
+) {
+
+    if (
+        !weaponState[index]
+            .owned
+    ) return;
+
+
+    currentWeapon =
+        index;
+
+
+    updateUI();
+
+}
+
+
+// =====================================================
+// DESENHO DO CENÁRIO
+// =====================================================
 
 function drawBackground() {
 
@@ -1181,17 +2569,22 @@ function drawBackground() {
             H
         );
 
+
     gradient.addColorStop(
         0,
-        "#101820"
+        "#1b2229"
     );
+
 
     gradient.addColorStop(
         1,
-        "#07090b"
+        "#080a0c"
     );
 
-    ctx.fillStyle = gradient;
+
+    ctx.fillStyle =
+        gradient;
+
 
     ctx.fillRect(
         0,
@@ -1200,78 +2593,125 @@ function drawBackground() {
         H
     );
 
+
     // lua
+
     ctx.beginPath();
 
     ctx.arc(
         W - 130,
-        110,
+        100,
         45,
         0,
         Math.PI * 2
     );
 
     ctx.fillStyle =
-        "rgba(220,220,200,.15)";
+        "#c9c6a6";
+
+    ctx.globalAlpha =
+        .12;
 
     ctx.fill();
 
+    ctx.globalAlpha =
+        1;
+
+
     // prédios
+
     for (
         let x = 0;
         x < W;
-        x += 90
+        x += 100
     ) {
 
-        const height =
-            80 +
-            ((x * 17) % 130);
+        const buildingHeight =
+            100 +
+            (
+                x * 13
+            ) %
+            180;
+
 
         ctx.fillStyle =
-            "#0b1014";
+            "#11171c";
+
 
         ctx.fillRect(
+
             x,
-            H - 100 - height,
-            75,
-            height
+
+            H -
+            100 -
+            buildingHeight,
+
+            82,
+
+            buildingHeight
+
         );
 
+
+        // janelas
+
         for (
-            let y = H - 125 - height;
-            y < H - 110;
-            y += 22
+            let y =
+            H -
+            120 -
+            buildingHeight;
+
+            y <
+            H - 110;
+
+            y += 25
         ) {
 
             ctx.fillStyle =
-                "rgba(200,160,80,.15)";
+                "#8c713d";
+
+
+            ctx.globalAlpha =
+                .18;
+
 
             ctx.fillRect(
-                x + 10,
+                x + 12,
                 y,
-                8,
-                10
+                9,
+                12
             );
 
-            ctx.fillRect(
-                x + 35,
-                y,
-                8,
-                10
-            );
 
             ctx.fillRect(
-                x + 58,
+                x + 38,
                 y,
-                8,
-                10
+                9,
+                12
             );
+
+
+            ctx.fillRect(
+                x + 63,
+                y,
+                9,
+                12
+            );
+
+
+            ctx.globalAlpha =
+                1;
+
         }
+
     }
+
 
     // chão
 
-    ctx.fillStyle = "#151515";
+    ctx.fillStyle =
+        "#242424";
+
 
     ctx.fillRect(
         0,
@@ -1280,447 +2720,710 @@ function drawBackground() {
         100
     );
 
-    ctx.fillStyle = "#242424";
+
+    // rua
+
+    ctx.fillStyle =
+        "#303030";
+
 
     ctx.fillRect(
         0,
-        H - 100,
+        H - 45,
         W,
-        4
+        5
     );
 
-    // linhas do chão
+
+    // marcações
 
     for (
         let x = 0;
         x < W;
-        x += 70
+        x += 100
     ) {
 
         ctx.fillStyle =
-            "#1c1c1c";
+            "#464646";
+
 
         ctx.fillRect(
             x,
-            H - 55,
-            45,
+            H - 22,
+            55,
             3
         );
+
     }
+
 }
 
-function drawBarricades() {
 
-    for (const b of barricades) {
+// =====================================================
+// DESENHAR OBJETOS
+// =====================================================
 
-        const health =
-            b.health / b.maxHealth;
+function drawObjects() {
 
-        ctx.fillStyle =
-            "#5c3c22";
+    for (
+        const object
+        of objects
+    ) {
 
-        ctx.fillRect(
-            b.x,
-            b.y,
-            b.width,
-            b.height
-        );
+        if (
+            object.type ===
+            "box"
+        ) {
 
-        ctx.strokeStyle =
-            "#27190e";
+            ctx.fillStyle =
+                "#81552f";
 
-        ctx.lineWidth = 4;
 
-        ctx.strokeRect(
-            b.x,
-            b.y,
-            b.width,
-            b.height
-        );
+            ctx.fillRect(
 
-        // barras de madeira
-        ctx.strokeStyle =
-            "#8a5a31";
+                object.x,
 
-        ctx.lineWidth = 5;
+                object.y,
 
-        for (
-            let x = b.x - 10;
-            x < b.x + b.width;
-            x += 45
+                object.width,
+
+                object.height
+
+            );
+
+
+            ctx.strokeStyle =
+                "#c0874d";
+
+
+            ctx.lineWidth =
+                3;
+
+
+            ctx.strokeRect(
+
+                object.x,
+
+                object.y,
+
+                object.width,
+
+                object.height
+
+            );
+
+
+            ctx.beginPath();
+
+
+            ctx.moveTo(
+                object.x,
+                object.y
+            );
+
+
+            ctx.lineTo(
+                object.x +
+                object.width,
+                object.y +
+                object.height
+            );
+
+
+            ctx.moveTo(
+                object.x +
+                object.width,
+                object.y
+            );
+
+
+            ctx.lineTo(
+                object.x,
+                object.y +
+                object.height
+            );
+
+
+            ctx.stroke();
+
+        }
+
+
+        else if (
+            object.type ===
+            "barrel"
         ) {
 
             ctx.beginPath();
 
-            ctx.moveTo(
-                x,
-                b.y
+            ctx.arc(
+
+                object.x,
+
+                object.y,
+
+                object.radius,
+
+                0,
+
+                Math.PI * 2
+
             );
 
-            ctx.lineTo(
-                x + 25,
-                b.y + b.height
-            );
+
+            ctx.fillStyle =
+                "#425e68";
+
+
+            ctx.fill();
+
+
+            ctx.strokeStyle =
+                "#9aa5a9";
+
+
+            ctx.lineWidth =
+                3;
+
 
             ctx.stroke();
+
+
+            ctx.strokeStyle =
+                "#27363c";
+
+
+            ctx.beginPath();
+
+
+            ctx.arc(
+                object.x,
+                object.y,
+                object.radius *
+                .65,
+                0,
+                Math.PI * 2
+            );
+
+
+            ctx.stroke();
+
         }
 
-        // vida
 
-        ctx.fillStyle =
-            "#300";
+        else if (
+            object.type ===
+            "platform"
+        ) {
 
-        ctx.fillRect(
-            b.x,
-            b.y - 9,
-            b.width,
-            5
-        );
+            ctx.fillStyle =
+                "#634326";
 
-        ctx.fillStyle =
-            "#ce3a32";
 
-        ctx.fillRect(
-            b.x,
-            b.y - 9,
-            b.width * health,
-            5
-        );
+            ctx.fillRect(
+
+                object.x,
+
+                object.y,
+
+                object.width,
+
+                object.height
+
+            );
+
+
+            ctx.strokeStyle =
+                "#a67545";
+
+
+            ctx.lineWidth =
+                4;
+
+
+            ctx.strokeRect(
+
+                object.x,
+
+                object.y,
+
+                object.width,
+
+                object.height
+
+            );
+
+        }
+
     }
+
 }
+
+
+// =====================================================
+// PLAYER
+// =====================================================
 
 function drawPlayer() {
 
     ctx.save();
+
 
     ctx.translate(
         player.x,
         player.y
     );
 
-    if (player.facing < 0) {
-        ctx.scale(-1, 1);
+
+    if (
+        player.facing <
+        0
+    ) {
+
+        ctx.scale(
+            -1,
+            1
+        );
+
     }
 
+
     // sombra
+
     ctx.beginPath();
 
     ctx.ellipse(
         0,
-        38,
-        25,
+        39,
+        27,
         7,
         0,
         0,
         Math.PI * 2
     );
 
+
     ctx.fillStyle =
         "rgba(0,0,0,.5)";
 
+
     ctx.fill();
 
+
     // pernas
-    ctx.fillStyle = "#292929";
+
+    ctx.fillStyle =
+        "#24272b";
+
 
     ctx.fillRect(
         -15,
-        12,
+        10,
         11,
-        27
+        30
     );
+
 
     ctx.fillRect(
         5,
-        12,
+        10,
         11,
-        27
+        30
     );
 
+
     // corpo
+
     ctx.fillStyle =
-        player.invulnerable > 0
-            ? "#eeeeee"
-            : "#526273";
+        player.invulnerable >
+        0
+            ? "#fff"
+            : "#596979";
+
 
     ctx.fillRect(
         -18,
-        -28,
+        -30,
         36,
         45
     );
 
+
     // cabeça
+
     ctx.beginPath();
+
 
     ctx.arc(
         0,
-        -43,
+        -44,
         14,
         0,
         Math.PI * 2
     );
 
+
     ctx.fillStyle =
-        "#c99a78";
+        "#c79675";
+
 
     ctx.fill();
 
+
     // arma
 
-    const gunAngle =
+    const angle =
         Math.atan2(
-            mouse.y - player.y,
-            Math.abs(mouse.x - player.x)
+
+            mouse.y -
+            player.y,
+
+            Math.abs(
+                mouse.x -
+                player.x
+            )
+
         );
+
 
     ctx.save();
 
+
     ctx.rotate(
         clamp(
-            gunAngle,
+            angle,
             -.8,
             .8
         )
     );
 
+
     ctx.fillStyle =
-        "#111";
+        "#151515";
+
 
     ctx.fillRect(
         5,
         -20,
-        35,
-        7
+        40,
+        8
     );
 
-    ctx.fillStyle =
-        "#333";
-
-    ctx.fillRect(
-        10,
-        -13,
-        10,
-        14
-    );
 
     ctx.restore();
 
+
     ctx.restore();
+
 }
 
-function drawZombie(z) {
 
-    if (z.ragdoll) {
+// =====================================================
+// ZUMBI
+// =====================================================
 
-        drawRagdoll(z);
+function drawZombie(
+    z
+) {
+
+    if (
+        z.ragdoll
+    ) {
+
+        drawRagdoll(
+            z
+        );
 
         return;
+
     }
 
+
     ctx.save();
+
 
     ctx.translate(
         z.x,
         z.y
     );
 
+
     const direction =
-        player.x > z.x ? 1 : -1;
+        player.x >
+        z.x
+            ? 1
+            : -1;
+
 
     ctx.scale(
         direction,
         1
     );
 
-    // sombra
-
-    ctx.beginPath();
-
-    ctx.ellipse(
-        0,
-        z.radius + 5,
-        z.radius,
-        7,
-        0,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        "rgba(0,0,0,.45)";
-
-    ctx.fill();
 
     // pernas
 
     ctx.strokeStyle =
-        "#343a2c";
+        "#404a35";
 
-    ctx.lineWidth = 9;
+
+    ctx.lineWidth =
+        9;
+
 
     ctx.beginPath();
 
+
     ctx.moveTo(
         -8,
-        z.radius * .4
+        z.radius *
+        .4
     );
+
 
     ctx.lineTo(
         -12,
-        z.radius * 1.5
+        z.radius *
+        1.5
     );
+
 
     ctx.moveTo(
         8,
-        z.radius * .4
+        z.radius *
+        .4
     );
+
 
     ctx.lineTo(
         13,
-        z.radius * 1.5
+        z.radius *
+        1.5
     );
 
+
     ctx.stroke();
+
 
     // corpo
 
     ctx.fillStyle =
-        z.hitFlash > 0
-            ? "#ffffff"
+        z.hitFlash >
+        0
+            ? "#fff"
             : z.color;
 
+
     ctx.fillRect(
-        -z.radius * .65,
-        -z.radius * .5,
-        z.radius * 1.3,
-        z.radius * 1.4
+
+        -z.radius *
+        .65,
+
+        -z.radius *
+        .5,
+
+        z.radius *
+        1.3,
+
+        z.radius *
+        1.4
+
     );
+
 
     // cabeça
 
     ctx.beginPath();
 
+
     ctx.arc(
+
         0,
-        -z.radius * .9,
-        z.radius * .6,
+
+        -z.radius *
+        .9,
+
+        z.radius *
+        .6,
+
         0,
-        Math.PI * 2
+
+        Math.PI *
+        2
+
     );
 
+
     ctx.fillStyle =
-        z.hitFlash > 0
-            ? "#fff"
-            : "#738c5b";
+        "#728a5a";
+
 
     ctx.fill();
+
 
     // olhos
 
     ctx.fillStyle =
-        "#e52c2c";
+        "#e53939";
+
 
     ctx.beginPath();
 
+
     ctx.arc(
         -6,
-        -z.radius * .95,
+        -z.radius *
+        .95,
         3,
         0,
         Math.PI * 2
     );
+
 
     ctx.arc(
         6,
-        -z.radius * .95,
+        -z.radius *
+        .95,
         3,
         0,
         Math.PI * 2
     );
 
+
     ctx.fill();
+
 
     // braços
 
     ctx.strokeStyle =
-        "#738c5b";
+        "#728a5a";
 
-    ctx.lineWidth = 8;
+
+    ctx.lineWidth =
+        8;
+
 
     ctx.beginPath();
 
-    ctx.moveTo(
-        -z.radius * .6,
-        -z.radius * .1
-    );
-
-    ctx.lineTo(
-        -z.radius * 1.25,
-        z.radius * .55
-    );
 
     ctx.moveTo(
-        z.radius * .6,
-        -z.radius * .1
+        -z.radius *
+        .6,
+        -z.radius *
+        .1
     );
 
+
     ctx.lineTo(
-        z.radius * 1.25,
-        z.radius * .55
+        -z.radius *
+        1.3,
+        z.radius *
+        .6
     );
+
+
+    ctx.moveTo(
+        z.radius *
+        .6,
+        -z.radius *
+        .1
+    );
+
+
+    ctx.lineTo(
+        z.radius *
+        1.3,
+        z.radius *
+        .6
+    );
+
 
     ctx.stroke();
 
-    // barra de vida
 
-    const health =
-        z.health / z.maxHealth;
+    // vida
 
     ctx.fillStyle =
         "#250000";
 
+
     ctx.fillRect(
+
         -z.radius,
-        -z.radius * 1.7,
-        z.radius * 2,
+
+        -z.radius *
+        1.7,
+
+        z.radius *
+        2,
+
         4
+
     );
+
 
     ctx.fillStyle =
-        "#d63030";
+        "#d52e2e";
+
 
     ctx.fillRect(
+
         -z.radius,
-        -z.radius * 1.7,
-        z.radius * 2 * health,
+
+        -z.radius *
+        1.7,
+
+        z.radius *
+        2 *
+        (
+            z.health /
+            z.maxHealth
+        ),
+
         4
+
     );
 
+
     ctx.restore();
+
 }
 
-function drawRagdoll(z) {
 
-    for (const p of z.parts) {
+function drawRagdoll(
+    zombie
+) {
+
+    for (
+        const p
+        of zombie.parts
+    ) {
 
         ctx.save();
+
 
         ctx.translate(
             p.x,
             p.y
         );
 
+
         ctx.rotate(
             p.angle
         );
 
-        ctx.fillStyle =
-            "#657053";
 
-        if (p.name === "head") {
+        ctx.fillStyle =
+            "#657354";
+
+
+        if (
+            p.type ===
+            "head"
+        ) {
 
             ctx.beginPath();
+
 
             ctx.arc(
                 0,
@@ -1730,114 +3433,137 @@ function drawRagdoll(z) {
                 Math.PI * 2
             );
 
+
             ctx.fill();
+
         }
 
-        else if (p.name === "body") {
+        else if (
+            p.type ===
+            "body"
+        ) {
 
             ctx.fillRect(
+
                 -p.width / 2,
+
                 -p.height / 2,
+
                 p.width,
+
                 p.height
+
             );
+
         }
 
         else {
 
             ctx.fillRect(
+
                 -5,
+
                 -p.length / 2,
+
                 10,
+
                 p.length
+
             );
+
         }
 
+
         ctx.restore();
+
     }
+
 }
+
+
+// =====================================================
+// BALAS E PARTÍCULAS
+// =====================================================
 
 function drawBullets() {
 
-    for (const b of bullets) {
+    for (
+        const bullet
+        of bullets
+    ) {
 
         ctx.beginPath();
 
+
         ctx.arc(
-            b.x,
-            b.y,
-            b.radius,
+
+            bullet.x,
+
+            bullet.y,
+
+            3,
+
             0,
+
             Math.PI * 2
+
         );
 
+
         ctx.fillStyle =
-            "#ffd86b";
+            "#ffd86a";
+
 
         ctx.fill();
 
-        // rastro
 
-        ctx.beginPath();
-
-        ctx.moveTo(
-            b.x,
-            b.y
-        );
-
-        ctx.lineTo(
-            b.x -
-            b.vx * .015,
-            b.y -
-            b.vy * .015
-        );
-
-        ctx.strokeStyle =
-            "rgba(255,220,100,.4)";
-
-        ctx.lineWidth = 2;
-
-        ctx.stroke();
     }
+
 }
 
 
-// ======================================================
-// LOOP
-// ======================================================
+function drawParticles() {
 
-let gameRunning = false;
-let lastTime = 0;
+    for (
+        const p
+        of particles
+    ) {
 
-function gameLoop(time) {
+        ctx.globalAlpha =
+            Math.max(
+                0,
+                p.life
+            );
 
-    if (!gameRunning) return;
 
-    let dt =
-        (time - lastTime) / 1000;
+        ctx.fillStyle =
+            "#d99a62";
 
-    lastTime = time;
 
-    dt =
-        Math.min(
-            dt,
-            .033
+        ctx.fillRect(
+
+            p.x,
+
+            p.y,
+
+            p.size,
+
+            p.size
+
         );
 
-    updatePlayer(dt);
+    }
 
-    updateZombies(dt);
 
-    updateBullets(dt);
+    ctx.globalAlpha =
+        1;
 
-    updateWaves(dt);
-
-    draw();
-
-    requestAnimationFrame(
-        gameLoop
-    );
 }
+
+
+// =====================================================
+// DRAW
+// =====================================================
 
 function draw() {
 
@@ -1848,118 +3574,256 @@ function draw() {
         H
     );
 
+
     drawBackground();
 
-    drawBarricades();
 
-    for (const b of bullets) {
-        // desenhado depois das estruturas
-    }
+    drawObjects();
 
-    for (const z of zombies) {
+
+    for (
+        const z
+        of zombies
+    ) {
+
         drawZombie(z);
+
     }
+
 
     drawBullets();
 
-    drawPlayer();
+
+    drawParticles();
+
+
+    if (
+        player
+    ) {
+
+        drawPlayer();
+
+    }
+
 }
 
 
-// ======================================================
-// INICIAR
-// ======================================================
+// =====================================================
+// LOOP
+// =====================================================
 
-function startGame() {
+function gameLoop(
+    time
+) {
 
-    let playerName =
-        playerNameInput.value.trim();
+    if (
+        !gameRunning
+    ) return;
 
-    if (!playerName) {
-        playerName = "Jogador";
-    }
 
-    nameHud.textContent =
-        playerName;
+    let dt =
+        (
+            time -
+            lastTime
+        ) /
+        1000;
 
-    player =
-        createPlayer();
-
-    zombies = [];
-
-    bullets = [];
-
-    wave = 1;
-
-    waveDelay = 0;
-
-    currentWeapon = 0;
-
-    weaponState = weapons.map(w => ({
-        magazine: w.magazine,
-        reserve: w.ammo
-    }));
-
-    reloading = false;
-
-    createBarricades();
-
-    startWave();
-
-    healthBar.style.width =
-        "100%";
-
-    updateWeaponUI();
-
-    menu.style.display =
-        "none";
-
-    gameOverScreen.style.display =
-        "none";
-
-    hud.style.display =
-        "flex";
-
-    gameRunning = true;
 
     lastTime =
-        performance.now();
+        time;
+
+
+    dt =
+        Math.min(
+            dt,
+            .033
+        );
+
+
+    updatePlayer(dt);
+
+    updateObjects(dt);
+
+    updateZombies(dt);
+
+    updateBullets(dt);
+
+    updateParticles(dt);
+
+    updateWave(dt);
+
+
+    draw();
+
 
     requestAnimationFrame(
         gameLoop
     );
+
 }
+
+
+// =====================================================
+// MORTE
+// =====================================================
 
 function endGame() {
 
-    gameRunning = false;
+    gameRunning =
+        false;
+
+
+    waveActive =
+        false;
+
 
     hud.style.display =
         "none";
 
-    gameOverScreen.style.display =
+
+    gameOver.style.display =
         "flex";
 
+
     finalScore.textContent =
-        `Pontuação: ${player.score} | Ondas alcançadas: ${wave}`;
+        `Pontuação: ${score} | Dinheiro: $${money}`;
+
+
+    renderShop();
+
 }
 
-startBtn.addEventListener(
-    "click",
-    startGame
-);
 
 restartBtn.addEventListener(
     "click",
-    startGame
-);
+    () => {
 
-playerNameInput.addEventListener(
-    "keydown",
-    e => {
+        gameOver.style.display =
+            "none";
 
-        if (e.key === "Enter") {
-            startGame();
-        }
+
+        shopScreen.style.display =
+            "flex";
+
+
+        renderShop();
+
     }
 );
+
+
+// =====================================================
+// UTILIDADES
+// =====================================================
+
+function random(
+    min,
+    max
+) {
+
+    return Math.random() *
+        (
+            max -
+            min
+        ) +
+        min;
+
+}
+
+
+function clamp(
+    value,
+    min,
+    max
+) {
+
+    return Math.max(
+        min,
+        Math.min(
+            max,
+            value
+        )
+    );
+
+}
+
+
+function normalize(
+    x,
+    y
+) {
+
+    const length =
+        Math.hypot(
+            x,
+            y
+        );
+
+
+    if (
+        length === 0
+    ) {
+
+        return {
+            x: 0,
+            y: 0
+        };
+
+    }
+
+
+    return {
+
+        x:
+            x /
+            length,
+
+        y:
+            y /
+            length
+
+    };
+
+}
+
+
+// =====================================================
+// RESIZE
+// =====================================================
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        W =
+            window.innerWidth;
+
+        H =
+            window.innerHeight;
+
+
+        canvas.width =
+            W;
+
+        canvas.height =
+            H;
+
+    }
+);
+
+
+// =====================================================
+// INICIALIZAÇÃO
+// =====================================================
+
+player =
+    createPlayer();
+
+
+createObjects();
+
+
+renderShop();
+
+
+updateUI();
