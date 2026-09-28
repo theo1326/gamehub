@@ -1,9 +1,9 @@
 const games = [
     {
-        name: "Neon Racer",
-        category: "Corrida",
-        icon: "🏎️",
-        description: "Corra em pistas futuristas e tente bater seu recorde."
+        name: "they are comming",
+        category: "ação",
+        icon: "🧟",
+        description: "seja o melhor sobrevivente nesse mundo zumbi."
     },
     {
         name: "Space Battle",
