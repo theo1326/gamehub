@@ -1,16 +1,46 @@
 const games = [
     {
-        name: "they are comming",
-        category: "ação",
+        name: "They Are Coming",
+        category: "Ação",
         icon: "🧟",
-        description: "seja o melhor sobrevivente nesse mundo zumbi."
+        description: "Seja o melhor sobrevivente nesse mundo zumbi."
     },
 
     {
-        name: "batalha naval",
+        name: "Batalha Naval",
         category: "Ação",
         icon: "🚢",
-        description: "destrua seu inimigos usando seu navio e se torne o lider da marinha."
+        description: "Destrua seus inimigos usando seu navio e se torne o líder da marinha."
+    },
+
+    {
+        name: "Minecraft",
+        category: "Aventura",
+        icon: "🌴",
+        description: "Explore um mundo cheio de desafios."
+    },
+
+    {
+        name: "Blox Fruits",
+        category: "Ação",
+        icon: "🍈",
+        description: "One Piece."
+    },
+
+    {
+        name: "GTA 5",
+        category: "Corrida e ação",
+        icon: "🏎️",
+        description: "Explore uma cidade 3D, dirija carros e complete missões.",
+        link: "jogos/gta5/index.html"
+    },
+
+    {
+        name: "Cobrinha",
+        category: "Ação",
+        icon: "🐍",
+        description: "Coma a comida, cresça e faça a maior pontuação!",
+        link: "jogos/cobrinha/index.html"
     },
 
     {
@@ -19,41 +49,9 @@ const games = [
         icon: "🌱",
         description: "Defenda sua casa usando plantas contra ondas de zumbis.",
         link: "jogos/plants-vs-zombies/index.html"
-    },
-
-    {
-        name: "minecraft",
-        category: "Aventura",
-        icon: "🌴",
-        description: "Explore um mundo cheio de desafios."
-    },
-
-    {
-        name: "blox fruits",
-        category: "Ação",
-        icon: "🍈",
-        description: "one piece."
-    },
-
-    {
-       {
-    name: "gta5",
-    category: "Ação",
-    icon: "🚗",
-    description: "Explore uma cidade 3D, dirija carros e complete missões.",
-    link: "jogos/gta5/index.html"
-},
-    },
-
-    // 🐍 NOSSO PRIMEIRO JOGO REAL
-    {
-        name: "Cobrinha",
-        category: "Ação",
-        icon: "🐍",
-        description: "Coma a comida, cresça e faça a maior pontuação!",
-        link: "jogos/cobrinha/index.html"
     }
 ];
+
 
 const grid = document.getElementById("gameGrid");
 const search = document.getElementById("search");
@@ -62,113 +60,161 @@ const count = document.getElementById("resultCount");
 
 let category = "Todos";
 
+
 function render() {
 
-    const term = search.value.trim().toLowerCase();
+    const query =
+        search.value
+        .trim()
+        .toLowerCase();
 
-    const filtered = games.filter(g =>
-        (category === "Todos" || g.category === category) &&
-        (
-            g.name.toLowerCase().includes(term) ||
-            g.category.toLowerCase().includes(term) ||
-            g.description.toLowerCase().includes(term)
-        )
-    );
+    const filtered =
+        games.filter(game => {
 
-    grid.innerHTML = filtered.map(g => `
+            const matchesSearch =
+                game.name
+                .toLowerCase()
+                .includes(query) ||
+                game.description
+                .toLowerCase()
+                .includes(query);
 
-        <article class="game-card">
+            const matchesCategory =
+                category === "Todos" ||
+                game.category === category;
 
-            <div class="game-cover">
-                ${g.icon}
+            return (
+                matchesSearch &&
+                matchesCategory
+            );
+        });
+
+
+    grid.innerHTML = "";
+
+
+    filtered.forEach(game => {
+
+        const card =
+            document.createElement("div");
+
+        card.className = "game-card";
+
+
+        card.innerHTML = `
+            <div class="game-icon">
+                ${game.icon}
             </div>
 
             <div class="game-info">
-
-                <h3>${g.name}</h3>
-
-                <p>${g.description}</p>
-
-                <span class="tag">
-                    ${g.category}
+                <span class="game-category">
+                    ${game.category}
                 </span>
 
-                <button
-                    class="play"
-                    onclick="playGame('${g.name}')">
+                <h3>${game.name}</h3>
+
+                <p>${game.description}</p>
+
+                <button class="play-btn">
                     ▶ Jogar
                 </button>
-
             </div>
+        `;
 
-        </article>
 
-    `).join("");
+        const button =
+            card.querySelector(".play-btn");
+
+
+        button.addEventListener(
+            "click",
+            () => playGame(game)
+        );
+
+
+        grid.appendChild(card);
+    });
+
 
     count.textContent =
-        `${filtered.length} ${
-            filtered.length === 1
-            ? "jogo encontrado"
-            : "jogos encontrados"
-        }`;
+        `${filtered.length} jogos`;
 
-    empty.classList.toggle(
-        "hidden",
-        filtered.length !== 0
-    );
+
+    empty.style.display =
+        filtered.length === 0
+        ? "block"
+        : "none";
 }
 
-function playGame(name) {
 
-    const game = games.find(g => g.name === name);
+function playGame(game) {
 
-    if (game && game.link) {
+    if (game.link) {
 
-        window.location.href = game.link;
+        window.location.href =
+            game.link;
 
     } else {
 
         alert(
-            "O jogo " +
-            name +
-            " ainda não foi adicionado."
+            "Esse jogo ainda não foi adicionado ao Ludix."
         );
-
     }
 }
 
-document.querySelectorAll(".filter").forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        document
-            .querySelectorAll(".filter")
-            .forEach(x =>
-                x.classList.remove("active")
-            );
-
-        button.classList.add("active");
-
-        category = button.dataset.category;
-
-        render();
-    });
-
-});
-
-search.addEventListener("input", render);
 
 document
-    .getElementById("themeBtn")
-    .addEventListener("click", () => {
+    .querySelectorAll(".category-btn")
+    .forEach(button => {
 
-        document.body.classList.toggle("light");
+        button.addEventListener(
+            "click",
+            () => {
 
-        document.getElementById("themeBtn").textContent =
-            document.body.classList.contains("light")
-            ? "🌙"
-            : "☀️";
+                document
+                    .querySelectorAll(".category-btn")
+                    .forEach(btn =>
+                        btn.classList.remove("active")
+                    );
 
+                button.classList.add("active");
+
+                category =
+                    button.dataset.category;
+
+                render();
+            }
+        );
     });
+
+
+search.addEventListener(
+    "input",
+    render
+);
+
+
+const themeBtn =
+    document.getElementById("themeBtn");
+
+
+if (themeBtn) {
+
+    themeBtn.addEventListener(
+        "click",
+        () => {
+
+            document.body.classList.toggle(
+                "light"
+            );
+
+            themeBtn.textContent =
+                document.body.classList.contains("light")
+                ? "🌙"
+                : "☀️";
+        }
+    );
+}
+
 
 render();
