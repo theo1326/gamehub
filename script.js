@@ -6,16 +6,16 @@ const games = [
         description: "seja o melhor sobrevivente nesse mundo zumbi."
     },
     {
-        name: "Space Battle",
+        name: "batalha naval",
         category: "Ação",
-        icon: "🚀",
-        description: "Enfrente inimigos no espaço e sobreviva o máximo possível."
+        icon: "🚢",
+        description: "destrua seu inimigos usando seu navio e se torne o lider da marinha."
     },
     {
-        name: "Brain Blocks",
-        category: "Puzzle",
-        icon: "🧩",
-        description: "Resolva desafios e complete cada fase."
+        name: "plants vs zoombies",
+        category: "rpg",
+        icon: "🌱🧟",
+        description: "não deixe que os zumbis invadam seu territorio."
     },
     {
         name: "Jungle Quest",
