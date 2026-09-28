@@ -6,26 +6,28 @@
 
 html,
 body {
-
     width: 100%;
     height: 100%;
-
     overflow: hidden;
 
-    background: #101318;
+    background: #0d1013;
+
+    color: white;
 
     font-family:
         Arial,
         Helvetica,
         sans-serif;
-
-    color: white;
 }
 
 body {
     user-select: none;
 }
 
+
+/* =========================
+   CANVAS
+========================= */
 
 canvas {
 
@@ -38,19 +40,21 @@ canvas {
 
     display: block;
 
-    background: #11151b;
+    background: #15191d;
 }
 
 
-/* ================= LOJA ================= */
+/* =========================
+   MENU
+========================= */
 
 #shopScreen {
 
     position: fixed;
 
-    z-index: 20;
-
     inset: 0;
+
+    z-index: 20;
 
     display: flex;
 
@@ -58,31 +62,33 @@ canvas {
 
     align-items: center;
 
-    background:
+    overflow: auto;
 
+    padding: 20px;
+
+    background:
         linear-gradient(
-            rgba(8, 10, 13, .86),
-            rgba(8, 10, 13, .95)
+            rgba(5,7,9,.88),
+            rgba(5,7,9,.97)
         );
 }
 
 
 .shop-container {
 
-    width: min(1100px, 94vw);
+    width: min(1200px, 96vw);
 
-    max-height: 94vh;
+    max-height: 96vh;
 
     overflow-y: auto;
 
-    padding: 30px;
+    padding: 28px;
 
     background:
-
         linear-gradient(
             145deg,
-            #20262d,
-            #101419
+            #22282e,
+            #101418
         );
 
     border:
@@ -92,12 +98,13 @@ canvas {
     border-radius: 12px;
 
     box-shadow:
-
-        0 20px 80px
-        rgba(0,0,0,.7);
-
+        0 25px 100px rgba(0,0,0,.8);
 }
 
+
+/* =========================
+   CABEÇALHO
+========================= */
 
 .shop-header {
 
@@ -107,13 +114,14 @@ canvas {
 
     align-items: center;
 
+    gap: 20px;
+
+    padding-bottom: 20px;
+
     margin-bottom: 20px;
 
     border-bottom:
-
-        1px solid #343b42;
-
-    padding-bottom: 20px;
+        1px solid #3b4248;
 }
 
 
@@ -124,17 +132,14 @@ canvas {
 
     letter-spacing: 3px;
 
-    color: #eee;
-
     text-shadow:
-
         0 3px 0 #000;
 }
 
 
 .shop-header p {
 
-    color: #89939c;
+    color: #8d979f;
 
     letter-spacing: 5px;
 
@@ -146,27 +151,26 @@ canvas {
 
     padding: 14px 22px;
 
-    background: #151a1f;
+    background: #11161a;
 
     border:
-
-        2px solid #6e7a84;
+        2px solid #69747d;
 
     border-radius: 8px;
 
-    color: #ffd34e;
+    color: #ffd447;
 
-    font-size: 25px;
+    font-size: 24px;
 
     font-weight: bold;
+
+    white-space: nowrap;
 }
 
 
-.player-box {
-
-    margin-bottom: 20px;
-}
-
+/* =========================
+   NOME
+========================= */
 
 #playerName {
 
@@ -174,15 +178,16 @@ canvas {
 
     padding: 14px;
 
-    background: #0e1216;
+    margin-bottom: 20px;
 
-    color: white;
+    background: #0c1013;
 
     border:
-
-        1px solid #3f474f;
+        1px solid #414a52;
 
     border-radius: 6px;
+
+    color: white;
 
     outline: none;
 
@@ -190,46 +195,93 @@ canvas {
 }
 
 
-.shop-container h2 {
+/* =========================
+   CATEGORIAS
+========================= */
 
-    margin-bottom: 15px;
+.categories {
 
-    color: #cbd1d6;
+    display: flex;
+
+    gap: 8px;
+
+    flex-wrap: wrap;
+
+    margin-bottom: 20px;
 }
 
 
-.shop-weapons {
+.category-btn {
+
+    padding: 11px 15px;
+
+    background: #292f35;
+
+    border:
+        1px solid #4a535b;
+
+    border-radius: 5px;
+
+    color: #cbd1d5;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: .15s;
+}
+
+
+.category-btn:hover {
+
+    background: #3a424a;
+
+    transform: translateY(-2px);
+}
+
+
+.category-btn.active {
+
+    background: #a52d2d;
+
+    border-color: #d84b4b;
+
+    color: white;
+}
+
+
+/* =========================
+   PRODUTOS
+========================= */
+
+.shop-grid {
 
     display: grid;
 
     grid-template-columns:
         repeat(
             auto-fit,
-            minmax(210px, 1fr)
+            minmax(220px, 1fr)
         );
 
     gap: 15px;
 }
 
 
-.weapon-card {
+.item-card {
 
-    position: relative;
-
-    min-height: 220px;
+    min-height: 250px;
 
     padding: 20px;
 
     background:
-
         linear-gradient(
             145deg,
-            #292f36,
-            #171c21
+            #2b3238,
+            #171c20
         );
 
     border:
-
         2px solid #3d454d;
 
     border-radius: 8px;
@@ -238,24 +290,21 @@ canvas {
 }
 
 
-.weapon-card:hover {
+.item-card:hover {
 
-    transform:
-        translateY(-4px);
+    transform: translateY(-4px);
 
-    border-color:
-        #78848e;
+    border-color: #737e87;
 }
 
 
-.weapon-card.owned {
+.item-card.owned {
 
-    border-color:
-        #6d9c5b;
+    border-color: #638d52;
 }
 
 
-.weapon-icon {
+.item-icon {
 
     font-size: 48px;
 
@@ -263,15 +312,17 @@ canvas {
 }
 
 
-.weapon-card h3 {
+.item-card h3 {
 
     margin-bottom: 7px;
 }
 
 
-.weapon-card p {
+.item-card p {
 
-    color: #9ba4ab;
+    min-height: 42px;
+
+    color: #9da5aa;
 
     font-size: 13px;
 
@@ -281,9 +332,9 @@ canvas {
 }
 
 
-.weapon-price {
+.item-price {
 
-    color: #ffd34e;
+    color: #ffd447;
 
     font-weight: bold;
 
@@ -291,55 +342,150 @@ canvas {
 }
 
 
-.weapon-button {
+.item-button {
 
     width: 100%;
 
-    padding: 10px;
+    padding: 11px;
+
+    background: #46515a;
 
     border: 0;
 
     border-radius: 5px;
 
-    background: #454f58;
-
     color: white;
 
-    font-weight: bold;
-
     cursor: pointer;
+
+    font-weight: bold;
 }
 
 
-.weapon-button:hover {
+.item-button:hover {
 
     background: #5c6872;
 }
 
 
-.weapon-card.owned
-.weapon-button {
+.item-card.owned .item-button {
 
-    background: #466b3b;
+    background: #47703d;
 }
 
 
-.shop-actions {
+/* =========================
+   INVENTÁRIO
+========================= */
+
+.inventory-menu {
+
+    margin-top: 25px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid #343b41;
+}
+
+
+.inventory-menu h2 {
+
+    margin-bottom: 12px;
+
+    font-size: 18px;
+}
+
+
+.inventory-slots {
 
     display: flex;
 
-    gap: 15px;
+    gap: 8px;
+}
+
+
+.inventory-slot {
+
+    position: relative;
+
+    width: 70px;
+
+    height: 70px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    flex-direction: column;
+
+    background: #101419;
+
+    border:
+        2px solid #444d55;
+
+    border-radius: 6px;
+
+    font-size: 25px;
+}
+
+
+.inventory-slot.selected {
+
+    border-color: #e2b83e;
+
+    box-shadow:
+        0 0 12px rgba(255,200,40,.3);
+}
+
+
+.slot-number {
+
+    position: absolute;
+
+    left: 5px;
+
+    top: 3px;
+
+    color: #ffd447;
+
+    font-size: 12px;
+
+    font-weight: bold;
+}
+
+
+.slot-name {
+
+    margin-top: 4px;
+
+    color: #999;
+
+    font-size: 8px;
+
+    text-align: center;
+}
+
+
+/* =========================
+   BOTÕES
+========================= */
+
+.shop-actions {
 
     margin-top: 25px;
 }
 
 
-.shop-button,
 .start-button {
 
-    flex: 1;
+    width: 100%;
 
     padding: 17px;
+
+    background: #a52d2d;
 
     border: 0;
 
@@ -347,7 +493,7 @@ canvas {
 
     color: white;
 
-    font-size: 16px;
+    font-size: 17px;
 
     font-weight: bold;
 
@@ -355,29 +501,15 @@ canvas {
 }
 
 
-.shop-button {
-
-    background: #343d45;
-}
-
-
-.shop-button:hover {
-
-    background: #46515b;
-}
-
-
-.start-button {
-
-    background: #a52c2c;
-}
-
-
 .start-button:hover {
 
-    background: #ca3636;
+    background: #ca3838;
 }
 
+
+/* =========================
+   INFORMAÇÕES
+========================= */
 
 .shop-info {
 
@@ -386,10 +518,9 @@ canvas {
     padding-top: 15px;
 
     border-top:
-
         1px solid #343b42;
 
-    color: #8e979e;
+    color: #8d969d;
 
     line-height: 1.7;
 }
@@ -397,11 +528,13 @@ canvas {
 
 .shop-info strong {
 
-    color: #ffd34e;
+    color: #ffd447;
 }
 
 
-/* ================= HUD ================= */
+/* =========================
+   HUD
+========================= */
 
 #hud {
 
@@ -412,23 +545,22 @@ canvas {
     z-index: 10;
 
     left: 0;
+
     right: 0;
+
     top: 0;
 
     padding: 18px 25px;
 
     pointer-events: none;
 
-    justify-content:
-        space-between;
+    justify-content: space-between;
 
-    align-items:
-        flex-start;
+    align-items: flex-start;
 
     background:
-
         linear-gradient(
-            rgba(0,0,0,.75),
+            rgba(0,0,0,.78),
             transparent
         );
 }
@@ -438,7 +570,7 @@ canvas {
 .hud-right,
 .hud-center {
 
-    min-width: 180px;
+    min-width: 190px;
 }
 
 
@@ -462,19 +594,29 @@ canvas {
 }
 
 
+.bar-title {
+
+    font-size: 10px;
+
+    color: #aaa;
+
+    margin-bottom: 3px;
+}
+
+
 .health-box,
 .armor-box {
 
     width: 220px;
 
-    height: 13px;
+    height: 14px;
 
-    background: #260b0b;
+    background: #250909;
 
     border:
-        2px solid #111;
+        2px solid #080808;
 
-    margin-bottom: 5px;
+    margin-bottom: 7px;
 }
 
 
@@ -484,13 +626,23 @@ canvas {
 
     height: 100%;
 
-    background: #d53232;
+    background: #d93434;
+
+    transition: width .15s;
+}
+
+
+/* ARMADURA OCULTA */
+
+#armorHud {
+
+    display: none;
 }
 
 
 .armor-box {
 
-    background: #111d29;
+    background: #0c1721;
 }
 
 
@@ -500,7 +652,7 @@ canvas {
 
     height: 100%;
 
-    background: #4c8fc4;
+    background: #4389c4;
 }
 
 
@@ -538,13 +690,48 @@ canvas {
 
     margin-top: 5px;
 
-    color: #ffd34e;
+    color: #ffd447;
 
     font-weight: bold;
 }
 
 
-/* ================= MORTE ================= */
+/* =========================
+   INVENTÁRIO DURANTE O JOGO
+========================= */
+
+#gameInventory {
+
+    display: none;
+
+    position: fixed;
+
+    z-index: 12;
+
+    bottom: 15px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    pointer-events: none;
+}
+
+
+#gameInventory .inventory-slot {
+
+    width: 65px;
+
+    height: 65px;
+
+    background:
+        rgba(10,12,15,.88);
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
 
 #gameOver {
 
@@ -563,8 +750,7 @@ canvas {
     flex-direction: column;
 
     background:
-
-        rgba(0,0,0,.9);
+        rgba(0,0,0,.92);
 }
 
 
@@ -591,7 +777,7 @@ canvas {
 
     padding: 15px 35px;
 
-    background: #a52c2c;
+    background: #a52d2d;
 
     color: white;
 
@@ -605,18 +791,25 @@ canvas {
 }
 
 
-@media(max-width:650px) {
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:700px) {
 
     .shop-container {
 
         padding: 18px;
     }
 
+
     .shop-header {
 
-        align-items:
-            flex-start;
+        align-items: flex-start;
+
+        flex-direction: column;
     }
+
 
     .money {
 
@@ -625,26 +818,44 @@ canvas {
         padding: 10px;
     }
 
-    .shop-actions {
 
-        flex-direction: column;
+    .inventory-slot {
+
+        width: 55px;
+
+        height: 55px;
     }
+
+
+    .health-box,
+    .armor-box {
+
+        width: 130px;
+    }
+
 
     #hud {
 
         padding: 10px;
     }
 
-    .health-box,
-    .armor-box {
-
-        width: 120px;
-    }
 
     .hud-left,
     .hud-right,
     .hud-center {
 
         min-width: 0;
+    }
+
+
+    #wave {
+
+        font-size: 16px;
+    }
+
+
+    #ammo {
+
+        font-size: 17px;
     }
 }
