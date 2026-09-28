@@ -18,21 +18,21 @@ const games = [
         description: "não deixe que os zumbis invadam seu territorio."
     },
     {
-        name: "Jungle Quest",
+        name: "minecraft",
         category: "Aventura",
         icon: "🌴",
-        description: "Explore uma floresta cheia de desafios."
+        description: "Explore um mundo cheio de desafios."
     },
     {
-        name: "Ninja Dash",
+        name: "blox fruits",
         category: "Ação",
-        icon: "🥷",
-        description: "Desvie dos obstáculos e avance o mais longe possível."
+        icon: "🍈",
+        description: "one piece."
     },
     {
-        name: "Rocket Run",
-        category: "Corrida",
-        icon: "🚀",
+        name: "gta5",
+        category: "Corrida e ação",
+        icon: "🏎️",
         description: "Controle seu foguete e supere seus adversários."
     },
 
