@@ -1,0 +1,212 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #07090c;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+body {
+    user-select: none;
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background:
+        linear-gradient(#10151b, #080b0e);
+}
+
+#menu,
+#gameOver {
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at center, rgba(45, 15, 15, .45), rgba(0,0,0,.94));
+}
+
+#menu h1,
+#gameOver h1 {
+    font-size: clamp(35px, 6vw, 80px);
+    letter-spacing: 5px;
+    color: #f2f2f2;
+    text-shadow:
+        0 0 10px #ff2929,
+        0 0 30px rgba(255, 0, 0, .45);
+}
+
+#menu p {
+    margin: 10px 0 25px;
+    color: #aaa;
+    font-size: 18px;
+}
+
+#playerName {
+    width: 260px;
+    padding: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    outline: none;
+    background: #111;
+    color: white;
+    text-align: center;
+    font-size: 16px;
+}
+
+button {
+    border: 0;
+    border-radius: 5px;
+    padding: 14px 35px;
+    background: #c72525;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .15s;
+}
+
+button:hover {
+    background: #ed3434;
+    transform: scale(1.04);
+}
+
+.controls {
+    margin-top: 30px;
+    padding: 18px 25px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    border: 1px solid #333;
+    background: rgba(10,10,10,.8);
+    color: #aaa;
+}
+
+.controls b {
+    color: white;
+    margin-bottom: 5px;
+}
+
+#hud {
+    display: none;
+    position: fixed;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 18px 25px;
+    pointer-events: none;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    background: linear-gradient(
+        rgba(0,0,0,.7),
+        transparent
+    );
+}
+
+.hud-left,
+.hud-right,
+.hud-center {
+    min-width: 160px;
+}
+
+.hud-center {
+    text-align: center;
+}
+
+.hud-right {
+    text-align: right;
+}
+
+#nameHud {
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.health-box {
+    width: 220px;
+    height: 16px;
+    border: 2px solid #111;
+    background: #300;
+}
+
+#healthBar {
+    width: 100%;
+    height: 100%;
+    background: #d92929;
+    transition: width .15s;
+}
+
+#weapon {
+    font-weight: bold;
+}
+
+#ammo {
+    margin-top: 6px;
+    font-size: 25px;
+}
+
+#wave {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+#enemies {
+    margin-top: 5px;
+    color: #bbb;
+}
+
+#gameOver {
+    display: none;
+}
+
+#gameOver p {
+    margin: 15px 0 25px;
+    color: #bbb;
+}
+
+@media(max-width:600px) {
+
+    #hud {
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .hud-left,
+    .hud-right,
+    .hud-center {
+        min-width: auto;
+    }
+
+    .health-box {
+        width: 120px;
+        height: 12px;
+    }
+
+    #ammo {
+        font-size: 18px;
+    }
+
+    #wave {
+        font-size: 15px;
+    }
+}
