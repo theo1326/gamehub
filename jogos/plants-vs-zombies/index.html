@@ -1,1 +1,904 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant Defense</title>
 
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #182818;
+    color: white;
+    overflow: hidden;
+    user-select: none;
+}
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(rgba(70,150,50,.2), rgba(20,80,30,.2)),
+        #4d9b3c;
+}
+
+/* TOPO */
+#top {
+    height: 90px;
+    background: #263b20;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 20px;
+    position: relative;
+    z-index: 20;
+    border-bottom: 4px solid #172714;
+}
+
+#sun {
+    background: #f7d94c;
+    color: #654d00;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 12px 18px;
+    border-radius: 15px;
+    min-width: 100px;
+    text-align: center;
+}
+
+.card {
+    width: 80px;
+    height: 68px;
+    background: #eee;
+    border: 3px solid #555;
+    border-radius: 10px;
+    color: #222;
+    text-align: center;
+    cursor: pointer;
+    padding-top: 5px;
+    transition: .15s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card.selected {
+    border-color: #ffe600;
+    box-shadow: 0 0 12px #ffe600;
+}
+
+.card.disabled {
+    filter: grayscale(1);
+    opacity: .5;
+}
+
+.plant-icon {
+    font-size: 32px;
+}
+
+.cost {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* CAMPO */
+#field {
+    position: absolute;
+    top: 90px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255,255,255,.06) 0px,
+            rgba(255,255,255,.06) 80px,
+            rgba(0,0,0,.05) 81px,
+            rgba(0,0,0,.05) 82px
+        ),
+        #579e3e;
+}
+
+/* LINHAS */
+.row {
+    position: absolute;
+    left: 120px;
+    right: 20px;
+    height: 82px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+/* ZONA DE PLANTIO */
+.cell {
+    position: absolute;
+    width: 82px;
+    height: 82px;
+    border-right: 1px solid rgba(255,255,255,.08);
+    cursor: pointer;
+}
+
+.cell:hover {
+    background: rgba(255,255,255,.12);
+}
+
+/* PLANTAS */
+.plant {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 52px;
+    z-index: 5;
+    animation: plantAppear .2s ease;
+}
+
+@keyframes plantAppear {
+    from {
+        transform: scale(.3);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* ZUMBIS */
+.zombie {
+    position: absolute;
+    width: 70px;
+    height: 76px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 52px;
+    z-index: 8;
+    transition: left .05s linear;
+}
+
+.zombie-health {
+    position: absolute;
+    top: -5px;
+    left: 8px;
+    width: 55px;
+    height: 6px;
+    background: #421414;
+    border-radius: 5px;
+}
+
+.zombie-health-inner {
+    height: 100%;
+    background: #e33;
+    border-radius: 5px;
+}
+
+/* PROJÉTIL */
+.pea {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #8cff3d;
+    border: 2px solid #296b15;
+    border-radius: 50%;
+    z-index: 7;
+}
+
+/* MENSAGENS */
+#message {
+    position: absolute;
+    top: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,.7);
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 18px;
+    z-index: 50;
+    display: none;
+}
+
+#gameOver {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 100;
+}
+
+#gameOver h1 {
+    font-size: 55px;
+    color: #ff4444;
+    margin-bottom: 15px;
+}
+
+#gameOver p {
+    font-size: 22px;
+    margin-bottom: 25px;
+}
+
+button {
+    border: none;
+    background: #55c441;
+    color: white;
+    font-size: 20px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background: #72dc5d;
+}
+
+/* CONTADOR */
+#wave {
+    margin-left: auto;
+    font-size: 18px;
+    background: #182716;
+    padding: 12px 18px;
+    border-radius: 10px;
+}
+
+/* CONTROLES MOBILE */
+@media(max-width:700px) {
+
+    #top {
+        height: 75px;
+        padding: 5px;
+        gap: 5px;
+    }
+
+    .card {
+        width: 65px;
+        height: 60px;
+    }
+
+    .plant-icon {
+        font-size: 26px;
+    }
+
+    #sun {
+        min-width: 70px;
+        padding: 10px 5px;
+        font-size: 18px;
+    }
+
+    #wave {
+        display: none;
+    }
+
+    #field {
+        top: 75px;
+    }
+
+    .row {
+        left: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <!-- BARRA SUPERIOR -->
+    <div id="top">
+
+        <div id="sun">
+            ☀️ <span id="sunAmount">150</span>
+        </div>
+
+        <div class="card" id="peaCard" onclick="selectPlant('pea')">
+            <div class="plant-icon">🌱</div>
+            <div>Atirador</div>
+            <div class="cost">50 ☀️</div>
+        </div>
+
+        <div class="card" id="sunCard" onclick="selectPlant('sunflower')">
+            <div class="plant-icon">🌻</div>
+            <div>Girassol</div>
+            <div class="cost">50 ☀️</div>
+        </div>
+
+        <div id="wave">
+            Onda: <span id="waveNumber">1</span>
+        </div>
+
+    </div>
+
+    <!-- CAMPO -->
+    <div id="field"></div>
+
+    <!-- MENSAGEM -->
+    <div id="message"></div>
+
+    <!-- GAME OVER -->
+    <div id="gameOver">
+        <h1>GAME OVER</h1>
+        <p>Os zumbis chegaram à sua casa!</p>
+        <button onclick="restartGame()">Jogar novamente</button>
+    </div>
+
+</div>
+
+<script>
+
+/* =========================
+   CONFIGURAÇÕES
+========================= */
+
+const field = document.getElementById("field");
+
+const ROWS = 5;
+const COLS = 9;
+
+let sun = 150;
+let selectedPlant = null;
+let plants = [];
+let zombies = [];
+let projectiles = [];
+
+let wave = 1;
+let score = 0;
+
+let gameRunning = true;
+
+let zombieTimer;
+let sunTimer;
+let shootingTimer;
+
+
+/* =========================
+   CRIAR CAMPO
+========================= */
+
+function createField() {
+
+    field.innerHTML = "";
+
+    for (let r = 0; r < ROWS; r++) {
+
+        const row = document.createElement("div");
+
+        row.className = "row";
+
+        row.style.top = (r * 82) + "px";
+
+        for (let c = 0; c < COLS; c++) {
+
+            const cell = document.createElement("div");
+
+            cell.className = "cell";
+
+            cell.style.left = (c * 82) + "px";
+
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+
+            cell.onclick = () => plantAt(r, c);
+
+            row.appendChild(cell);
+        }
+
+        field.appendChild(row);
+    }
+}
+
+
+/* =========================
+   SELECIONAR PLANTA
+========================= */
+
+function selectPlant(type) {
+
+    if (!gameRunning) return;
+
+    selectedPlant = type;
+
+    document.querySelectorAll(".card")
+        .forEach(card => card.classList.remove("selected"));
+
+    if (type === "pea") {
+        document.getElementById("peaCard")
+            .classList.add("selected");
+    }
+
+    if (type === "sunflower") {
+        document.getElementById("sunCard")
+            .classList.add("selected");
+    }
+}
+
+
+/* =========================
+   PLANTAR
+========================= */
+
+function plantAt(row, col) {
+
+    if (!selectedPlant || !gameRunning) return;
+
+    const exists = plants.find(
+        p => p.row === row && p.col === col
+    );
+
+    if (exists) {
+
+        showMessage("Esse espaço já está ocupado!");
+
+        return;
+    }
+
+    const cost = 50;
+
+    if (sun < cost) {
+
+        showMessage("Você precisa de mais ☀️!");
+
+        return;
+    }
+
+    sun -= cost;
+
+    updateSun();
+
+    const plant = {
+
+        row,
+        col,
+        type: selectedPlant,
+        hp: 100,
+        element: document.createElement("div")
+
+    };
+
+    plant.element.className = "plant";
+
+    if (selectedPlant === "pea") {
+        plant.element.innerHTML = "🌱";
+    }
+
+    if (selectedPlant === "sunflower") {
+        plant.element.innerHTML = "🌻";
+    }
+
+    plant.element.style.left =
+        (120 + col * 82) + "px";
+
+    plant.element.style.top =
+        (row * 82 + 3) + "px";
+
+    field.appendChild(plant.element);
+
+    plants.push(plant);
+
+    selectedPlant = null;
+
+    document.querySelectorAll(".card")
+        .forEach(card => card.classList.remove("selected"));
+}
+
+
+/* =========================
+   SOL
+========================= */
+
+function updateSun() {
+
+    document.getElementById("sunAmount")
+        .textContent = sun;
+}
+
+
+/* =========================
+   GIRASSOL
+========================= */
+
+setInterval(() => {
+
+    if (!gameRunning) return;
+
+    const flowers =
+        plants.filter(p => p.type === "sunflower");
+
+    if (flowers.length > 0) {
+
+        sun += flowers.length * 25;
+
+        updateSun();
+
+        showMessage("🌻 +"
+            + flowers.length * 25
+            + " ☀️");
+
+    }
+
+}, 6000);
+
+
+/* =========================
+   CRIAR ZUMBI
+========================= */
+
+function spawnZombie() {
+
+    if (!gameRunning) return;
+
+    const row =
+        Math.floor(Math.random() * ROWS);
+
+    const zombie = {
+
+        row: row,
+
+        x: window.innerWidth - 40,
+
+        hp: 100 + (wave - 1) * 20,
+
+        maxHp: 100 + (wave - 1) * 20,
+
+        speed: 0.35 + Math.random() * 0.15,
+
+        element: document.createElement("div")
+
+    };
+
+    zombie.element.className = "zombie";
+
+    zombie.element.innerHTML = `
+        🧟
+        <div class="zombie-health">
+            <div class="zombie-health-inner"></div>
+        </div>
+    `;
+
+    zombie.element.style.left =
+        zombie.x + "px";
+
+    zombie.element.style.top =
+        (row * 82 + 5) + "px";
+
+    field.appendChild(zombie.element);
+
+    zombies.push(zombie);
+}
+
+
+/* =========================
+   MOVIMENTO DOS ZUMBIS
+========================= */
+
+function updateZombies() {
+
+    if (!gameRunning) return;
+
+    zombies.forEach((zombie, index) => {
+
+        zombie.x -= zombie.speed;
+
+        zombie.element.style.left =
+            zombie.x + "px";
+
+        /* CHEGOU NA CASA */
+
+        if (zombie.x < 90) {
+
+            gameOver();
+
+        }
+
+        /* COLISÃO COM PLANTA */
+
+        const plant = plants.find(p => {
+
+            return p.row === zombie.row &&
+                Math.abs(
+                    (120 + p.col * 82) - zombie.x
+                ) < 55;
+
+        });
+
+        if (plant) {
+
+            zombie.speed = 0;
+
+            plant.hp -= 0.35;
+
+            if (plant.hp <= 0) {
+
+                plant.element.remove();
+
+                plants = plants.filter(
+                    p => p !== plant
+                );
+
+                zombie.speed =
+                    0.35 + Math.random() * 0.15;
+            }
+
+        } else {
+
+            zombie.speed =
+                0.35 + Math.random() * 0.15;
+        }
+
+    });
+
+}
+
+
+/* =========================
+   ATIRAR
+========================= */
+
+function shoot() {
+
+    if (!gameRunning) return;
+
+    plants
+        .filter(p => p.type === "pea")
+        .forEach(plant => {
+
+            const target =
+                zombies.find(
+                    z => z.row === plant.row &&
+                    z.x > (120 + plant.col * 82)
+                );
+
+            if (!target) return;
+
+            const pea = {
+
+                row: plant.row,
+
+                x: 120 + plant.col * 82 + 55,
+
+                y: plant.row * 82 + 35,
+
+                speed: 5,
+
+                damage: 25,
+
+                element: document.createElement("div")
+
+            };
+
+            pea.element.className = "pea";
+
+            pea.element.style.left =
+                pea.x + "px";
+
+            pea.element.style.top =
+                pea.y + "px";
+
+            field.appendChild(pea.element);
+
+            projectiles.push(pea);
+
+        });
+
+}
+
+
+/* =========================
+   MOVIMENTO DOS TIROS
+========================= */
+
+function updateProjectiles() {
+
+    projectiles.forEach((pea, index) => {
+
+        pea.x += pea.speed;
+
+        pea.element.style.left =
+            pea.x + "px";
+
+        const target =
+            zombies.find(z => {
+
+                return z.row === pea.row &&
+                Math.abs(z.x - pea.x) < 35;
+
+            });
+
+        if (target) {
+
+            target.hp -= pea.damage;
+
+            pea.element.remove();
+
+            projectiles.splice(index, 1);
+
+            const bar =
+                target.element
+                .querySelector(".zombie-health-inner");
+
+            bar.style.width =
+                Math.max(
+                    0,
+                    target.hp / target.maxHp * 100
+                ) + "%";
+
+            if (target.hp <= 0) {
+
+                target.element.remove();
+
+                zombies =
+                    zombies.filter(
+                        z => z !== target
+                    );
+
+                score += 10;
+
+                sun += 10;
+
+                updateSun();
+
+            }
+
+        }
+
+        if (pea.x > window.innerWidth) {
+
+            pea.element.remove();
+
+            projectiles.splice(index, 1);
+
+        }
+
+    });
+
+}
+
+
+/* =========================
+   ONDAS
+========================= */
+
+function nextWave() {
+
+    wave++;
+
+    document.getElementById("waveNumber")
+        .textContent = wave;
+
+    showMessage(
+        "🌊 Onda " + wave + " começou!"
+    );
+}
+
+
+/* =========================
+   MENSAGEM
+========================= */
+
+let messageTimeout;
+
+function showMessage(text) {
+
+    const message =
+        document.getElementById("message");
+
+    message.textContent = text;
+
+    message.style.display = "block";
+
+    clearTimeout(messageTimeout);
+
+    messageTimeout = setTimeout(() => {
+
+        message.style.display = "none";
+
+    }, 1200);
+}
+
+
+/* =========================
+   GAME OVER
+========================= */
+
+function gameOver() {
+
+    if (!gameRunning) return;
+
+    gameRunning = false;
+
+    document.getElementById("gameOver")
+        .style.display = "flex";
+
+}
+
+
+/* =========================
+   REINICIAR
+========================= */
+
+function restartGame() {
+
+    location.reload();
+
+}
+
+
+/* =========================
+   LOOP DO JOGO
+========================= */
+
+function gameLoop() {
+
+    if (gameRunning) {
+
+        updateZombies();
+
+        updateProjectiles();
+
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+
+/* =========================
+   SPAWN DOS ZUMBIS
+========================= */
+
+function startZombieSpawner() {
+
+    zombieTimer = setInterval(() => {
+
+        spawnZombie();
+
+    }, Math.max(2500, 6000 - wave * 250));
+
+}
+
+
+/* =========================
+   AUMENTAR ONDA
+========================= */
+
+setInterval(() => {
+
+    if (!gameRunning) return;
+
+    if (zombies.length === 0) {
+
+        nextWave();
+
+    }
+
+}, 15000);
+
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+createField();
+
+updateSun();
+
+startZombieSpawner();
+
+setInterval(shoot, 1300);
+
+gameLoop();
+
+</script>
+
+</body>
+</html>
