@@ -1034,3 +1034,89 @@ button {
         right: 10px;
     }
 }
+/* =========================================================
+   CORREÇÃO DE CLIQUES / CAMADAS DO JOGO
+   ========================================================= */
+
+/* O canvas fica atrás dos menus */
+#game {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    display: block;
+}
+
+/* A loja fica acima do canvas */
+#shopScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+/* Conteúdo da loja pode receber cliques */
+#shopScreen * {
+    pointer-events: auto;
+}
+
+/* HUD durante a partida */
+#hud {
+    position: fixed;
+    z-index: 30;
+    pointer-events: none;
+}
+
+/* Inventário durante a partida */
+#gameInventory {
+    position: fixed;
+    z-index: 31;
+    pointer-events: auto;
+}
+
+/* Game over */
+#gameOver {
+    position: fixed;
+    z-index: 100;
+    pointer-events: auto;
+}
+
+/* Ranking */
+#rankingScreen {
+    z-index: 9999;
+    pointer-events: auto;
+}
+
+/* Botões */
+button,
+.category-btn,
+.item-button,
+.start-button,
+#rankingBtn,
+#closeRankingBtn,
+#restartBtn {
+    position: relative;
+    z-index: 50;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+/* Cartões da loja */
+.shop-item,
+.item-card {
+    position: relative;
+    z-index: 20;
+}
+
+/* Inventário do menu */
+.inventory-menu {
+    position: relative;
+    z-index: 20;
+}
+
+/* Área de ações */
+.shop-actions {
+    position: relative;
+    z-index: 20;
+}
