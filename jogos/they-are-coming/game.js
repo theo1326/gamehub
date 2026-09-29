@@ -1,55 +1,88 @@
 "use strict";
 
-/* =====================================================
-   THEY ARE COMING
-   VERSÃO CORRIGIDA
-===================================================== */
+/*
+=========================================================
+THEY ARE COMING
+LUDIX
+=========================================================
+*/
 
 
 /* =====================================================
    ELEMENTOS
 ===================================================== */
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const canvas =
+    document.getElementById("game");
 
-const shopScreen = document.getElementById("shopScreen");
-const shopContent = document.getElementById("shopContent");
+const ctx =
+    canvas.getContext("2d");
 
-const moneyEl = document.getElementById("money");
-const playerNameInput = document.getElementById("playerName");
-const nameWarning = document.getElementById("nameWarning");
+const shopScreen =
+    document.getElementById("shopScreen");
 
-const startWaveBtn = document.getElementById("startWaveBtn");
-const rankingBtn = document.getElementById("rankingBtn");
+const shopContent =
+    document.getElementById("shopContent");
 
-const rankingScreen = document.getElementById("rankingScreen");
-const rankingContent = document.getElementById("rankingContent");
-const closeRankingBtn = document.getElementById("closeRankingBtn");
+const moneyEl =
+    document.getElementById("money");
 
-const hud = document.getElementById("hud");
+const playerNameInput =
+    document.getElementById("playerName");
 
-const nameHud = document.getElementById("nameHud");
-const healthBar = document.getElementById("healthBar");
-const armorBar = document.getElementById("armorBar");
+const nameWarning =
+    document.getElementById("nameWarning");
 
-const waveEl = document.getElementById("wave");
-const enemiesEl = document.getElementById("enemies");
-const preparationText = document.getElementById("preparationText");
+const startWaveBtn =
+    document.getElementById("startWaveBtn");
 
-const weaponEl = document.getElementById("weapon");
-const ammoEl = document.getElementById("ammo");
-const moneyHud = document.getElementById("moneyHud");
+const rankingBtn =
+    document.getElementById("rankingBtn");
 
-const gameInventory = document.getElementById("gameInventory");
-const gameInventorySlots =
-    document.getElementById("gameInventorySlots");
+const rankingScreen =
+    document.getElementById("rankingScreen");
+
+const rankingContent =
+    document.getElementById("rankingContent");
+
+const closeRankingBtn =
+    document.getElementById("closeRankingBtn");
+
+const hud =
+    document.getElementById("hud");
+
+const nameHud =
+    document.getElementById("nameHud");
+
+const healthBar =
+    document.getElementById("healthBar");
+
+const armorBar =
+    document.getElementById("armorBar");
+
+const waveEl =
+    document.getElementById("wave");
+
+const enemiesEl =
+    document.getElementById("enemies");
+
+const weaponEl =
+    document.getElementById("weapon");
+
+const ammoEl =
+    document.getElementById("ammo");
+
+const moneyHud =
+    document.getElementById("moneyHud");
 
 const menuInventory =
     document.getElementById("menuInventory");
 
-const skipPreparationBtn =
-    document.getElementById("skipPreparationBtn");
+const gameInventory =
+    document.getElementById("gameInventory");
+
+const gameInventorySlots =
+    document.getElementById("gameInventorySlots");
 
 const gameOver =
     document.getElementById("gameOver");
@@ -60,20 +93,19 @@ const finalScore =
 const restartBtn =
     document.getElementById("restartBtn");
 
+const skipPreparationBtn =
+    document.getElementById("skipPreparationBtn");
+
 
 /* =====================================================
-   CONFIGURAÇÃO
+   CONFIGURAÇÕES
 ===================================================== */
 
 const MAX_HEALTH_START = 100;
+
 const INVENTORY_SIZE = 5;
 
 const NORMAL_ZOMBIE_REWARD = 50;
-
-const BOSS_BASE_HP = 500;
-const BOSS_BASE_REWARD = 5000;
-
-const BOMB_RANGE_BONUS = 150;
 
 
 /* =====================================================
@@ -82,12 +114,17 @@ const BOMB_RANGE_BONUS = 150;
 
 function resizeCanvas() {
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width =
+        window.innerWidth;
 
+    canvas.height =
+        window.innerHeight;
 }
 
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
 
 resizeCanvas();
 
@@ -99,655 +136,303 @@ resizeCanvas();
 const weapons = [
 
     {
-        name: "Pistola",
-        damage: 18,
-        fireRate: 350,
-        magazine: 12,
-        ammo: 60,
-        price: 300,
-        range: 700,
-        ammoType: "9mm",
-        ammoPrice: 100,
-        visual: "🔫"
+        name:"Pistola",
+        damage:18,
+        fireRate:350,
+        magazine:12,
+        ammo:50,
+        price:100,
+        range:700,
+        ammoType:"9mm",
+        visual:"🔫"
     },
 
     {
-        name: "Glock 17",
-        damage: 20,
-        fireRate: 300,
-        magazine: 17,
-        ammo: 85,
-        price: 450,
-        range: 700,
-        ammoType: "9mm",
-        ammoPrice: 100,
-        visual: "🔫"
+        name:"Glock 17",
+        damage:22,
+        fireRate:300,
+        magazine:17,
+        ammo:68,
+        price:450,
+        range:700,
+        ammoType:"9mm+",
+        visual:"🔫"
     },
 
     {
-        name: "Desert Eagle",
-        damage: 45,
-        fireRate: 650,
-        magazine: 7,
-        ammo: 35,
-        price: 900,
-        range: 750,
-        ammoType: ".50 AE",
-        ammoPrice: 150,
-        visual: "🔫"
+        name:"Desert Eagle",
+        damage:55,
+        fireRate:650,
+        magazine:7,
+        ammo:35,
+        price:900,
+        range:750,
+        ammoType:".50 AE",
+        visual:"🔫"
     },
 
     {
-        name: "Uzi",
-        damage: 15,
-        fireRate: 100,
-        magazine: 32,
-        ammo: 160,
-        price: 850,
-        range: 650,
-        ammoType: "9mm SMG",
-        ammoPrice: 200,
-        visual: "🔫"
+        name:"Uzi",
+        damage:16,
+        fireRate:100,
+        magazine:32,
+        ammo:160,
+        price:850,
+        range:650,
+        ammoType:"9mm SMG",
+        visual:"🔫"
     },
 
     {
-        name: "MP5",
-        damage: 20,
-        fireRate: 110,
-        magazine: 30,
-        ammo: 150,
-        price: 1200,
-        range: 700,
-        ammoType: "9mm SMG",
-        ammoPrice: 200,
-        visual: "🔫"
+        name:"MP5",
+        damage:22,
+        fireRate:110,
+        magazine:30,
+        ammo:150,
+        price:1200,
+        range:700,
+        ammoType:"9mm SMG+",
+        visual:"🔫"
     },
 
     {
-        name: "MP7",
-        damage: 18,
-        fireRate: 85,
-        magazine: 40,
-        ammo: 200,
-        price: 1400,
-        range: 680,
-        ammoType: "4.6mm",
-        ammoPrice: 250,
-        visual: "🔫"
+        name:"MP7",
+        damage:24,
+        fireRate:90,
+        magazine:40,
+        ammo:200,
+        price:1400,
+        range:680,
+        ammoType:"4.6mm",
+        visual:"🔫"
     },
 
     {
-        name: "P90",
-        damage: 19,
-        fireRate: 75,
-        magazine: 50,
-        ammo: 250,
-        price: 1700,
-        range: 700,
-        ammoType: "5.7mm",
-        ammoPrice: 300,
-        visual: "🔫"
+        name:"P90",
+        damage:25,
+        fireRate:75,
+        magazine:50,
+        ammo:250,
+        price:1700,
+        range:700,
+        ammoType:"5.7mm",
+        visual:"🔫"
     },
 
     {
-        name: "Shotgun",
-        damage: 65,
-        fireRate: 850,
-        magazine: 6,
-        ammo: 36,
-        price: 1100,
-        range: 450,
-        ammoType: "12 Gauge",
-        ammoPrice: 350,
-        visual: "🔫"
+        name:"Shotgun",
+        damage:80,
+        fireRate:850,
+        magazine:6,
+        ammo:36,
+        price:1100,
+        range:450,
+        ammoType:"12 Gauge",
+        visual:"🔫"
     },
 
     {
-        name: "Double Barrel",
-        damage: 95,
-        fireRate: 1100,
-        magazine: 2,
-        ammo: 24,
-        price: 1500,
-        range: 430,
-        ammoType: "12 Gauge",
-        ammoPrice: 350,
-        visual: "🔫"
+        name:"Double Barrel",
+        damage:115,
+        fireRate:1100,
+        magazine:2,
+        ammo:24,
+        price:1500,
+        range:430,
+        ammoType:"12 Gauge+",
+        visual:"🔫"
     },
 
     {
-        name: "M870",
-        damage: 72,
-        fireRate: 750,
-        magazine: 8,
-        ammo: 48,
-        price: 1800,
-        range: 500,
-        ammoType: "12 Gauge",
-        ammoPrice: 350,
-        visual: "🔫"
+        name:"Mossberg",
+        damage:100,
+        fireRate:750,
+        magazine:8,
+        ammo:48,
+        price:1900,
+        range:470,
+        ammoType:"12 Gauge Tactical",
+        visual:"🔫"
     },
 
     {
-        name: "AK-47",
-        damage: 32,
-        fireRate: 150,
-        magazine: 30,
-        ammo: 150,
-        price: 2200,
-        range: 800,
-        ammoType: "7.62mm",
-        ammoPrice: 400,
-        visual: "🔫"
+        name:"AK-47",
+        damage:38,
+        fireRate:180,
+        magazine:30,
+        ammo:150,
+        price:2500,
+        range:850,
+        ammoType:"7.62mm",
+        visual:"🔫"
     },
 
     {
-        name: "AK-74",
-        damage: 35,
-        fireRate: 145,
-        magazine: 30,
-        ammo: 150,
-        price: 2400,
-        range: 800,
-        ammoType: "5.45mm",
-        ammoPrice: 450,
-        visual: "🔫"
+        name:"M4A1",
+        damage:32,
+        fireRate:130,
+        magazine:30,
+        ammo:180,
+        price:3000,
+        range:900,
+        ammoType:"5.56mm",
+        visual:"🔫"
     },
 
     {
-        name: "M4",
-        damage: 30,
-        fireRate: 120,
-        magazine: 30,
-        ammo: 180,
-        price: 2300,
-        range: 850,
-        ammoType: "5.56mm",
-        ammoPrice: 500,
-        visual: "🔫"
+        name:"SCAR-H",
+        damage:48,
+        fireRate:210,
+        magazine:20,
+        ammo:100,
+        price:4000,
+        range:1000,
+        ammoType:"7.62 NATO",
+        visual:"🔫"
     },
 
     {
-        name: "M16",
-        damage: 34,
-        fireRate: 130,
-        magazine: 30,
-        ammo: 180,
-        price: 2500,
-        range: 900,
-        ammoType: "5.56mm",
-        ammoPrice: 500,
-        visual: "🔫"
+        name:"FAL",
+        damage:55,
+        fireRate:260,
+        magazine:20,
+        ammo:100,
+        price:4500,
+        range:1100,
+        ammoType:"7.62 FAL",
+        visual:"🔫"
     },
 
     {
-        name: "SCAR",
-        damage: 40,
-        fireRate: 170,
-        magazine: 20,
-        ammo: 120,
-        price: 2800,
-        range: 900,
-        ammoType: "7.62mm",
-        ammoPrice: 400,
-        visual: "🔫"
+        name:"Sniper",
+        damage:180,
+        fireRate:1400,
+        magazine:5,
+        ammo:30,
+        price:6000,
+        range:1600,
+        ammoType:"7.62 Sniper",
+        visual:"🎯"
     },
 
     {
-        name: "FAMAS",
-        damage: 31,
-        fireRate: 100,
-        magazine: 25,
-        ammo: 150,
-        price: 2500,
-        range: 820,
-        ammoType: "5.56mm",
-        ammoPrice: 500,
-        visual: "🔫"
+        name:"Barrett",
+        damage:350,
+        fireRate:2200,
+        magazine:5,
+        ammo:25,
+        price:10000,
+        range:2200,
+        ammoType:".50 BMG",
+        visual:"🎯"
     },
 
     {
-        name: "G36",
-        damage: 34,
-        fireRate: 115,
-        magazine: 30,
-        ammo: 180,
-        price: 2700,
-        range: 850,
-        ammoType: "5.56mm",
-        ammoPrice: 500,
-        visual: "🔫"
+        name:"M249",
+        damage:35,
+        fireRate:100,
+        magazine:100,
+        ammo:500,
+        price:8000,
+        range:950,
+        ammoType:"5.56 LMG",
+        visual:"🔫"
     },
 
     {
-        name: "AUG",
-        damage: 38,
-        fireRate: 120,
-        magazine: 30,
-        ammo: 180,
-        price: 2900,
-        range: 900,
-        ammoType: "5.56mm",
-        ammoPrice: 500,
-        visual: "🔫"
+        name:"M60",
+        damage:60,
+        fireRate:180,
+        magazine:100,
+        ammo:400,
+        price:11000,
+        range:1000,
+        ammoType:"7.62 LMG",
+        visual:"🔫"
     },
 
     {
-        name: "M249",
-        damage: 42,
-        fireRate: 95,
-        magazine: 100,
-        ammo: 500,
-        price: 4000,
-        range: 900,
-        ammoType: "5.56mm MG",
-        ammoPrice: 550,
-        visual: "🔫"
+        name:"Flamethrower",
+        damage:45,
+        fireRate:100,
+        magazine:80,
+        ammo:320,
+        price:13000,
+        range:350,
+        ammoType:"Combustível",
+        visual:"🔥"
     },
 
     {
-        name: "PKM",
-        damage: 45,
-        fireRate: 105,
-        magazine: 100,
-        ammo: 500,
-        price: 4500,
-        range: 950,
-        ammoType: "7.62mm MG",
-        ammoPrice: 600,
-        visual: "🔫"
+        name:"Crossbow",
+        damage:220,
+        fireRate:1100,
+        magazine:1,
+        ammo:20,
+        price:7500,
+        range:1000,
+        ammoType:"Flechas",
+        visual:"🏹"
     },
 
     {
-        name: "Sniper",
-        damage: 150,
-        fireRate: 1100,
-        magazine: 5,
-        ammo: 30,
-        price: 3500,
-        range: 1500,
-        ammoType: "Sniper",
-        ammoPrice: 650,
-        visual: "🎯"
+        name:"Rocket Launcher",
+        damage:700,
+        fireRate:2500,
+        magazine:1,
+        ammo:10,
+        price:15000,
+        range:1400,
+        ammoType:"Foguetes",
+        visual:"🚀"
     },
 
     {
-        name: "AWP",
-        damage: 220,
-        fireRate: 1400,
-        magazine: 5,
-        ammo: 25,
-        price: 5000,
-        range: 1700,
-        ammoType: "Heavy Sniper",
-        ammoPrice: 700,
-        visual: "🎯"
+        name:"Grenade Launcher",
+        damage:500,
+        fireRate:1700,
+        magazine:6,
+        ammo:30,
+        price:18000,
+        range:900,
+        ammoType:"Granadas",
+        visual:"💥"
     },
 
     {
-        name: "Barrett",
-        damage: 300,
-        fireRate: 1800,
-        magazine: 10,
-        ammo: 50,
-        price: 6500,
-        range: 1900,
-        ammoType: "Anti-Material",
-        ammoPrice: 750,
-        visual: "🎯"
+        name:"Laser Rifle",
+        damage:600,
+        fireRate:500,
+        magazine:20,
+        ammo:100,
+        price:22000,
+        range:1800,
+        ammoType:"Células Laser",
+        visual:"⚡"
     },
 
     {
-        name: "RPG",
-        damage: 500,
-        fireRate: 2200,
-        magazine: 1,
-        ammo: 10,
-        price: 7000,
-        range: 1200,
-        ammoType: "Rocket",
-        ammoPrice: 800,
-        visual: "🚀"
+        name:"Plasma Rifle",
+        damage:900,
+        fireRate:800,
+        magazine:12,
+        ammo:60,
+        price:28000,
+        range:2000,
+        ammoType:"Plasma",
+        visual:"⚡"
     },
 
     {
-        name: "Minigun",
-        damage: 28,
-        fireRate: 40,
-        magazine: 200,
-        ammo: 1000,
-        price: 8000,
-        range: 1000,
-        ammoType: "Minigun",
-        ammoPrice: 850,
-        visual: "🔫"
-    },
-
-    {
-        name: "Railgun",
-        damage: 800,
-        fireRate: 2200,
-        magazine: 3,
-        ammo: 18,
-        price: 10000,
-        range: 1800,
-        ammoType: "Rail",
-        ammoPrice: 900,
-        visual: "⚡"
-    },
-
-    {
-        name: "Laser Gun",
-        damage: 100,
-        fireRate: 80,
-        magazine: 100,
-        ammo: 500,
-        price: 9000,
-        range: 1200,
-        ammoType: "Laser",
-        ammoPrice: 950,
-        visual: "🔴"
-    },
-
-    {
-        name: "Plasma Rifle",
-        damage: 180,
-        fireRate: 250,
-        magazine: 30,
-        ammo: 150,
-        price: 12000,
-        range: 1300,
-        ammoType: "Plasma",
-        ammoPrice: 1000,
-        visual: "🟣"
-    },
-
-    {
-        name: "Doom Cannon",
-        damage: 1200,
-        fireRate: 3000,
-        magazine: 1,
-        ammo: 10,
-        price: 20000,
-        range: 1600,
-        ammoType: "Doom",
-        ammoPrice: 1050,
-        visual: "💀"
-    },
-
-    /* 20 NOVAS ARMAS */
-
-    {
-        name: "Beretta M9",
-        damage: 22,
-        fireRate: 280,
-        magazine: 15,
-        ammo: 90,
-        price: 500,
-        range: 700,
-        ammoType: "Beretta",
-        ammoPrice: 150,
-        visual: "🔫"
-    },
-
-    {
-        name: "Colt 1911",
-        damage: 30,
-        fireRate: 420,
-        magazine: 8,
-        ammo: 48,
-        price: 650,
-        range: 700,
-        ammoType: "45 ACP",
-        ammoPrice: 200,
-        visual: "🔫"
-    },
-
-    {
-        name: "Five Seven",
-        damage: 24,
-        fireRate: 250,
-        magazine: 20,
-        ammo: 120,
-        price: 850,
-        range: 720,
-        ammoType: "5.7mm",
-        ammoPrice: 300,
-        visual: "🔫"
-    },
-
-    {
-        name: "USP Tactical",
-        damage: 28,
-        fireRate: 300,
-        magazine: 12,
-        ammo: 72,
-        price: 1000,
-        range: 760,
-        ammoType: "USP",
-        ammoPrice: 250,
-        visual: "🔫"
-    },
-
-    {
-        name: "Magnum 44",
-        damage: 70,
-        fireRate: 800,
-        magazine: 6,
-        ammo: 36,
-        price: 1600,
-        range: 850,
-        ammoType: "44 Magnum",
-        ammoPrice: 250,
-        visual: "🔫"
-    },
-
-    {
-        name: "MAC-10",
-        damage: 17,
-        fireRate: 90,
-        magazine: 30,
-        ammo: 180,
-        price: 1000,
-        range: 620,
-        ammoType: "SMG Ammo",
-        ammoPrice: 200,
-        visual: "🔫"
-    },
-
-    {
-        name: "UMP45",
-        damage: 30,
-        fireRate: 125,
-        magazine: 25,
-        ammo: 150,
-        price: 1900,
-        range: 750,
-        ammoType: "45 SMG",
-        ammoPrice: 300,
-        visual: "🔫"
-    },
-
-    {
-        name: "PPSh-41",
-        damage: 24,
-        fireRate: 80,
-        magazine: 71,
-        ammo: 355,
-        price: 2400,
-        range: 650,
-        ammoType: "7.62 Soviet",
-        ammoPrice: 400,
-        visual: "🔫"
-    },
-
-    {
-        name: "HK416",
-        damage: 42,
-        fireRate: 100,
-        magazine: 30,
-        ammo: 210,
-        price: 3500,
-        range: 950,
-        ammoType: "HK 5.56",
-        ammoPrice: 550,
-        visual: "🔫"
-    },
-
-    {
-        name: "G3",
-        damage: 55,
-        fireRate: 220,
-        magazine: 20,
-        ammo: 120,
-        price: 4000,
-        range: 1000,
-        ammoType: "G3 7.62",
-        ammoPrice: 600,
-        visual: "🔫"
-    },
-
-    {
-        name: "FAL",
-        damage: 58,
-        fireRate: 200,
-        magazine: 20,
-        ammo: 120,
-        price: 4200,
-        range: 1050,
-        ammoType: "FAL 7.62",
-        ammoPrice: 600,
-        visual: "🔫"
-    },
-
-    {
-        name: "M14",
-        damage: 60,
-        fireRate: 260,
-        magazine: 20,
-        ammo: 120,
-        price: 3800,
-        range: 1100,
-        ammoType: "M14",
-        ammoPrice: 650,
-        visual: "🎯"
-    },
-
-    {
-        name: "SVD Dragunov",
-        damage: 180,
-        fireRate: 900,
-        magazine: 10,
-        ammo: 60,
-        price: 5500,
-        range: 1500,
-        ammoType: "SVD",
-        ammoPrice: 700,
-        visual: "🎯"
-    },
-
-    {
-        name: "M24",
-        damage: 210,
-        fireRate: 1200,
-        magazine: 5,
-        ammo: 35,
-        price: 5200,
-        range: 1600,
-        ammoType: "M24",
-        ammoPrice: 700,
-        visual: "🎯"
-    },
-
-    {
-        name: "SPAS-12",
-        damage: 85,
-        fireRate: 700,
-        magazine: 8,
-        ammo: 48,
-        price: 3200,
-        range: 520,
-        ammoType: "SPAS",
-        ammoPrice: 350,
-        visual: "🔫"
-    },
-
-    {
-        name: "AA-12",
-        damage: 55,
-        fireRate: 130,
-        magazine: 20,
-        ammo: 160,
-        price: 5000,
-        range: 500,
-        ammoType: "AA12",
-        ammoPrice: 400,
-        visual: "🔫"
-    },
-
-    {
-        name: "Flamethrower",
-        damage: 75,
-        fireRate: 100,
-        magazine: 150,
-        ammo: 750,
-        price: 7000,
-        range: 450,
-        ammoType: "Fuel",
-        ammoPrice: 800,
-        visual: "🔥"
-    },
-
-    {
-        name: "Grenade Launcher",
-        damage: 400,
-        fireRate: 1800,
-        magazine: 6,
-        ammo: 30,
-        price: 6500,
-        range: 1100,
-        ammoType: "40mm",
-        ammoPrice: 850,
-        visual: "💥"
-    },
-
-    {
-        name: "Gauss Rifle",
-        damage: 700,
-        fireRate: 1800,
-        magazine: 5,
-        ammo: 25,
-        price: 8500,
-        range: 1800,
-        ammoType: "Gauss",
-        ammoPrice: 900,
-        visual: "⚡"
-    },
-
-    {
-        name: "Death Ray",
-        damage: 1500,
-        fireRate: 3000,
-        magazine: 3,
-        ammo: 15,
-        price: 18000,
-        range: 2000,
-        ammoType: "Death Energy",
-        ammoPrice: 1050,
-        visual: "☠️"
-    },
-
-    {
-        name: "Galaxy Blaster",
-        damage: 5000,
-        fireRate: 4500,
-        magazine: 2,
-        ammo: 10,
-        price: 50000,
-        range: 2500,
-        ammoType: "Galaxy",
-        ammoPrice: 1200,
-        visual: "🌌"
+        name:"Railgun",
+        damage:1800,
+        fireRate:2500,
+        magazine:3,
+        ammo:15,
+        price:40000,
+        range:2500,
+        ammoType:"Projéteis Rail",
+        visual:"⚡"
     }
 ];
 
@@ -759,138 +444,138 @@ const weapons = [
 const meleeWeapons = [
 
     {
-        name: "Faca",
-        damage: 45,
-        range: 85,
-        cooldown: 450,
-        price: 250,
-        visual: "🔪"
+        name:"Faca",
+        damage:45,
+        fireRate:450,
+        range:75,
+        price:150,
+        visual:"🔪"
     },
 
     {
-        name: "Faca Militar",
-        damage: 65,
-        range: 90,
-        cooldown: 420,
-        price: 500,
-        visual: "🔪"
+        name:"Faca Tática",
+        damage:60,
+        fireRate:420,
+        range:80,
+        price:350,
+        visual:"🔪"
     },
 
     {
-        name: "Facão",
-        damage: 90,
-        range: 100,
-        cooldown: 550,
-        price: 800,
-        visual: "🗡️"
+        name:"Bastão",
+        damage:70,
+        fireRate:550,
+        range:90,
+        price:500,
+        visual:"🏏"
     },
 
     {
-        name: "Machado",
-        damage: 130,
-        range: 100,
-        cooldown: 750,
-        price: 1200,
-        visual: "🪓"
+        name:"Taco de Beisebol",
+        damage:90,
+        fireRate:650,
+        range:105,
+        price:750,
+        visual:"🏏"
     },
 
     {
-        name: "Machado Pesado",
-        damage: 220,
-        range: 110,
-        cooldown: 950,
-        price: 2000,
-        visual: "🪓"
+        name:"Machado",
+        damage:130,
+        fireRate:850,
+        range:90,
+        price:1200,
+        visual:"🪓"
     },
 
     {
-        name: "Taco",
-        damage: 75,
-        range: 100,
-        cooldown: 500,
-        price: 450,
-        visual: "🏏"
+        name:"Machado Pesado",
+        damage:190,
+        fireRate:1050,
+        range:100,
+        price:2200,
+        visual:"🪓"
     },
 
     {
-        name: "Taco de Metal",
-        damage: 120,
-        range: 105,
-        cooldown: 600,
-        price: 1000,
-        visual: "🏏"
+        name:"Facão",
+        damage:150,
+        fireRate:650,
+        range:100,
+        price:1800,
+        visual:"⚔️"
     },
 
     {
-        name: "Marreta",
-        damage: 250,
-        range: 100,
-        cooldown: 1000,
-        price: 2500,
-        visual: "🔨"
+        name:"Katana",
+        damage:220,
+        fireRate:550,
+        range:125,
+        price:3500,
+        visual:"⚔️"
     },
 
     {
-        name: "Katana",
-        damage: 180,
-        range: 120,
-        cooldown: 600,
-        price: 3500,
-        visual: "⚔️"
+        name:"Marreta",
+        damage:300,
+        fireRate:1300,
+        range:100,
+        price:5000,
+        visual:"🔨"
     },
 
     {
-        name: "Espada",
-        damage: 210,
-        range: 120,
-        cooldown: 650,
-        price: 4000,
-        visual: "⚔️"
+        name:"Lança",
+        damage:260,
+        fireRate:850,
+        range:150,
+        price:4500,
+        visual:"🔱"
     },
 
     {
-        name: "Espada Pesada",
-        damage: 350,
-        range: 125,
-        cooldown: 950,
-        price: 6500,
-        visual: "⚔️"
+        name:"Foice",
+        damage:350,
+        fireRate:1000,
+        range:125,
+        price:7000,
+        visual:"⚔️"
     },
 
     {
-        name: "Lança",
-        damage: 280,
-        range: 160,
-        cooldown: 850,
-        price: 5000,
-        visual: "🔱"
+        name:"Espada",
+        damage:400,
+        fireRate:650,
+        range:135,
+        price:8500,
+        visual:"🗡️"
     },
 
     {
-        name: "Corrente",
-        damage: 160,
-        range: 145,
-        cooldown: 700,
-        price: 3000,
-        visual: "⛓️"
+        name:"Espada Pesada",
+        damage:600,
+        fireRate:1100,
+        range:145,
+        price:12000,
+        visual:"🗡️"
     },
 
     {
-        name: "Martelo de Guerra",
-        damage: 450,
-        range: 125,
-        cooldown: 1200,
-        price: 9000,
-        visual: "🔨"
+        name:"Martelo de Guerra",
+        damage:800,
+        fireRate:1500,
+        range:120,
+        price:18000,
+        visual:"🔨"
     },
 
     {
-        name: "Lâmina Omega",
-        damage: 1000,
-        range: 150,
-        cooldown: 1000,
-        price: 20000,
-        visual: "⚔️"
+        name:"Lâmina Demoníaca",
+        damage:1200,
+        fireRate:650,
+        range:160,
+        price:30000,
+        visual:"⚔️"
     }
 ];
 
@@ -902,38 +587,38 @@ const meleeWeapons = [
 const armors = [
 
     {
-        name: "Colete Leve",
-        armor: 20,
-        price: 500,
-        visual: "🛡️"
+        name:"Colete Leve",
+        armor:20,
+        price:500,
+        icon:"🛡️"
     },
 
     {
-        name: "Colete Tático",
-        armor: 40,
-        price: 1200,
-        visual: "🛡️"
+        name:"Colete Tático",
+        armor:40,
+        price:1200,
+        icon:"🛡️"
     },
 
     {
-        name: "Armadura Pesada",
-        armor: 60,
-        price: 2500,
-        visual: "🛡️"
+        name:"Armadura Pesada",
+        armor:60,
+        price:2500,
+        icon:"🛡️"
     },
 
     {
-        name: "Armadura Militar",
-        armor: 80,
-        price: 4500,
-        visual: "🛡️"
+        name:"Armadura Militar",
+        armor:80,
+        price:4500,
+        icon:"🛡️"
     },
 
     {
-        name: "Armadura Especial",
-        armor: 100,
-        price: 7000,
-        visual: "🛡️"
+        name:"Armadura Especial",
+        armor:100,
+        price:7000,
+        icon:"🛡️"
     }
 ];
 
@@ -945,80 +630,73 @@ const armors = [
 const friends = [
 
     {
-        name: "Cachorro",
-        damage: 10,
-        price: 1000,
-        icon: "🐕"
+        name:"Cachorro",
+        damage:10,
+        price:1000,
+        icon:"🐕"
     },
 
     {
-        name: "Rottweiler",
-        damage: 18,
-        price: 2000,
-        icon: "🐕"
+        name:"Rottweiler",
+        damage:18,
+        price:2000,
+        icon:"🐕"
     },
 
     {
-        name: "Leopardo",
-        damage: 25,
-        price: 3500,
-        icon: "🐆"
+        name:"Leopardo",
+        damage:25,
+        price:3500,
+        icon:"🐆"
     },
 
     {
-        name: "Tigre",
-        damage: 35,
-        price: 5000,
-        icon: "🐅"
+        name:"Tigre",
+        damage:35,
+        price:5000,
+        icon:"🐅"
     },
 
     {
-        name: "Leão",
-        damage: 50,
-        price: 7500,
-        icon: "🦁"
+        name:"Leão",
+        damage:50,
+        price:7500,
+        icon:"🦁"
     },
 
     {
-        name: "Velociraptor",
-        damage: 70,
-        price: 20000,
-        icon: "🦖"
+        name:"Velociraptor",
+        damage:70,
+        price:20000,
+        icon:"🦖"
     },
 
     {
-        name: "Lobo",
-        damage: 80,
-        price: 10000,
-        icon: "🐺"
+        name:"Lobo",
+        damage:65,
+        price:11000,
+        icon:"🐺"
     },
 
     {
-        name: "Urso",
-        damage: 100,
-        price: 15000,
-        icon: "🐻"
+        name:"Urso",
+        damage:100,
+        price:15000,
+        icon:"🐻"
     },
 
     {
-        name: "Gorila",
-        damage: 130,
-        price: 25000,
-        icon: "🦍"
+        name:"Gorila",
+        damage:130,
+        price:22000,
+        icon:"🦍"
     },
 
     {
-        name: "T-Rex",
-        damage: 200,
-        price: 50000,
-        icon: "🦖"
-    },
-
-    {
-        name: "Dragão",
-        damage: 300,
-        price: 100000,
-        icon: "🐉"
+        name:"T-Rex",
+        damage:250,
+        price:50000,
+        icon:"🦖"
     }
 ];
 
@@ -1030,24 +708,24 @@ const friends = [
 const kits = [
 
     {
-        name: "Kit Médico",
-        heal: 30,
-        price: 300,
-        icon: "🩹"
+        name:"Kit Médico",
+        heal:30,
+        price:300,
+        icon:"🩹"
     },
 
     {
-        name: "Kit Médico Grande",
-        heal: 70,
-        price: 700,
-        icon: "🏥"
+        name:"Kit Médico Grande",
+        heal:70,
+        price:700,
+        icon:"🏥"
     },
 
     {
-        name: "+5 Vida",
-        permanentHealth: 5,
-        price: 1000,
-        icon: "❤️"
+        name:"+5 Vida Máxima",
+        permanentHealth:5,
+        price:1000,
+        icon:"❤️"
     }
 ];
 
@@ -1060,75 +738,83 @@ const kits = [
 const bombs = [
 
     {
-        name: "Granada",
-        damage: 100,
-        radius: 100 + BOMB_RANGE_BONUS,
-        price: 300,
-        icon: "💣"
+        name:"Granada",
+        damage:100,
+        radius:250,
+        price:300,
+        icon:"💣"
     },
 
     {
-        name: "Granada Explosiva",
-        damage: 180,
-        radius: 130 + BOMB_RANGE_BONUS,
-        price: 600,
-        icon: "💣"
+        name:"Granada Explosiva",
+        damage:180,
+        radius:280,
+        price:600,
+        icon:"💣"
     },
 
     {
-        name: "Bomba Pesada",
-        damage: 300,
-        radius: 160 + BOMB_RANGE_BONUS,
-        price: 1000,
-        icon: "💥"
+        name:"Bomba Pesada",
+        damage:300,
+        radius:310,
+        price:1000,
+        icon:"💥"
     },
 
     {
-        name: "C4",
-        damage: 500,
-        radius: 190 + BOMB_RANGE_BONUS,
-        price: 1800,
-        icon: "🧨"
+        name:"C4",
+        damage:500,
+        radius:340,
+        price:1800,
+        icon:"🧨"
     },
 
     {
-        name: "Bomba Incendiária",
-        damage: 250,
-        radius: 150 + BOMB_RANGE_BONUS,
-        price: 1400,
-        icon: "🔥"
+        name:"Mina Explosiva",
+        damage:350,
+        radius:290,
+        price:1200,
+        icon:"💣"
     },
 
     {
-        name: "Granada de Plasma",
-        damage: 600,
-        radius: 180 + BOMB_RANGE_BONUS,
-        price: 3000,
-        icon: "⚡"
+        name:"Bomba Incendiária",
+        damage:250,
+        radius:300,
+        price:1400,
+        icon:"🔥"
     },
 
     {
-        name: "Bomba Nuclear",
-        damage: 1500,
-        radius: 300 + BOMB_RANGE_BONUS,
-        price: 10000,
-        icon: "☢️"
+        name:"Granada de Plasma",
+        damage:600,
+        radius:330,
+        price:3000,
+        icon:"⚡"
     },
 
     {
-        name: "Bomba Infernal",
-        damage: 2500,
-        radius: 350 + BOMB_RANGE_BONUS,
-        price: 20000,
-        icon: "🔥"
+        name:"Bomba Nuclear",
+        damage:1500,
+        radius:450,
+        price:10000,
+        icon:"☢️"
     },
 
     {
-        name: "Bomba Apocalipse",
-        damage: 5000,
-        radius: 450 + BOMB_RANGE_BONUS,
-        price: 40000,
-        icon: "☢️"
+        name:"Bomba Infernal",
+        damage:2500,
+        radius:500,
+        price:20000,
+        icon:"🔥"
+    },
+
+    {
+        name:"Bomba Apocalipse",
+        damage:5000,
+        radius:600,
+        price:40000,
+        icon:"☢️"
     }
 ];
 
@@ -1140,66 +826,38 @@ const bombs = [
 const traps = [
 
     {
-        name: "Espinhos",
-        damage: 30,
-        price: 150,
-        icon: "🪤"
+        name:"Espinhos",
+        damage:30,
+        price:150,
+        icon:"🪤"
     },
 
     {
-        name: "Armadilha de Ferro",
-        damage: 60,
-        price: 300,
-        icon: "⚙️"
+        name:"Armadilha de Ferro",
+        damage:60,
+        price:300,
+        icon:"⚙️"
     },
 
     {
-        name: "Lâminas",
-        damage: 100,
-        price: 600,
-        icon: "⚔️"
+        name:"Lâminas",
+        damage:100,
+        price:600,
+        icon:"⚔️"
     },
 
     {
-        name: "Armadilha Elétrica",
-        damage: 150,
-        price: 900,
-        icon: "⚡"
+        name:"Armadilha Elétrica",
+        damage:150,
+        price:900,
+        icon:"⚡"
     },
 
     {
-        name: "Fogo",
-        damage: 200,
-        price: 1200,
-        icon: "🔥"
-    },
-
-    {
-        name: "Tesla Trap",
-        damage: 450,
-        price: 2500,
-        icon: "⚡"
-    },
-
-    {
-        name: "Laser Trap",
-        damage: 600,
-        price: 4000,
-        icon: "🔴"
-    },
-
-    {
-        name: "Plasma Trap",
-        damage: 1000,
-        price: 7000,
-        icon: "🟣"
-    },
-
-    {
-        name: "Death Trap",
-        damage: 2000,
-        price: 12000,
-        icon: "☠️"
+        name:"Armadilha Infernal",
+        damage:500,
+        price:5000,
+        icon:"🔥"
     }
 ];
 
@@ -1211,221 +869,203 @@ const traps = [
 const barricades = [
 
     {
-        name: "Barricada de Madeira",
-        health: 100,
-        price: 200,
-        icon: "🧱"
+        name:"Barricada de Madeira",
+        health:100,
+        price:200,
+        icon:"🧱"
     },
 
     {
-        name: "Barricada Reforçada",
-        health: 250,
-        price: 500,
-        icon: "🧱"
+        name:"Barricada Reforçada",
+        health:250,
+        price:500,
+        icon:"🧱"
     },
 
     {
-        name: "Barricada de Ferro",
-        health: 500,
-        price: 1000,
-        icon: "🔩"
+        name:"Barricada de Ferro",
+        health:500,
+        price:1000,
+        icon:"🔩"
     },
 
     {
-        name: "Muralha de Ferro",
-        health: 1000,
-        price: 2500,
-        icon: "🏗️"
+        name:"Muralha Militar",
+        health:2000,
+        price:5000,
+        icon:"🏰"
     },
 
     {
-        name: "Muralha Militar",
-        health: 2000,
-        price: 5000,
-        icon: "🛡️"
-    },
-
-    {
-        name: "Muralha Blindada",
-        health: 4000,
-        price: 9000,
-        icon: "🏰"
-    },
-
-    {
-        name: "Muralha Titan",
-        health: 15000,
-        price: 25000,
-        icon: "🛡️"
-    },
-
-    {
-        name: "Fortaleza",
-        health: 60000,
-        price: 100000,
-        icon: "🏯"
+        name:"Fortaleza",
+        health:60000,
+        price:100000,
+        icon:"🏯"
     }
 ];
 
 
 /* =====================================================
-   ZUMBIS
+   ZUMBIS ESPECIAIS
 ===================================================== */
 
 const zombieTypes = [
 
     {
-        name: "Walker",
-        health: 60,
-        speed: 45,
-        damage: 5,
-        reward: 50,
-        color: "#6e756d",
-        size: 1
+        name:"Walker",
+        health:60,
+        speed:45,
+        damage:5,
+        color:"#76a35d",
+        size:1
     },
 
     {
-        name: "Runner",
-        health: 45,
-        speed: 90,
-        damage: 7,
-        reward: 100,
-        color: "#b45c5c",
-        size: .85
+        name:"Runner",
+        health:45,
+        speed:90,
+        damage:7,
+        color:"#d6d65c",
+        size:.85
     },
 
     {
-        name: "Brute",
-        health: 180,
-        speed: 35,
-        damage: 12,
-        reward: 200,
-        color: "#714b35",
-        size: 1.35
+        name:"Brute",
+        health:180,
+        speed:35,
+        damage:12,
+        color:"#7d4f9e",
+        size:1.35
     },
 
     {
-        name: "Crawler",
-        health: 80,
-        speed: 70,
-        damage: 8,
-        reward: 120,
-        color: "#5d795d",
-        size: .75
+        name:"Crawler",
+        health:80,
+        speed:75,
+        damage:8,
+        color:"#568e92",
+        size:.7
     },
 
     {
-        name: "Mutant",
-        health: 300,
-        speed: 45,
-        damage: 15,
-        reward: 350,
-        color: "#8055a0",
-        size: 1.45
+        name:"Soldier",
+        health:130,
+        speed:55,
+        damage:10,
+        color:"#68736a",
+        size:1
     },
 
     {
-        name: "Burning",
-        health: 220,
-        speed: 60,
-        damage: 18,
-        reward: 450,
-        color: "#b64c20",
-        size: 1.1
+        name:"Mutant",
+        health:300,
+        speed:45,
+        damage:15,
+        color:"#ba4f76",
+        size:1.25
     },
 
     {
-        name: "Toxic",
-        health: 250,
-        speed: 50,
-        damage: 20,
-        reward: 500,
-        color: "#5b9b43",
-        size: 1.1
+        name:"Burning",
+        health:220,
+        speed:60,
+        damage:18,
+        color:"#e45c32",
+        size:1.1
     },
 
     {
-        name: "Tank",
-        health: 700,
-        speed: 25,
-        damage: 25,
-        reward: 1000,
-        color: "#52606d",
-        size: 1.65
+        name:"Toxic",
+        health:250,
+        speed:50,
+        damage:20,
+        color:"#55d56a",
+        size:1.05
     }
 ];
+
+
+/* =====================================================
+   ESTADO DO JOGADOR
+===================================================== */
+
+let player = {
+
+    x:180,
+    y:0,
+
+    speed:250,
+
+    health:MAX_HEALTH_START,
+
+    maxHealth:MAX_HEALTH_START,
+
+    armor:0,
+
+    maxArmor:0,
+
+    money:500,
+
+    score:0,
+
+    weapon:null,
+
+    ammo:0,
+
+    reserveAmmo:0,
+
+    lastShot:0,
+
+    reloadTime:0
+};
 
 
 /* =====================================================
    ESTADO
 ===================================================== */
 
-let player = {
+let weaponInventory = [];
 
-    x: 180,
-    y: 0,
+let selectedWeapon = 0;
 
-    speed: 250,
+let itemInventory = [];
 
-    health: MAX_HEALTH_START,
-    maxHealth: MAX_HEALTH_START,
+let currentCategory = "armadura";
 
-    armor: 0,
-    maxArmor: 0,
+let wave = 1;
 
-    money: 500,
+let waveActive = false;
 
-    weapon: weapons[0],
+let preparation = false;
 
-    ammo: weapons[0].magazine,
+let preparationTime = 30;
 
-    reserveAmmo: weapons[0].ammo,
+let gameRunning = false;
 
-    lastShot: 0,
-
-    reloadTime: 0,
-
-    score: 0
-};
-
-
-let inventory = [];
-
-/* A pistola inicial ocupa o primeiro espaço */
-inventory.push({
-    type: "weapon",
-    item: weapons[0]
-});
-
-
-let selectedInventory = 0;
+let gameEnded = false;
 
 let zombies = [];
+
 let bullets = [];
 
 let placedTraps = [];
+
 let placedBarricades = [];
 
 let friend = null;
 
-let wave = 1;
-
-let preparation = false;
-let waveActive = false;
-let gameRunning = false;
-let gameEnded = false;
-
-let preparationTime = 30;
+let rankingSent = false;
 
 let keys = {};
 
 let mouse = {
-    x: 0,
-    y: 0,
-    down: false
+    x:0,
+    y:0,
+    down:false
 };
 
-let rankingSent = false;
+let lastTime =
+    performance.now();
 
 
 /* =====================================================
@@ -1438,143 +1078,7 @@ function getPreparationTime() {
         15,
         30 - ((wave - 1) * 5)
     );
-
 }
-
-
-function startPreparation() {
-
-    preparation = true;
-
-    waveActive = false;
-
-    gameRunning = true;
-
-    preparationTime =
-        getPreparationTime();
-
-    skipPreparationBtn.style.display =
-        "block";
-
-    updateHUD();
-}
-
-
-function skipPreparation() {
-
-    if (!preparation)
-        return;
-
-    preparationTime = 0;
-
-    finishPreparation();
-}
-
-
-function finishPreparation() {
-
-    preparation = false;
-
-    waveActive = true;
-
-    skipPreparationBtn.style.display =
-        "none";
-
-    spawnWave();
-
-    updateHUD();
-}
-
-
-skipPreparationBtn.addEventListener(
-    "click",
-    skipPreparation
-);
-
-
-/* =====================================================
-   CONTROLES
-===================================================== */
-
-window.addEventListener(
-    "keydown",
-    event => {
-
-        const key =
-            event.key.toLowerCase();
-
-        keys[key] = true;
-
-        if (key === "r") {
-            reload();
-        }
-
-        if (
-            ["1", "2", "3", "4", "5"]
-                .includes(event.key)
-        ) {
-
-            selectInventory(
-                Number(event.key) - 1
-            );
-
-        }
-
-        if (key === "e") {
-            useSelectedItem();
-        }
-
-    }
-);
-
-
-window.addEventListener(
-    "keyup",
-    event => {
-
-        keys[
-            event.key.toLowerCase()
-        ] = false;
-
-    }
-);
-
-
-canvas.addEventListener(
-    "mousemove",
-    event => {
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-        mouse.x =
-            event.clientX - rect.left;
-
-        mouse.y =
-            event.clientY - rect.top;
-
-    }
-);
-
-
-canvas.addEventListener(
-    "mousedown",
-    () => {
-
-        mouse.down = true;
-
-    }
-);
-
-
-window.addEventListener(
-    "mouseup",
-    () => {
-
-        mouse.down = false;
-
-    }
-);
 
 
 /* =====================================================
@@ -1585,18 +1089,14 @@ function getPlayerName() {
 
     return playerNameInput.value
         .trim()
-        .replace(/\s+/g, " ")
-        .slice(0, 16);
-
+        .replace(/\s+/g," ")
+        .slice(0,16);
 }
 
 
 function validatePlayerName() {
 
-    const name =
-        getPlayerName();
-
-    if (!name) {
+    if (!getPlayerName()) {
 
         nameWarning.style.display =
             "block";
@@ -1621,18 +1121,16 @@ playerNameInput.addEventListener(
 
             nameWarning.style.display =
                 "none";
-
         }
-
     }
 );
 
 
 /* =====================================================
-   VISUAL
+   VISUAIS
 ===================================================== */
 
-function itemVisual(item, type) {
+function itemVisual(item,type) {
 
     if (item.visual)
         return item.visual;
@@ -1640,27 +1138,34 @@ function itemVisual(item, type) {
     if (item.icon)
         return item.icon;
 
-    if (type === "armas")
-        return "🔫";
+    const defaults = {
 
-    if (type === "corpo")
-        return "⚔️";
+        armadura:"🛡️",
 
-    if (type === "armadura")
-        return "🛡️";
+        amigos:"🐾",
 
-    if (type === "amigos")
-        return "🐾";
+        corpo:"⚔️",
 
-    return "📦";
+        municao:"📦",
+
+        kits:"🩹",
+
+        bombas:"💣",
+
+        armadilhas:"🪤",
+
+        barricadas:"🧱"
+    };
+
+    return defaults[type] || "📦";
 }
 
 
 /* =====================================================
-   DESCRIÇÃO
+   DESCRIÇÕES
 ===================================================== */
 
-function itemDescription(item, type) {
+function itemDescription(item,type) {
 
     if (type === "armas") {
 
@@ -1669,7 +1174,6 @@ function itemDescription(item, type) {
             Carregador: ${item.magazine}<br>
             Munição: ${item.ammoType}
         `;
-
     }
 
     if (type === "corpo") {
@@ -1678,93 +1182,81 @@ function itemDescription(item, type) {
             Dano: ${item.damage}<br>
             Alcance: ${item.range}
         `;
-
     }
 
-    if (type === "armadura") {
-
+    if (type === "armadura")
         return `Proteção: ${item.armor}`;
 
-    }
-
-    if (type === "amigos") {
-
+    if (type === "amigos")
         return `Dano: ${item.damage}`;
-
-    }
 
     if (type === "kits") {
 
-        if (item.permanentHealth) {
-
-            return `
-                Vida máxima +${item.permanentHealth}
-            `;
-
-        }
+        if (item.permanentHealth)
+            return `Vida máxima +${item.permanentHealth}`;
 
         return `Recupera ${item.heal} de vida`;
-
     }
 
     if (type === "bombas") {
 
         return `
             Dano: ${item.damage}<br>
-            Raio: ${item.radius}
+            Área: ${item.radius}
         `;
-
     }
 
-    if (type === "armadilhas") {
-
+    if (type === "armadilhas")
         return `Dano: ${item.damage}`;
 
-    }
-
-    if (type === "barricadas") {
-
-        return `Vida: ${item.health}`;
-
-    }
+    if (type === "barricadas")
+        return `Resistência: ${item.health}`;
 
     return "Item especial";
 }
 
 
 /* =====================================================
-   RENDER DA LOJA
+   LISTA DA CATEGORIA
 ===================================================== */
 
-function getCurrentItems() {
+function getCategoryItems() {
 
-    if (currentCategory === "armadura")
-        return armors;
+    switch(currentCategory) {
 
-    if (currentCategory === "amigos")
-        return friends;
+        case "armadura":
+            return armors;
 
-    if (currentCategory === "armas")
-        return weapons;
+        case "amigos":
+            return friends;
 
-    if (currentCategory === "corpo")
-        return meleeWeapons;
+        case "armas":
+            return weapons;
 
-    if (currentCategory === "kits")
-        return kits;
+        case "corpo":
+            return meleeWeapons;
 
-    if (currentCategory === "bombas")
-        return bombs;
+        case "kits":
+            return kits;
 
-    if (currentCategory === "armadilhas")
-        return traps;
+        case "bombas":
+            return bombs;
 
-    if (currentCategory === "barricadas")
-        return barricades;
+        case "armadilhas":
+            return traps;
 
-    return [];
+        case "barricadas":
+            return barricades;
+
+        default:
+            return [];
+    }
 }
 
+
+/* =====================================================
+   LOJA
+===================================================== */
 
 function renderItems() {
 
@@ -1778,16 +1270,32 @@ function renderItems() {
     }
 
     const items =
-        getCurrentItems();
+        getCategoryItems();
 
     items.forEach(
-        (item, index) => {
+        (item,index) => {
 
             const card =
                 document.createElement("div");
 
             card.className =
                 "shop-item";
+
+            const ownedWeapon =
+                (
+                    currentCategory === "armas" ||
+                    currentCategory === "corpo"
+                ) &&
+                weaponInventory.some(
+                    w => w.name === item.name
+                );
+
+            const equipped =
+                player.weapon &&
+                player.weapon.name === item.name;
+
+            if (equipped)
+                card.classList.add("equipped");
 
             card.innerHTML = `
 
@@ -1799,7 +1307,7 @@ function renderItems() {
                 </div>
 
                 <h3>
-                    ${escapeHTML(item.name)}
+                    ${item.name}
                 </h3>
 
                 <p>
@@ -1810,34 +1318,38 @@ function renderItems() {
                 </p>
 
                 <strong>
-                    $${Number(
-                        item.price
-                    ).toLocaleString("pt-BR")}
+                    $${item.price.toLocaleString("pt-BR")}
                 </strong>
 
-                <button class="buy-item-btn">
-                    COMPRAR
+                <button
+                    data-index="${index}">
+
+                    ${
+                        equipped
+                            ? "EQUIPADO"
+                            : ownedWeapon
+                            ? "EQUIPAR"
+                            : "COMPRAR"
+                    }
+
                 </button>
             `;
 
             const button =
-                card.querySelector(
-                    ".buy-item-btn"
-                );
+                card.querySelector("button");
+
+            if (equipped)
+                button.disabled = true;
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    buyItem(
-                        index
-                    );
-
+                    buyItem(index);
                 }
             );
 
             shopContent.appendChild(card);
-
         }
     );
 }
@@ -1849,8 +1361,41 @@ function renderItems() {
 
 function renderAmmoShop() {
 
-    const weapon =
-        player.weapon;
+    if (!player.weapon) {
+
+        shopContent.innerHTML = `
+            <div class="shop-item">
+
+                <div class="item-visual">
+                    📦
+                </div>
+
+                <h3>Compre uma arma primeiro</h3>
+
+                <p>
+                    A munição é específica para
+                    cada arma.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    const weaponIndex =
+        weapons.findIndex(
+            w => w.name === player.weapon.name
+        );
+
+    let ammoPrice =
+        100 + Math.max(
+            0,
+            weaponIndex
+        ) * 50;
+
+    if (weaponIndex < 0)
+        ammoPrice = 1000;
 
     shopContent.innerHTML = `
 
@@ -1861,42 +1406,58 @@ function renderAmmoShop() {
             </div>
 
             <h3>
-                ${escapeHTML(
-                    weapon.name
-                )}
+                ${player.weapon.ammoType}
             </h3>
 
             <p>
-                Munição:
-                <strong>
-                    ${escapeHTML(
-                        weapon.ammoType ||
-                        "Munição"
-                    )}
-                </strong>
+                Munição exclusiva para
+                ${player.weapon.name}.
                 <br>
-                +50 unidades
+                +50 tiros
             </p>
 
             <strong>
-                $${weapon.ammoPrice || 100}
+                $${ammoPrice.toLocaleString("pt-BR")}
             </strong>
 
-            <button id="buyAmmoButton">
+            <button id="buyAmmoBtn">
                 COMPRAR
             </button>
 
         </div>
+
+        <div class="shop-item">
+
+            <div class="item-visual">
+                🔄
+            </div>
+
+            <h3>
+                Munição Atual
+            </h3>
+
+            <p>
+                Reservatório atual:
+                ${player.reserveAmmo}
+            </p>
+
+            <strong>
+                ${player.weapon.ammoType}
+            </strong>
+
+        </div>
     `;
 
-
     document
-        .getElementById(
-            "buyAmmoButton"
-        )
+        .getElementById("buyAmmoBtn")
         .addEventListener(
             "click",
-            buyAmmo
+            () => {
+
+                buyAmmo(
+                    ammoPrice
+                );
+            }
         );
 }
 
@@ -1908,7 +1469,7 @@ function renderAmmoShop() {
 function buyItem(index) {
 
     const items =
-        getCurrentItems();
+        getCategoryItems();
 
     const item =
         items[index];
@@ -1917,33 +1478,50 @@ function buyItem(index) {
         return;
 
 
-    if (
-        player.money <
-        item.price
-    ) {
-
-        alert(
-            "Dinheiro insuficiente!"
-        );
-
-        return;
-    }
-
-
-    /* ARMAS */
+    /*
+    ARMAS
+    */
 
     if (
         currentCategory === "armas" ||
         currentCategory === "corpo"
     ) {
 
+        const existing =
+            weaponInventory.find(
+                w => w.name === item.name
+            );
+
+        if (existing) {
+
+            equipWeapon(
+                weaponInventory.indexOf(
+                    existing
+                )
+            );
+
+            return;
+        }
+
         if (
-            inventory.length >=
+            weaponInventory.length >=
             INVENTORY_SIZE
         ) {
 
             alert(
-                "Inventário cheio! Você pode carregar até 5 itens."
+                "Os 5 espaços de armas estão cheios!"
+            );
+
+            return;
+        }
+
+        if (
+            player.money <
+            item.price
+        ) {
+
+            alert(
+                "Dinheiro insuficiente!"
             );
 
             return;
@@ -1952,29 +1530,57 @@ function buyItem(index) {
         player.money -=
             item.price;
 
-        inventory.push({
-            type:
-                currentCategory === "corpo"
-                    ? "melee"
-                    : "weapon",
+        const copy =
+            {
+                ...item,
 
-            item: item
-        });
+                currentAmmo:
+                    currentCategory === "corpo"
+                        ? Infinity
+                        : item.magazine,
 
-        renderInventory();
+                reserveAmmo:
+                    currentCategory === "corpo"
+                        ? Infinity
+                        : item.ammo,
+
+                type:
+                    currentCategory === "corpo"
+                        ? "melee"
+                        : "gun"
+            };
+
+        weaponInventory.push(copy);
+
+        equipWeapon(
+            weaponInventory.length - 1
+        );
 
         updateHUD();
+
+        renderItems();
+
+        renderWeaponInventory();
 
         return;
     }
 
 
-    /* ARMADURA */
+    /*
+    ARMADURA
+    */
 
-    if (
-        currentCategory ===
-        "armadura"
-    ) {
+    if (currentCategory === "armadura") {
+
+        if (
+            player.money <
+            item.price
+        ) {
+
+            alert("Dinheiro insuficiente!");
+
+            return;
+        }
 
         player.money -=
             item.price;
@@ -1993,46 +1599,64 @@ function buyItem(index) {
     }
 
 
-    /* AMIGOS */
+    /*
+    AMIGOS
+    */
 
-    if (
-        currentCategory ===
-        "amigos"
-    ) {
+    if (currentCategory === "amigos") {
+
+        if (
+            player.money <
+            item.price
+        ) {
+
+            alert("Dinheiro insuficiente!");
+
+            return;
+        }
 
         player.money -=
             item.price;
 
         friend = {
 
-            name: item.name,
+            name:item.name,
 
-            damage: item.damage,
+            damage:item.damage,
 
-            icon: item.icon,
+            icon:item.icon,
 
-            lastAttack: 0
+            lastAttack:0
         };
 
         updateHUD();
+
+        renderItems();
 
         return;
     }
 
 
-    /* KITS */
+    /*
+    KITS
+    */
 
-    if (
-        currentCategory ===
-        "kits"
-    ) {
+    if (currentCategory === "kits") {
+
+        if (
+            player.money <
+            item.price
+        ) {
+
+            alert("Dinheiro insuficiente!");
+
+            return;
+        }
 
         player.money -=
             item.price;
 
-        if (
-            item.permanentHealth
-        ) {
+        if (item.permanentHealth) {
 
             player.maxHealth +=
                 item.permanentHealth;
@@ -2052,26 +1676,35 @@ function buyItem(index) {
 
         updateHUD();
 
+        renderItems();
+
         return;
     }
 
 
-    /* BOMBAS */
+    /*
+    BOMBAS
+    */
 
-    if (
-        currentCategory ===
-        "bombas"
-    ) {
+    if (currentCategory === "bombas") {
 
         if (
-            !addInventory({
-                type: "bomb",
-                item: item
-            })
+            player.money <
+            item.price
+        ) {
+
+            alert("Dinheiro insuficiente!");
+
+            return;
+        }
+
+        if (
+            itemInventory.length >=
+            INVENTORY_SIZE
         ) {
 
             alert(
-                "Inventário cheio!"
+                "Inventário de itens cheio!"
             );
 
             return;
@@ -2080,30 +1713,40 @@ function buyItem(index) {
         player.money -=
             item.price;
 
-        renderInventory();
+        itemInventory.push({
+            type:"bomb",
+            item:item
+        });
 
-        updateHUD();
+        renderItems();
 
         return;
     }
 
 
-    /* ARMADILHAS */
+    /*
+    ARMADILHAS
+    */
 
-    if (
-        currentCategory ===
-        "armadilhas"
-    ) {
+    if (currentCategory === "armadilhas") {
 
         if (
-            !addInventory({
-                type: "trap",
-                item: item
-            })
+            player.money <
+            item.price
+        ) {
+
+            alert("Dinheiro insuficiente!");
+
+            return;
+        }
+
+        if (
+            itemInventory.length >=
+            INVENTORY_SIZE
         ) {
 
             alert(
-                "Inventário cheio!"
+                "Inventário de itens cheio!"
             );
 
             return;
@@ -2112,30 +1755,40 @@ function buyItem(index) {
         player.money -=
             item.price;
 
-        renderInventory();
+        itemInventory.push({
+            type:"trap",
+            item:item
+        });
 
-        updateHUD();
+        renderItems();
 
         return;
     }
 
 
-    /* BARRICADAS */
+    /*
+    BARRICADAS
+    */
 
-    if (
-        currentCategory ===
-        "barricadas"
-    ) {
+    if (currentCategory === "barricadas") {
 
         if (
-            !addInventory({
-                type: "barricade",
-                item: item
-            })
+            player.money <
+            item.price
+        ) {
+
+            alert("Dinheiro insuficiente!");
+
+            return;
+        }
+
+        if (
+            itemInventory.length >=
+            INVENTORY_SIZE
         ) {
 
             alert(
-                "Inventário cheio!"
+                "Inventário de itens cheio!"
             );
 
             return;
@@ -2144,9 +1797,12 @@ function buyItem(index) {
         player.money -=
             item.price;
 
-        renderInventory();
+        itemInventory.push({
+            type:"barricade",
+            item:item
+        });
 
-        updateHUD();
+        renderItems();
 
         return;
     }
@@ -2154,22 +1810,30 @@ function buyItem(index) {
 
 
 /* =====================================================
-   MUNIÇÃO
+   COMPRAR MUNIÇÃO
 ===================================================== */
 
-function buyAmmo() {
+function buyAmmo(price) {
 
-    const price =
-        player.weapon.ammoPrice ||
-        100;
+    if (!player.weapon)
+        return;
 
     if (
         player.money <
         price
     ) {
 
+        alert("Dinheiro insuficiente!");
+
+        return;
+    }
+
+    if (
+        player.weapon.type === "melee"
+    ) {
+
         alert(
-            "Dinheiro insuficiente!"
+            "Armas corpo a corpo não usam munição."
         );
 
         return;
@@ -2178,127 +1842,77 @@ function buyAmmo() {
     player.money -=
         price;
 
-    player.reserveAmmo +=
+    player.weapon.reserveAmmo +=
         50;
 
+    syncWeaponAmmo();
+
     updateHUD();
+
+    renderAmmoShop();
 }
 
 
 /* =====================================================
-   INVENTÁRIO
+   EQUIPAR ARMA
 ===================================================== */
 
-function addInventory(item) {
+function equipWeapon(index) {
 
     if (
-        inventory.length >=
-        INVENTORY_SIZE
-    ) {
-
-        return false;
-    }
-
-    inventory.push(item);
-
-    return true;
-}
-
-
-function selectInventory(index) {
-
-    if (
-        !inventory[index]
+        !weaponInventory[index]
     )
         return;
 
-
-    selectedInventory =
+    selectedWeapon =
         index;
 
-    const selected =
-        inventory[index];
+    player.weapon =
+        weaponInventory[index];
 
+    syncWeaponAmmo();
 
-    if (
-        selected.type ===
-        "weapon"
-    ) {
+    renderWeaponInventory();
 
-        equipWeapon(
-            selected.item
-        );
-
-    }
-
-
-    if (
-        selected.type ===
-        "melee"
-    ) {
-
-        equipMelee(
-            selected.item
-        );
-
-    }
-
-
-    renderInventory();
+    renderItems();
 
     updateHUD();
 }
 
 
-function equipWeapon(weapon) {
+function syncWeaponAmmo() {
 
-    player.weapon =
-        weapon;
-
-    player.ammo =
-        Math.min(
-            player.ammo,
-            weapon.magazine
-        );
+    if (!player.weapon)
+        return;
 
     if (
-        player.reserveAmmo <= 0
+        player.weapon.type === "melee"
     ) {
 
-        player.reserveAmmo =
-            weapon.ammo;
+        player.ammo = Infinity;
 
+        player.reserveAmmo = Infinity;
+
+        return;
     }
 
+    player.ammo =
+        player.weapon.currentAmmo;
+
+    player.reserveAmmo =
+        player.weapon.reserveAmmo;
 }
 
 
-function equipMelee(weapon) {
+/* =====================================================
+   INVENTÁRIO DE ARMAS
+===================================================== */
 
-    player.weapon = {
-
-        ...weapon,
-
-        melee: true,
-
-        magazine: 0,
-
-        ammo: 0,
-
-        reserveAmmo: 0,
-
-        fireRate:
-            weapon.cooldown
-    };
-
-}
-
-
-function renderInventory() {
+function renderWeaponInventory() {
 
     menuInventory.innerHTML = "";
-    gameInventorySlots.innerHTML = "";
 
+    gameInventorySlots.innerHTML = "";
 
     for (
         let i = 0;
@@ -2306,18 +1920,100 @@ function renderInventory() {
         i++
     ) {
 
-        const menuSlot =
-            createInventorySlot(
-                i
-            );
+        const slot =
+            document.createElement("div");
+
+        slot.className =
+            "inventory-slot";
 
         const gameSlot =
-            createInventorySlot(
-                i
+            document.createElement("div");
+
+        gameSlot.className =
+            "inventory-slot";
+
+        if (
+            weaponInventory[i]
+        ) {
+
+            const weapon =
+                weaponInventory[i];
+
+            slot.innerHTML = `
+                <span class="slot-number">
+                    ${i + 1}
+                </span>
+
+                <span>
+                    ${weapon.visual}
+                </span>
+
+                <span class="slot-name">
+                    ${weapon.name}
+                </span>
+            `;
+
+            gameSlot.innerHTML =
+                slot.innerHTML;
+
+            if (
+                i === selectedWeapon
+            ) {
+
+                slot.classList.add(
+                    "selected"
+                );
+
+                gameSlot.classList.add(
+                    "selected"
+                );
+            }
+
+        } else {
+
+            slot.classList.add(
+                "empty"
             );
 
+            gameSlot.classList.add(
+                "empty"
+            );
+
+            slot.innerHTML =
+                `<span>${i + 1}</span>`;
+
+            gameSlot.innerHTML =
+                `<span>${i + 1}</span>`;
+        }
+
+        slot.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    weaponInventory[i]
+                ) {
+
+                    equipWeapon(i);
+                }
+            }
+        );
+
+        gameSlot.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    weaponInventory[i]
+                ) {
+
+                    equipWeapon(i);
+                }
+            }
+        );
+
         menuInventory.appendChild(
-            menuSlot
+            slot
         );
 
         gameInventorySlots.appendChild(
@@ -2327,171 +2023,111 @@ function renderInventory() {
 }
 
 
-function createInventorySlot(index) {
+/* =====================================================
+   CONTROLES
+===================================================== */
 
-    const slot =
-        document.createElement(
-            "div"
-        );
+window.addEventListener(
+    "keydown",
+    event => {
 
-    slot.className =
-        "inventory-slot";
+        const key =
+            event.key.toLowerCase();
 
-
-    if (
-        index ===
-        selectedInventory
-    ) {
-
-        slot.classList.add(
-            "selected"
-        );
-
-    }
-
-
-    const item =
-        inventory[index];
-
-
-    slot.innerHTML = `
-
-        <span class="inventory-number">
-            ${index + 1}
-        </span>
-
-        ${
-            item
-                ? itemVisual(
-                    item.item,
-                    item.type === "weapon"
-                        ? "armas"
-                        : item.type === "melee"
-                        ? "corpo"
-                        : item.type === "bomb"
-                        ? "bombas"
-                        : item.type === "trap"
-                        ? "armadilhas"
-                        : "barricadas"
-                )
-                : "—"
-        }
-
-        ${
-            item
-                ? `<span class="inventory-name">
-                    ${escapeHTML(
-                        item.item.name
-                    )}
-                   </span>`
-                : ""
-        }
-    `;
-
-
-    slot.addEventListener(
-        "click",
-        () => {
-
-            selectInventory(
-                index
-            );
-
-        }
-    );
-
-
-    return slot;
-}
-
-
-function useSelectedItem() {
-
-    const item =
-        inventory[
-            selectedInventory
-        ];
-
-    if (!item)
-        return;
-
-
-    if (
-        item.type ===
-        "bomb"
-    ) {
-
-        useBomb(
-            item.item
-        );
-
-        inventory.splice(
-            selectedInventory,
-            1
-        );
-
-    }
-
-
-    if (
-        item.type ===
-        "trap"
-    ) {
+        keys[key] = true;
 
         if (
-            placeTrap(
-                item.item
-            )
+            ["1","2","3","4","5"]
+            .includes(event.key)
         ) {
 
-            inventory.splice(
-                selectedInventory,
-                1
+            equipWeapon(
+                Number(event.key) - 1
             );
         }
-
-    }
-
-
-    if (
-        item.type ===
-        "barricade"
-    ) {
 
         if (
-            placeBarricade(
-                item.item
-            )
+            key === "r"
         ) {
 
-            inventory.splice(
-                selectedInventory,
-                1
-            );
+            reload();
         }
 
+        if (
+            key === "e"
+        ) {
+
+            useItemInventory();
+        }
+
+        if (
+            event.key === " "
+        ) {
+
+            event.preventDefault();
+        }
     }
+);
 
 
-    if (
-        selectedInventory >=
-        inventory.length
-    ) {
+window.addEventListener(
+    "keyup",
+    event => {
 
-        selectedInventory =
-            Math.max(
-                0,
-                inventory.length - 1
-            );
+        keys[
+            event.key.toLowerCase()
+        ] = false;
     }
+);
 
 
-    renderInventory();
-}
+canvas.addEventListener(
+    "mousemove",
+    event => {
+
+        const rect =
+            canvas.getBoundingClientRect();
+
+        mouse.x =
+            event.clientX -
+            rect.left;
+
+        mouse.y =
+            event.clientY -
+            rect.top;
+    }
+);
+
+
+canvas.addEventListener(
+    "mousedown",
+    () => {
+
+        mouse.down = true;
+    }
+);
+
+
+canvas.addEventListener(
+    "mouseup",
+    () => {
+
+        mouse.down = false;
+    }
+);
+
+
+canvas.addEventListener(
+    "mouseleave",
+    () => {
+
+        mouse.down = false;
+    }
+);
 
 
 /* =====================================================
-   INICIAR ONDA
+   INICIAR JOGO
 ===================================================== */
 
 function startWave() {
@@ -2504,9 +2140,39 @@ function startWave() {
     )
         return;
 
+    if (
+        weaponInventory.length === 0
+    ) {
+
+        /*
+        Arma inicial gratuita.
+        */
+
+        const starter =
+            {
+                ...weapons[0],
+
+                currentAmmo:
+                    weapons[0].magazine,
+
+                reserveAmmo:
+                    weapons[0].ammo,
+
+                type:"gun"
+            };
+
+        weaponInventory.push(
+            starter
+        );
+
+        equipWeapon(0);
+    }
 
     shopScreen.style.display =
         "none";
+
+    canvas.style.display =
+        "block";
 
     hud.style.display =
         "grid";
@@ -2514,8 +2180,16 @@ function startWave() {
     gameInventory.style.display =
         "block";
 
-
     gameRunning = true;
+
+    gameEnded = false;
+
+    waveActive = false;
+
+    preparation = true;
+
+    preparationTime =
+        getPreparationTime();
 
     player.x = 180;
 
@@ -2526,7 +2200,14 @@ function startWave() {
 
     bullets = [];
 
-    startPreparation();
+    placedTraps = [];
+
+    placedBarricades = [];
+
+    skipPreparationBtn.style.display =
+        "block";
+
+    updateHUD();
 }
 
 
@@ -2537,21 +2218,55 @@ startWaveBtn.addEventListener(
 
 
 /* =====================================================
-   ATUALIZA PREPARAÇÃO
+   PULAR PREPARAÇÃO
+===================================================== */
+
+skipPreparationBtn.addEventListener(
+    "click",
+    () => {
+
+        if (!preparation)
+            return;
+
+        preparationTime = 0;
+
+        startCurrentWave();
+    }
+);
+
+
+/* =====================================================
+   PREPARAÇÃO
 ===================================================== */
 
 function updatePreparation(dt) {
 
-    preparationTime -= dt;
+    preparationTime -=
+        dt;
 
     if (
         preparationTime <= 0
     ) {
 
-        finishPreparation();
+        preparationTime = 0;
 
+        startCurrentWave();
     }
+}
 
+
+function startCurrentWave() {
+
+    preparation = false;
+
+    waveActive = true;
+
+    skipPreparationBtn.style.display =
+        "none";
+
+    spawnWave();
+
+    updateHUD();
 }
 
 
@@ -2565,73 +2280,69 @@ function spawnWave() {
 
 
     /*
-       A cada 10 ondas:
-       somente o Boss.
+    A cada 10 ondas aparece
+    somente o Boss.
     */
 
     if (
         wave % 10 === 0
     ) {
 
-        const bossNumber =
+        const bossLevel =
             wave / 10;
 
-        const bossHP =
-            BOSS_BASE_HP *
+        const bossHealth =
+            500 *
             Math.pow(
                 2,
-                bossNumber - 1
+                bossLevel - 1
             );
 
         const bossReward =
-            BOSS_BASE_REWARD *
+            5000 *
             Math.pow(
                 2,
-                bossNumber - 1
+                bossLevel - 1
             );
-
 
         zombies.push({
 
             x:
-                canvas.width + 120,
+                canvas.width + 180,
 
             y:
                 canvas.height / 2,
 
-            width: 90,
+            width:110,
 
-            height: 120,
+            height:140,
 
-            health: bossHP,
+            health:bossHealth,
 
-            maxHealth: bossHP,
+            maxHealth:bossHealth,
 
-            speed: 20,
+            speed:20,
 
-            damage: 34,
+            damage:999,
 
-            reward: bossReward,
+            reward:bossReward,
 
-            type: "Boss",
+            boss:true,
 
-            color: "#a00000",
+            color:"#8b1625",
 
-            size: 2,
+            attackCooldown:0,
 
-            attackCooldown: 0
-
+            size:1.8
         });
-
-
-        updateHUD();
 
         return;
     }
 
 
     const amount =
-        5 + wave * 3;
+        5 +
+        wave * 3;
 
 
     for (
@@ -2640,49 +2351,41 @@ function spawnWave() {
         i++
     ) {
 
-        let type;
-
+        let available =
+            zombieTypes;
 
         /*
-           Antes da onda 5:
-           somente zumbis normais.
+        A partir da onda 5,
+        especiais entram em todas
+        as ondas.
         */
 
         if (
             wave < 5
         ) {
 
-            type =
-                zombieTypes[0];
-
+            available =
+                zombieTypes.slice(
+                    0,
+                    2
+                );
         } else {
 
-            /*
-               Especial a partir da onda 5.
-            */
-
-            const maxTypes =
-                Math.min(
-                    zombieTypes.length,
-                    2 +
-                    Math.floor(
-                        (wave - 5) / 2
-                    )
-                );
-
-            type =
-                zombieTypes[
-                    Math.floor(
-                        Math.random() *
-                        maxTypes
-                    )
-                ];
-
+            available =
+                zombieTypes;
         }
+
+        const type =
+            available[
+                Math.floor(
+                    Math.random() *
+                    available.length
+                )
+            ];
 
 
         /*
-           +5 HP por onda a partir da onda 5.
+        +5 HP por onda a partir da 5.
         */
 
         const extraHP =
@@ -2693,7 +2396,11 @@ function spawnWave() {
 
         const hp =
             type.health +
-            extraHP;
+            extraHP +
+            Math.max(
+                0,
+                wave - 1
+            ) * 8;
 
 
         zombies.push({
@@ -2701,56 +2408,51 @@ function spawnWave() {
             x:
                 canvas.width +
                 80 +
-                Math.random() *
-                300,
+                Math.random() * 300,
 
             y:
-                70 +
+                80 +
                 Math.random() *
                 Math.max(
                     100,
-                    canvas.height - 140
+                    canvas.height - 160
                 ),
 
             width:
-                38 *
+                40 *
                 type.size,
 
             height:
                 60 *
                 type.size,
 
-            health: hp,
+            health:hp,
 
-            maxHealth: hp,
+            maxHealth:hp,
 
-            speed: type.speed,
+            speed:type.speed,
 
-            damage: type.damage,
+            damage:type.damage,
 
             reward:
-                type.name === "Walker"
-                    ? NORMAL_ZOMBIE_REWARD
-                    : type.reward,
+                NORMAL_ZOMBIE_REWARD,
 
-            type: type.name,
+            color:type.color,
 
-            color: type.color,
+            size:type.size,
 
-            size: type.size,
+            type:type.name,
 
-            attackCooldown: 0
+            attackCooldown:0,
 
+            boss:false
         });
     }
-
-
-    updateHUD();
 }
 
 
 /* =====================================================
-   PLAYER
+   JOGADOR
 ===================================================== */
 
 function updatePlayer(dt) {
@@ -2758,61 +2460,44 @@ function updatePlayer(dt) {
     let dx = 0;
     let dy = 0;
 
-
     if (
         keys["w"] ||
         keys["arrowup"]
-    ) {
-
-        dy -= 1;
-
-    }
-
+    )
+        dy--;
 
     if (
         keys["s"] ||
         keys["arrowdown"]
-    ) {
-
-        dy += 1;
-
-    }
-
+    )
+        dy++;
 
     if (
         keys["a"] ||
         keys["arrowleft"]
-    ) {
-
-        dx -= 1;
-
-    }
-
+    )
+        dx--;
 
     if (
         keys["d"] ||
         keys["arrowright"]
-    ) {
-
-        dx += 1;
-
-    }
+    )
+        dx++;
 
 
     if (
-        dx ||
-        dy
+        dx !== 0 ||
+        dy !== 0
     ) {
 
-        const length =
+        const len =
             Math.hypot(
                 dx,
                 dy
             );
 
-        dx /= length;
-        dy /= length;
-
+        dx /= len;
+        dy /= len;
 
         player.x +=
             dx *
@@ -2828,19 +2513,18 @@ function updatePlayer(dt) {
 
     player.x =
         Math.max(
-            30,
+            25,
             Math.min(
-                canvas.width - 30,
+                canvas.width - 25,
                 player.x
             )
         );
 
-
     player.y =
         Math.max(
-            50,
+            55,
             Math.min(
-                canvas.height - 50,
+                canvas.height - 55,
                 player.y
             )
         );
@@ -2848,23 +2532,20 @@ function updatePlayer(dt) {
 
 
 /* =====================================================
-   TIRO
+   ATAQUE
 ===================================================== */
 
 function shoot() {
 
-    if (!waveActive)
-        return;
-
-
     if (
-        player.weapon.melee
-    ) {
-
-        meleeAttack();
-
+        !waveActive ||
+        !player.weapon
+    )
         return;
-    }
+
+
+    const weapon =
+        player.weapon;
 
 
     const now =
@@ -2874,8 +2555,23 @@ function shoot() {
     if (
         now -
         player.lastShot <
-        player.weapon.fireRate
+        weapon.fireRate
+    )
+        return;
+
+
+    /*
+    CORPO A CORPO
+    */
+
+    if (
+        weapon.type === "melee"
     ) {
+
+        player.lastShot =
+            now;
+
+        meleeAttack();
 
         return;
     }
@@ -2896,19 +2592,27 @@ function shoot() {
 
     player.ammo--;
 
+    weapon.currentAmmo =
+        player.ammo;
+
 
     const angle =
         Math.atan2(
-            mouse.y - player.y,
-            mouse.x - player.x
+            mouse.y -
+            player.y,
+
+            mouse.x -
+            player.x
         );
 
 
     bullets.push({
 
-        x: player.x,
+        x:
+            player.x,
 
-        y: player.y,
+        y:
+            player.y,
 
         vx:
             Math.cos(angle) *
@@ -2919,67 +2623,48 @@ function shoot() {
             1000,
 
         damage:
-            player.weapon.damage,
+            weapon.damage,
 
-        life:
-            player.weapon.range /
-            1000
+        range:
+            weapon.range,
 
+        distance:0
     });
-
 
     updateHUD();
 }
 
 
 /* =====================================================
-   CORPO A CORPO
+   ATAQUE CORPO A CORPO
 ===================================================== */
 
 function meleeAttack() {
 
-    const now =
-        performance.now();
-
-
-    if (
-        now -
-        player.lastShot <
-        player.weapon.cooldown
-    ) {
-
-        return;
-    }
-
-
-    player.lastShot =
-        now;
-
+    const weapon =
+        player.weapon;
 
     const angle =
         Math.atan2(
-            mouse.y - player.y,
-            mouse.x - player.x
+            mouse.y -
+            player.y,
+
+            mouse.x -
+            player.x
         );
 
 
     for (
-        let i =
-            zombies.length - 1;
-        i >= 0;
-        i--
+        const z of zombies
     ) {
 
-        const z =
-            zombies[i];
-
-
         const dx =
-            z.x - player.x;
+            z.x -
+            player.x;
 
         const dy =
-            z.y - player.y;
-
+            z.y -
+            player.y;
 
         const distance =
             Math.hypot(
@@ -2990,7 +2675,7 @@ function meleeAttack() {
 
         if (
             distance >
-            player.weapon.range
+            weapon.range
         )
             continue;
 
@@ -3002,68 +2687,42 @@ function meleeAttack() {
             );
 
 
-        let difference =
+        let diff =
             Math.abs(
-                angle -
-                targetAngle
+                targetAngle -
+                angle
             );
 
-
-        if (
-            difference >
-            Math.PI
-        ) {
-
-            difference =
+        if (diff > Math.PI)
+            diff =
                 Math.PI * 2 -
-                difference;
-
-        }
-
+                diff;
 
         if (
-            difference <
+            diff <
             Math.PI / 2
         ) {
 
-            z.health -=
-                player.weapon.damage;
-
-
-            if (
-                z.health <= 0
-            ) {
-
-                killZombie(
-                    z,
-                    i
-                );
-
-            }
-
+            damageZombie(
+                z,
+                weapon.damage
+            );
         }
     }
 }
 
 
 /* =====================================================
-   RELOAD
+   RECARREGAR
 ===================================================== */
 
 function reload() {
 
     if (
-        player.weapon.melee
+        !player.weapon ||
+        player.weapon.type === "melee"
     )
         return;
-
-
-    if (
-        player.reloadTime >
-        0
-    )
-        return;
-
 
     if (
         player.ammo >=
@@ -3071,53 +2730,56 @@ function reload() {
     )
         return;
 
-
     if (
         player.reserveAmmo <= 0
     )
         return;
 
+    if (
+        player.reloadTime > 0
+    )
+        return;
 
     player.reloadTime =
-        1.3;
+        1.2;
 }
 
 
 function updateReload(dt) {
 
     if (
-        player.reloadTime <=
-        0
+        player.reloadTime <= 0
     )
         return;
-
 
     player.reloadTime -=
         dt;
 
-
     if (
-        player.reloadTime <=
-        0
+        player.reloadTime <= 0
     ) {
 
-        const missing =
+        const needed =
             player.weapon.magazine -
             player.ammo;
 
-
         const amount =
             Math.min(
-                missing,
+                needed,
                 player.reserveAmmo
             );
-
 
         player.ammo +=
             amount;
 
         player.reserveAmmo -=
             amount;
+
+        player.weapon.currentAmmo =
+            player.ammo;
+
+        player.weapon.reserveAmmo =
+            player.reserveAmmo;
 
         updateHUD();
     }
@@ -3133,13 +2795,18 @@ function updateBullets(dt) {
     for (
         let i =
             bullets.length - 1;
+
         i >= 0;
+
         i--
     ) {
 
         const b =
             bullets[i];
 
+        const step =
+            1000 *
+            dt;
 
         b.x +=
             b.vx *
@@ -3149,8 +2816,8 @@ function updateBullets(dt) {
             b.vy *
             dt;
 
-        b.life -=
-            dt;
+        b.distance +=
+            step;
 
 
         let hit = false;
@@ -3159,46 +2826,33 @@ function updateBullets(dt) {
         for (
             let j =
                 zombies.length - 1;
+
             j >= 0;
+
             j--
         ) {
 
             const z =
                 zombies[j];
 
-
-            const distance =
+            const dist =
                 Math.hypot(
-                    b.x - z.x,
-                    b.y - z.y
+                    z.x - b.x,
+                    z.y - b.y
                 );
 
-
             if (
-                distance <
-                Math.max(
-                    30,
-                    z.width / 2
-                )
+                dist <
+                35 *
+                z.size
             ) {
 
-                z.health -=
-                    b.damage;
+                damageZombie(
+                    z,
+                    b.damage
+                );
 
                 hit = true;
-
-
-                if (
-                    z.health <=
-                    0
-                ) {
-
-                    killZombie(
-                        z,
-                        j
-                    );
-
-                }
 
                 break;
             }
@@ -3207,7 +2861,8 @@ function updateBullets(dt) {
 
         if (
             hit ||
-            b.life <= 0 ||
+            b.distance >
+                b.range ||
             b.x < -100 ||
             b.x >
                 canvas.width + 100 ||
@@ -3220,35 +2875,54 @@ function updateBullets(dt) {
                 i,
                 1
             );
-
         }
     }
 }
 
 
 /* =====================================================
-   MORTE DO ZUMBI
+   DANO NO ZUMBI
 ===================================================== */
 
-function killZombie(
+function damageZombie(
     zombie,
-    index
+    damage
 ) {
 
-    player.money +=
-        zombie.reward;
-
-    player.score +=
-        zombie.reward;
+    zombie.health -=
+        damage;
 
 
-    zombies.splice(
-        index,
-        1
-    );
+    if (
+        zombie.health <= 0
+    ) {
 
+        const reward =
+            zombie.reward;
 
-    updateHUD();
+        player.money +=
+            reward;
+
+        player.score +=
+            reward;
+
+        const index =
+            zombies.indexOf(
+                zombie
+            );
+
+        if (
+            index >= 0
+        ) {
+
+            zombies.splice(
+                index,
+                1
+            );
+        }
+
+        updateHUD();
+    }
 }
 
 
@@ -3259,22 +2933,16 @@ function killZombie(
 function updateZombies(dt) {
 
     for (
-        let i =
-            zombies.length - 1;
-        i >= 0;
-        i--
+        const z of zombies
     ) {
 
-        const z =
-            zombies[i];
-
-
         const dx =
-            player.x - z.x;
+            player.x -
+            z.x;
 
         const dy =
-            player.y - z.y;
-
+            player.y -
+            z.y;
 
         const distance =
             Math.hypot(
@@ -3284,17 +2952,18 @@ function updateZombies(dt) {
 
 
         if (
-            distance >
-            60
+            distance > 65
         ) {
 
             z.x +=
-                (dx / distance) *
+                dx /
+                distance *
                 z.speed *
                 dt;
 
             z.y +=
-                (dy / distance) *
+                dy /
+                distance *
                 z.speed *
                 dt;
 
@@ -3303,160 +2972,77 @@ function updateZombies(dt) {
             z.attackCooldown -=
                 dt;
 
-
             if (
-                z.attackCooldown <=
-                0
+                z.attackCooldown <= 0
             ) {
 
-                damagePlayer(
-                    z.damage
-                );
+                if (
+                    z.boss
+                ) {
+
+                    /*
+                    Boss mata em 3 ataques.
+                    */
+
+                    damagePlayer(
+                        Math.ceil(
+                            player.maxHealth /
+                            3
+                        )
+                    );
+
+                } else {
+
+                    damagePlayer(
+                        z.damage
+                    );
+                }
 
                 z.attackCooldown =
-                    z.type === "Boss"
-                        ? 1
-                        : .8;
+                    z.boss
+                        ? 1.2
+                        : 1;
             }
         }
     }
 
 
-    updateFriend();
+    updateFriend(dt);
+
+    checkWaveComplete();
 }
 
 
 /* =====================================================
-   AMIGO
-===================================================== */
-
-function updateFriend() {
-
-    if (!friend)
-        return;
-
-
-    let closest = null;
-
-    let closestDistance =
-        Infinity;
-
-
-    for (
-        const z of zombies
-    ) {
-
-        const distance =
-            Math.hypot(
-                z.x - player.x,
-                z.y - player.y
-            );
-
-
-        if (
-            distance <
-            closestDistance
-        ) {
-
-            closest =
-                z;
-
-            closestDistance =
-                distance;
-        }
-    }
-
-
-    if (
-        !closest ||
-        closestDistance >
-        500
-    )
-        return;
-
-
-    const now =
-        performance.now();
-
-
-    if (
-        now -
-        friend.lastAttack <
-        700
-    )
-        return;
-
-
-    friend.lastAttack =
-        now;
-
-
-    closest.health -=
-        friend.damage;
-
-
-    if (
-        closest.health <=
-        0
-    ) {
-
-        const index =
-            zombies.indexOf(
-                closest
-            );
-
-        if (
-            index !== -1
-        ) {
-
-            killZombie(
-                closest,
-                index
-            );
-
-        }
-    }
-}
-
-
-/* =====================================================
-   DANO
+   DANO NO JOGADOR
 ===================================================== */
 
 function damagePlayer(
-    amount
+    damage
 ) {
 
-    let remaining =
-        amount;
-
-
     if (
-        player.armor >
-        0
+        player.armor > 0
     ) {
 
         const absorbed =
             Math.min(
                 player.armor,
-                remaining
+                damage
             );
 
         player.armor -=
             absorbed;
 
-        remaining -=
+        damage -=
             absorbed;
     }
 
-
     player.health -=
-        remaining;
-
+        damage;
 
     if (
-        player.health <=
-        0
+        player.health <= 0
     ) {
 
         player.health = 0;
@@ -3464,76 +3050,161 @@ function damagePlayer(
         endGame();
     }
 
-
     updateHUD();
 }
 
 
 /* =====================================================
-   BOMBAS
+   AMIGO
 ===================================================== */
 
-function useBomb(
-    bomb
-) {
+function updateFriend(dt) {
+
+    if (!friend)
+        return;
+
+    friend.lastAttack -=
+        dt;
 
     if (
-        !preparation &&
-        !waveActive
+        friend.lastAttack >
+        0
     )
         return;
 
+    if (
+        zombies.length === 0
+    )
+        return;
+
+    let target =
+        zombies[0];
+
+    let closest =
+        Infinity;
+
+    for (
+        const z of zombies
+    ) {
+
+        const d =
+            Math.hypot(
+                z.x -
+                player.x,
+
+                z.y -
+                player.y
+            );
+
+        if (
+            d < closest
+        ) {
+
+            closest = d;
+
+            target = z;
+        }
+    }
+
+    if (
+        target
+    ) {
+
+        damageZombie(
+            target,
+            friend.damage
+        );
+    }
+
+    friend.lastAttack =
+        1;
+}
+
+
+/* =====================================================
+   BOMBA
+===================================================== */
+
+function useBomb(item) {
+
+    if (!waveActive)
+        return;
 
     const x =
-        player.x;
+        mouse.x;
 
     const y =
-        player.y;
+        mouse.y;
 
 
     for (
-        let i =
-            zombies.length - 1;
-        i >= 0;
-        i--
+        const z of [...zombies]
     ) {
 
-        const z =
-            zombies[i];
-
-
-        const distance =
+        const d =
             Math.hypot(
                 z.x - x,
                 z.y - y
             );
 
-
         if (
-            distance <=
-            bomb.radius
+            d <= item.radius
         ) {
 
-            z.health -=
-                bomb.damage;
-
-
-            if (
-                z.health <=
-                0
-            ) {
-
-                killZombie(
-                    z,
-                    i
-                );
-
-            }
+            damageZombie(
+                z,
+                item.damage
+            );
         }
+    }
+}
+
+
+/* =====================================================
+   USAR INVENTÁRIO
+===================================================== */
+
+function useItemInventory() {
+
+    if (
+        itemInventory.length === 0
+    )
+        return;
+
+    const entry =
+        itemInventory[0];
+
+
+    if (
+        entry.type === "bomb"
+    ) {
+
+        useBomb(
+            entry.item
+        );
+
+        itemInventory.shift();
     }
 
 
-    updateHUD();
+    if (
+        entry.type === "trap"
+    ) {
+
+        placeTrap(
+            entry.item
+        );
+    }
+
+
+    if (
+        entry.type === "barricade"
+    ) {
+
+        placeBarricade(
+            entry.item
+        );
+    }
 }
 
 
@@ -3541,107 +3212,25 @@ function useBomb(
    ARMADILHAS
 ===================================================== */
 
-function placeTrap(
-    trap
-) {
+function placeTrap(item) {
 
-    if (
-        !preparation
-    ) {
+    if (!preparation) {
 
         alert(
-            "Armadilhas só podem ser colocadas durante a preparação."
+            "As armadilhas podem ser colocadas durante a preparação."
         );
 
-        return false;
+        return;
     }
-
 
     placedTraps.push({
 
-        x: player.x,
+        x:player.x,
 
-        y: player.y,
+        y:player.y,
 
-        damage: trap.damage,
-
-        radius: 45,
-
-        active: true
-
+        damage:item.damage
     });
-
-
-    return true;
-}
-
-
-function updateTraps() {
-
-    for (
-        const trap of
-        placedTraps
-    ) {
-
-        if (
-            !trap.active
-        )
-            continue;
-
-
-        for (
-            let i =
-                zombies.length - 1;
-            i >= 0;
-            i--
-        ) {
-
-            const z =
-                zombies[i];
-
-
-            const distance =
-                Math.hypot(
-                    z.x - trap.x,
-                    z.y - trap.y
-                );
-
-
-            if (
-                distance <
-                trap.radius
-            ) {
-
-                z.health -=
-                    trap.damage;
-
-                trap.active =
-                    false;
-
-
-                if (
-                    z.health <=
-                    0
-                ) {
-
-                    killZombie(
-                        z,
-                        i
-                    );
-
-                }
-
-                break;
-            }
-        }
-    }
-
-
-    placedTraps =
-        placedTraps.filter(
-            trap =>
-                trap.active
-        );
 }
 
 
@@ -3649,84 +3238,103 @@ function updateTraps() {
    BARRICADAS
 ===================================================== */
 
-function placeBarricade(
-    barricade
-) {
+function placeBarricade(item) {
 
-    if (
-        !preparation
-    ) {
+    if (!preparation) {
 
         alert(
-            "Barricadas só podem ser colocadas durante a preparação."
+            "As barricadas podem ser colocadas durante a preparação."
         );
 
-        return false;
+        return;
     }
-
 
     placedBarricades.push({
 
-        x: player.x,
+        x:player.x,
 
-        y: player.y,
+        y:player.y,
 
-        width: 80,
+        health:item.health,
 
-        height: 30,
-
-        health:
-            barricade.health,
-
-        maxHealth:
-            barricade.health
-
+        maxHealth:item.health
     });
-
-
-    return true;
 }
 
 
-function updateBarricades(
-    dt
-) {
+/* =====================================================
+   ATUALIZAR ARMADILHAS
+===================================================== */
+
+function updateTraps() {
 
     for (
-        const b of
-        placedBarricades
+        const trap of placedTraps
     ) {
 
         for (
-            const z of
-            zombies
+            const z of zombies
         ) {
 
-            const distance =
+            const d =
+                Math.hypot(
+                    z.x - trap.x,
+                    z.y - trap.y
+                );
+
+            if (
+                d < 50
+            ) {
+
+                damageZombie(
+                    z,
+                    trap.damage
+                );
+            }
+        }
+    }
+}
+
+
+/* =====================================================
+   ATUALIZAR BARRICADAS
+===================================================== */
+
+function updateBarricades(dt) {
+
+    for (
+        const b of placedBarricades
+    ) {
+
+        for (
+            const z of zombies
+        ) {
+
+            const d =
                 Math.hypot(
                     z.x - b.x,
                     z.y - b.y
                 );
 
-
             if (
-                distance <
-                65
+                d < 55
             ) {
+
+                z.x -=
+                    (z.x - b.x) *
+                    dt *
+                    2;
 
                 b.health -=
                     z.damage *
                     dt;
-
             }
         }
     }
 
-
     placedBarricades =
         placedBarricades.filter(
-            b =>
-                b.health > 0
+            b => b.health > 0
         );
 }
 
@@ -3746,7 +3354,6 @@ function checkWaveComplete() {
 
         wave++;
 
-
         setTimeout(
             () => {
 
@@ -3755,13 +3362,12 @@ function checkWaveComplete() {
                 )
                     return;
 
+                gameRunning = false;
 
-                gameRunning =
-                    false;
+                preparation = false;
 
-                preparation =
-                    false;
-
+                shopScreen.style.display =
+                    "block";
 
                 hud.style.display =
                     "none";
@@ -3772,18 +3378,14 @@ function checkWaveComplete() {
                 skipPreparationBtn.style.display =
                     "none";
 
-                shopScreen.style.display =
-                    "block";
-
-
                 renderItems();
 
-                renderInventory();
+                renderWeaponInventory();
 
                 updateHUD();
 
             },
-            1000
+            900
         );
     }
 }
@@ -3795,7 +3397,7 @@ function checkWaveComplete() {
 
 function updateHUD() {
 
-    if (!healthBar)
+    if (!player.weapon)
         return;
 
 
@@ -3807,21 +3409,21 @@ function updateHUD() {
     healthBar.style.width =
         `${Math.max(
             0,
-            (
-                player.health /
-                player.maxHealth
-            ) * 100
+            player.health /
+            player.maxHealth *
+            100
         )}%`;
 
 
     armorBar.style.width =
-        `${player.maxArmor > 0
-            ? (
+        player.maxArmor > 0
+            ? `${Math.max(
+                0,
                 player.armor /
-                player.maxArmor
-            ) * 100
-            : 0
-        }%`;
+                player.maxArmor *
+                100
+            )}%`
+            : "0%";
 
 
     if (
@@ -3829,15 +3431,12 @@ function updateHUD() {
     ) {
 
         waveEl.textContent =
-            `ONDA ${wave}`;
+            `PREPARAÇÃO — ${Math.ceil(
+                preparationTime
+            )}s`;
 
         enemiesEl.textContent =
-            "🛠️ PREPARAÇÃO";
-
-        preparationText.textContent =
-            `${Math.ceil(
-                preparationTime
-            )} segundos`;
+            "🛠️ PREPARE SUAS DEFESAS";
 
     } else {
 
@@ -3845,11 +3444,7 @@ function updateHUD() {
             `ONDA ${wave}`;
 
         enemiesEl.textContent =
-            `🧟 Zumbis: ${zombies.length}`;
-
-        preparationText.textContent =
-            "";
-
+            `Zumbis: ${zombies.length}`;
     }
 
 
@@ -3858,17 +3453,16 @@ function updateHUD() {
 
 
     if (
-        player.weapon.melee
+        player.weapon.type === "melee"
     ) {
 
         ammoEl.textContent =
-            "CORPO A CORPO";
+            "∞";
 
     } else {
 
         ammoEl.textContent =
             `${player.ammo} / ${player.reserveAmmo}`;
-
     }
 
 
@@ -3877,39 +3471,25 @@ function updateHUD() {
             "pt-BR"
         )}`;
 
-
     moneyEl.textContent =
         player.money.toLocaleString(
             "pt-BR"
         );
-
-
-    if (
-        preparation
-    ) {
-
-        startWaveBtn.textContent =
-            `⏱️ ${Math.ceil(
-                preparationTime
-            )}s`;
-
-    } else {
-
-        startWaveBtn.textContent =
-            "▶ INICIAR ONDA";
-
-    }
 }
 
 
 /* =====================================================
-   DESENHO DO FUNDO
+   DESENHO DO MAPA
 ===================================================== */
 
 function drawBackground() {
 
+    /*
+    Fundo
+    */
+
     ctx.fillStyle =
-        "#101410";
+        "#101510";
 
     ctx.fillRect(
         0,
@@ -3919,21 +3499,44 @@ function drawBackground() {
     );
 
 
+    /*
+    Piso
+    */
+
+    ctx.fillStyle =
+        "#141a14";
+
+    ctx.fillRect(
+        0,
+        55,
+        canvas.width,
+        canvas.height - 55
+    );
+
+
+    /*
+    Grade
+    */
+
     ctx.strokeStyle =
-        "rgba(255,255,255,.035)";
+        "rgba(130,150,130,.08)";
+
+    ctx.lineWidth = 1;
+
+    const grid = 50;
 
 
     for (
         let x = 0;
         x < canvas.width;
-        x += 50
+        x += grid
     ) {
 
         ctx.beginPath();
 
         ctx.moveTo(
             x,
-            0
+            55
         );
 
         ctx.lineTo(
@@ -3942,14 +3545,13 @@ function drawBackground() {
         );
 
         ctx.stroke();
-
     }
 
 
     for (
-        let y = 0;
+        let y = 55;
         y < canvas.height;
-        y += 50
+        y += grid
     ) {
 
         ctx.beginPath();
@@ -3965,51 +3567,43 @@ function drawBackground() {
         );
 
         ctx.stroke();
-
     }
 
 
-    if (
-        preparation
-    ) {
+    /*
+    Área dos zumbis
+    */
 
-        ctx.fillStyle =
-            "rgba(180,0,0,.12)";
+    ctx.fillStyle =
+        "rgba(180,20,20,.08)";
 
-        ctx.fillRect(
-            canvas.width - 100,
-            0,
-            100,
-            canvas.height
-        );
+    ctx.fillRect(
+        canvas.width - 130,
+        55,
+        130,
+        canvas.height
+    );
 
 
-        ctx.fillStyle =
-            "#ff5555";
+    ctx.fillStyle =
+        "#9b3c3c";
 
-        ctx.font =
-            "bold 17px Arial";
+    ctx.font =
+        "bold 16px Arial";
 
-        ctx.textAlign =
-            "center";
+    ctx.textAlign =
+        "center";
 
-        ctx.fillText(
-            "ZUMBIS",
-            canvas.width - 50,
-            35
-        );
-
-        ctx.fillText(
-            "→",
-            canvas.width - 50,
-            65
-        );
-    }
+    ctx.fillText(
+        "ZUMBIS",
+        canvas.width - 65,
+        85
+    );
 }
 
 
 /* =====================================================
-   DESENHAR PLAYER
+   DESENHAR JOGADOR
 ===================================================== */
 
 function drawPlayer() {
@@ -4024,81 +3618,44 @@ function drawPlayer() {
 
     const angle =
         Math.atan2(
-            mouse.y - player.y,
-            mouse.x - player.x
+            mouse.y -
+            player.y,
+
+            mouse.x -
+            player.x
         );
 
     ctx.rotate(angle);
 
 
-    /* pernas */
+    /*
+    Corpo
+    */
 
     ctx.fillStyle =
-        "#111";
-
-    ctx.fillRect(
-        -12,
-        15,
-        9,
-        25
-    );
-
-    ctx.fillRect(
-        3,
-        15,
-        9,
-        25
-    );
-
-
-    /* corpo */
-
-    ctx.fillStyle =
-        "#314334";
-
-    ctx.fillRect(
-        -17,
-        -10,
-        34,
-        32
-    );
-
-
-    /* colete */
-
-    ctx.fillStyle =
-        "#161c18";
+        "#4772a4";
 
     ctx.fillRect(
         -15,
-        -8,
+        -18,
         30,
-        25
+        36
     );
 
 
-    ctx.strokeStyle =
-        "#687568";
-
-    ctx.strokeRect(
-        -15,
-        -8,
-        30,
-        25
-    );
-
-
-    /* cabeça */
+    /*
+    Cabeça
+    */
 
     ctx.fillStyle =
-        "#c98d68";
+        "#d7a17b";
 
     ctx.beginPath();
 
     ctx.arc(
         0,
-        -25,
-        13,
+        -29,
+        11,
         0,
         Math.PI * 2
     );
@@ -4106,59 +3663,30 @@ function drawPlayer() {
     ctx.fill();
 
 
-    /* capacete */
+    /*
+    Arma
+    */
 
     ctx.fillStyle =
-        "#273029";
+        "#222";
 
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        -28,
-        14,
-        Math.PI,
-        Math.PI * 2
+    ctx.fillRect(
+        10,
+        -5,
+        30,
+        8
     );
 
-    ctx.fill();
 
+    ctx.fillStyle =
+        "#555";
 
-    /* arma visual */
-
-    if (
-        player.weapon.melee
-    ) {
-
-        ctx.fillStyle =
-            "#bcbcbc";
-
-        ctx.fillRect(
-            18,
-            -4,
-            45,
-            5
-        );
-
-    } else {
-
-        ctx.fillStyle =
-            "#090909";
-
-        ctx.fillRect(
-            20,
-            -7,
-            38,
-            6
-        );
-
-        ctx.fillRect(
-            17,
-            -3,
-            12,
-            9
-        );
-    }
+    ctx.fillRect(
+        30,
+        -7,
+        16,
+        4
+    );
 
 
     ctx.restore();
@@ -4169,9 +3697,7 @@ function drawPlayer() {
    DESENHAR ZUMBI
 ===================================================== */
 
-function drawZombie(
-    z
-) {
+function drawZombie(z) {
 
     ctx.save();
 
@@ -4191,175 +3717,186 @@ function drawZombie(
     );
 
 
-    if (
-        z.type === "Boss"
-    ) {
-
-        drawBoss();
-
-        ctx.restore();
-
-        return;
-    }
-
-
-    /* pernas */
-
-    ctx.fillStyle =
-        "#252525";
-
-    ctx.fillRect(
-        -13,
-        18,
-        10,
-        28
-    );
-
-    ctx.fillRect(
-        3,
-        18,
-        10,
-        28
-    );
-
-
-    /* corpo */
-
-    ctx.fillStyle =
-        z.color;
-
-    ctx.fillRect(
-        -18,
-        -10,
-        36,
-        34
-    );
-
-
-    /* braços */
-
-    ctx.fillStyle =
-        z.color;
-
-    ctx.fillRect(
-        -35,
-        -5,
-        20,
-        9
-    );
-
-    ctx.fillRect(
-        15,
-        -5,
-        20,
-        9
-    );
-
-
-    /* cabeça */
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        -24,
-        15,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
-    /* olhos */
-
-    ctx.fillStyle =
-        z.type === "Toxic"
-            ? "#baff4b"
-            : "#ff2525";
-
-    ctx.fillRect(
-        -7,
-        -28,
-        5,
-        5
-    );
-
-    ctx.fillRect(
-        2,
-        -28,
-        5,
-        5
-    );
-
-
-    /* efeitos especiais */
+    /*
+    Boss
+    */
 
     if (
-        z.type === "Burning"
+        z.boss
     ) {
 
         ctx.fillStyle =
-            "#ff6a00";
+            "#8d1825";
+
+        ctx.fillRect(
+            -45,
+            -60,
+            90,
+            110
+        );
+
+        ctx.fillStyle =
+            "#e9b4a0";
 
         ctx.beginPath();
 
         ctx.arc(
             0,
-            5,
-            8,
+            -75,
+            30,
             0,
             Math.PI * 2
         );
 
         ctx.fill();
-    }
-
-
-    if (
-        z.type === "Toxic"
-    ) {
 
         ctx.fillStyle =
-            "#b7ff4a";
+            "#ff2222";
 
         ctx.beginPath();
 
         ctx.arc(
-            15,
-            5,
+            -11,
+            -78,
+            6,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.arc(
+            11,
+            -78,
             6,
             0,
             Math.PI * 2
         );
 
         ctx.fill();
+
+    } else {
+
+        /*
+        Corpo
+        */
+
+        ctx.fillStyle =
+            z.color;
+
+        ctx.fillRect(
+            -18,
+            -10,
+            36,
+            45
+        );
+
+
+        /*
+        Cabeça
+        */
+
+        ctx.fillStyle =
+            "#bca38b";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            0,
+            -28,
+            16,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+
+
+        /*
+        Olhos
+        */
+
+        ctx.fillStyle =
+            "#ff3333";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            -6,
+            -30,
+            3,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.arc(
+            6,
+            -30,
+            3,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
     }
+
+
+    /*
+    Barra de vida
+    */
+
+    const barWidth =
+        z.boss
+            ? 110
+            : 55;
+
+    ctx.fillStyle =
+        "#222";
+
+    ctx.fillRect(
+        -barWidth / 2,
+        -55 *
+            (z.boss ? 1.5 : 1),
+        barWidth,
+        7
+    );
+
+    ctx.fillStyle =
+        z.boss
+            ? "#e33"
+            : "#52d25b";
+
+    ctx.fillRect(
+        -barWidth / 2,
+        -55 *
+            (z.boss ? 1.5 : 1),
+        barWidth *
+            Math.max(
+                0,
+                z.health /
+                z.maxHealth
+            ),
+        7
+    );
 
 
     if (
-        z.type === "Mutant"
+        z.boss
     ) {
 
-        ctx.strokeStyle =
-            "#d68cff";
+        ctx.fillStyle =
+            "#ffcf4a";
 
-        ctx.lineWidth =
-            3;
+        ctx.font =
+            "bold 18px Arial";
 
-        ctx.strokeRect(
-            -23,
-            -40,
-            46,
-            70
+        ctx.textAlign =
+            "center";
+
+        ctx.fillText(
+            "👑 BOSS",
+            0,
+            -100
         );
     }
-
-
-    drawHealthBar(
-        z,
-        55
-    );
 
 
     ctx.restore();
@@ -4367,217 +3904,17 @@ function drawZombie(
 
 
 /* =====================================================
-   BOSS
-===================================================== */
-
-function drawBoss() {
-
-    /* aura */
-
-    ctx.fillStyle =
-        "rgba(255,0,0,.15)";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        -5,
-        65,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
-    /* corpo */
-
-    ctx.fillStyle =
-        "#500000";
-
-    ctx.fillRect(
-        -35,
-        -25,
-        70,
-        75
-    );
-
-
-    /* cabeça */
-
-    ctx.fillStyle =
-        "#7c1010";
-
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        -45,
-        30,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fill();
-
-
-    /* olhos */
-
-    ctx.fillStyle =
-        "#ffff00";
-
-    ctx.fillRect(
-        -14,
-        -51,
-        10,
-        8
-    );
-
-    ctx.fillRect(
-        4,
-        -51,
-        10,
-        8
-    );
-
-
-    /* chifres */
-
-    ctx.fillStyle =
-        "#ddd";
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        -23,
-        -65
-    );
-
-    ctx.lineTo(
-        -45,
-        -95
-    );
-
-    ctx.lineTo(
-        -15,
-        -75
-    );
-
-    ctx.fill();
-
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        23,
-        -65
-    );
-
-    ctx.lineTo(
-        45,
-        -95
-    );
-
-    ctx.lineTo(
-        15,
-        -75
-    );
-
-    ctx.fill();
-
-
-    /* vida */
-
-    ctx.fillStyle =
-        "#222";
-
-    ctx.fillRect(
-        -55,
-        -110,
-        110,
-        10
-    );
-
-    ctx.fillStyle =
-        "#e00000";
-
-    ctx.fillRect(
-        -55,
-        -110,
-        110 *
-        Math.max(
-            0,
-            currentBossHealthPercent()
-        ),
-        10
-    );
-}
-
-
-function currentBossHealthPercent() {
-
-    const boss =
-        zombies.find(
-            z =>
-                z.type ===
-                "Boss"
-        );
-
-    if (!boss)
-        return 0;
-
-    return (
-        boss.health /
-        boss.maxHealth
-    );
-}
-
-
-function drawHealthBar(
-    z,
-    width
-) {
-
-    ctx.fillStyle =
-        "#222";
-
-    ctx.fillRect(
-        -width / 2,
-        -50,
-        width,
-        6
-    );
-
-    ctx.fillStyle =
-        "#e33";
-
-    ctx.fillRect(
-        -width / 2,
-        -50,
-        width *
-        Math.max(
-            0,
-            z.health /
-            z.maxHealth
-        ),
-        6
-    );
-}
-
-
-/* =====================================================
-   BALAS
+   DESENHAR BALAS
 ===================================================== */
 
 function drawBullets() {
 
-    ctx.fillStyle =
-        "#ffd65a";
-
-
     for (
         const b of bullets
     ) {
+
+        ctx.fillStyle =
+            "#ffd85a";
 
         ctx.beginPath();
 
@@ -4595,113 +3932,78 @@ function drawBullets() {
 
 
 /* =====================================================
-   ARMADILHAS
+   DESENHAR ARMADILHAS
 ===================================================== */
 
 function drawTraps() {
 
     for (
-        const trap of
-        placedTraps
+        const trap of placedTraps
     ) {
 
-        ctx.save();
-
-        ctx.translate(
-            trap.x,
-            trap.y
-        );
-
         ctx.fillStyle =
-            "#777";
+            "#aaa";
 
         ctx.fillRect(
-            -20,
-            -8,
-            40,
+            trap.x - 15,
+            trap.y - 8,
+            30,
             16
         );
 
         ctx.strokeStyle =
-            "#ddd";
+            "#eee";
 
         ctx.strokeRect(
-            -20,
-            -8,
-            40,
+            trap.x - 15,
+            trap.y - 8,
+            30,
             16
         );
-
-        ctx.restore();
     }
 }
 
 
 /* =====================================================
-   BARRICADAS
+   DESENHAR BARRICADAS
 ===================================================== */
 
 function drawBarricades() {
 
     for (
-        const b of
-        placedBarricades
+        const b of placedBarricades
     ) {
 
-        ctx.save();
+        ctx.fillStyle =
+            "#79553a";
 
-        ctx.translate(
-            b.x,
-            b.y
+        ctx.fillRect(
+            b.x - 30,
+            b.y - 25,
+            60,
+            50
         );
 
         ctx.fillStyle =
-            "#725033";
+            "#58c75d";
 
         ctx.fillRect(
-            -b.width / 2,
-            -b.height / 2,
-            b.width,
-            b.height
-        );
-
-        ctx.strokeStyle =
-            "#24170d";
-
-        ctx.lineWidth =
-            4;
-
-        ctx.strokeRect(
-            -b.width / 2,
-            -b.height / 2,
-            b.width,
-            b.height
-        );
-
-
-        ctx.fillStyle =
-            "#e33";
-
-        ctx.fillRect(
-            -b.width / 2,
-            -b.height / 2 - 10,
-            b.width *
-            Math.max(
-                0,
-                b.health /
-                b.maxHealth
-            ),
+            b.x - 30,
+            b.y - 32,
+            60 *
+                Math.max(
+                    0,
+                    b.health /
+                    b.maxHealth
+                ),
             5
         );
-
-
-        ctx.restore();
     }
 }
 
 
 /* =====================================================
-   AMIGO
+   DESENHAR AMIGO
 ===================================================== */
 
 function drawFriend() {
@@ -4709,22 +4011,19 @@ function drawFriend() {
     if (!friend)
         return;
 
-
     ctx.save();
 
     ctx.font =
-        "40px Arial";
+        "34px Arial";
 
     ctx.textAlign =
         "center";
 
-
     ctx.fillText(
         friend.icon,
-        player.x - 50,
-        player.y + 15
+        player.x - 45,
+        player.y + 10
     );
-
 
     ctx.restore();
 }
@@ -4738,7 +4037,7 @@ async function loadRanking() {
 
     rankingContent.innerHTML = `
         <div class="ranking-loading">
-            ⏳ Carregando ranking...
+            Carregando ranking...
         </div>
     `;
 
@@ -4749,26 +4048,26 @@ async function loadRanking() {
             data,
             error
         } =
-            await supabaseClient
-                .from(
-                    "they_are_coming_scores"
-                )
-                .select(
-                    "player_name,waves,total_money,created_at"
-                )
-                .order(
-                    "waves",
-                    {
-                        ascending: false
-                    }
-                )
-                .order(
-                    "total_money",
-                    {
-                        ascending: false
-                    }
-                )
-                .limit(100);
+        await supabaseClient
+            .from(
+                "they_are_coming_scores"
+            )
+            .select(
+                "player_name,waves,total_money,created_at"
+            )
+            .order(
+                "waves",
+                {
+                    ascending:false
+                }
+            )
+            .order(
+                "total_money",
+                {
+                    ascending:false
+                }
+            )
+            .limit(100);
 
 
         if (error)
@@ -4782,7 +4081,7 @@ async function loadRanking() {
 
             rankingContent.innerHTML = `
                 <div class="ranking-empty">
-                    🏆 Ainda não existem jogadores.
+                    Nenhum jogador no ranking ainda.
                 </div>
             `;
 
@@ -4797,15 +4096,10 @@ async function loadRanking() {
                 <thead>
 
                     <tr>
-
-                        <th>Pos.</th>
-
+                        <th>#</th>
                         <th>Jogador</th>
-
                         <th>Ondas</th>
-
                         <th>Dinheiro</th>
-
                     </tr>
 
                 </thead>
@@ -4815,24 +4109,18 @@ async function loadRanking() {
 
 
         data.forEach(
-            (playerData, index) => {
+            (entry,index) => {
 
                 let position =
                     `${index + 1}º`;
 
-                if (
-                    index === 0
-                )
+                if (index === 0)
                     position = "🥇";
 
-                if (
-                    index === 1
-                )
+                if (index === 1)
                     position = "🥈";
 
-                if (
-                    index === 2
-                )
+                if (index === 2)
                     position = "🥉";
 
 
@@ -4840,303 +4128,59 @@ async function loadRanking() {
 
                     <tr>
 
-                        <td class="ranking-position">
+                        <td>
                             ${position}
                         </td>
 
                         <td class="ranking-player">
                             ${escapeHTML(
-                                playerData.player_name
+                                entry.player_name
                             )}
                         </td>
 
                         <td>
-                            🧟 ${playerData.waves}
+                            🧟 ${entry.waves}
                         </td>
 
                         <td class="ranking-money">
                             💵 $${Number(
-                                playerData.total_money
+                                entry.total_money
                             ).toLocaleString(
                                 "pt-BR"
                             )}
                         </td>
 
                     </tr>
-
                 `;
             }
         );
 
 
         html += `
-
                 </tbody>
-
             </table>
-
         `;
-
 
         rankingContent.innerHTML =
             html;
 
-
-    } catch (error) {
+    } catch(error) {
 
         console.error(
             "Erro no ranking:",
             error
         );
 
-
         rankingContent.innerHTML = `
-
             <div class="ranking-error">
-
                 ❌ Não foi possível carregar o ranking.
-
-                <br><br>
-
-                Verifique o Supabase.
-
             </div>
-
         `;
     }
 }
 
 
-/* =====================================================
-   ABRIR / FECHAR RANKING
-===================================================== */
-
-rankingBtn.addEventListener(
-    "click",
-    () => {
-
-        rankingScreen.style.display =
-            "block";
-
-        loadRanking();
-
-    }
-);
-
-
-closeRankingBtn.addEventListener(
-    "click",
-    () => {
-
-        rankingScreen.style.display =
-            "none";
-
-    }
-);
-
-
-/* =====================================================
-   SALVAR RANKING
-===================================================== */
-
-async function saveScoreToRanking() {
-
-    if (rankingSent)
-        return;
-
-
-    const name =
-        getPlayerName();
-
-
-    if (!name)
-        return;
-
-
-    rankingSent = true;
-
-
-    try {
-
-        const {
-            error
-        } =
-            await supabaseClient
-                .from(
-                    "they_are_coming_scores"
-                )
-                .insert({
-
-                    player_name:
-                        name,
-
-                    waves:
-                        wave,
-
-                    total_money:
-                        player.money
-
-                });
-
-
-        if (error) {
-
-            console.error(
-                "Erro ao salvar ranking:",
-                error
-            );
-
-            rankingSent = false;
-        }
-
-
-    } catch (error) {
-
-        console.error(
-            "Erro no ranking:",
-            error
-        );
-
-        rankingSent = false;
-    }
-}
-
-
-/* =====================================================
-   GAME OVER
-===================================================== */
-
-function endGame() {
-
-    if (gameEnded)
-        return;
-
-
-    gameEnded = true;
-
-    gameRunning = false;
-
-    waveActive = false;
-
-    preparation = false;
-
-
-    skipPreparationBtn.style.display =
-        "none";
-
-
-    finalScore.innerHTML = `
-
-        ${escapeHTML(
-            getPlayerName() ||
-            "Jogador"
-        )}
-
-        <br><br>
-
-        🧟 Ondas:
-        <strong>
-            ${wave}
-        </strong>
-
-        <br>
-
-        💵 Dinheiro:
-        <strong>
-            $${player.money.toLocaleString(
-                "pt-BR"
-            )}
-        </strong>
-
-        <br>
-
-        🏆 Pontuação:
-        <strong>
-            ${player.score.toLocaleString(
-                "pt-BR"
-            )}
-        </strong>
-
-    `;
-
-
-    gameOver.style.display =
-        "flex";
-
-
-    saveScoreToRanking();
-}
-
-
-/* =====================================================
-   CATEGORIAS
-===================================================== */
-
-document
-    .querySelectorAll(
-        ".category-btn"
-    )
-    .forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".category-btn"
-                        )
-                        .forEach(
-                            btn => {
-
-                                btn.classList.remove(
-                                    "active"
-                                );
-
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    currentCategory =
-                        button.dataset.category;
-
-
-                    renderItems();
-
-                }
-            );
-
-        }
-    );
-
-
-/* =====================================================
-   RECOMEÇAR
-===================================================== */
-
-restartBtn.addEventListener(
-    "click",
-    () => {
-
-        location.reload();
-
-    }
-);
-
-
-/* =====================================================
-   ESCAPAR HTML
-===================================================== */
-
-function escapeHTML(
-    value
-) {
+function escapeHTML(value) {
 
     return String(value)
         .replaceAll(
@@ -5163,30 +4207,230 @@ function escapeHTML(
 
 
 /* =====================================================
-   LOOP
+   RANKING — BOTÕES
 ===================================================== */
 
-let lastTime =
-    performance.now();
+rankingBtn.addEventListener(
+    "click",
+    () => {
+
+        rankingScreen.style.display =
+            "block";
+
+        loadRanking();
+    }
+);
 
 
-function gameLoop(
-    time
-) {
+closeRankingBtn.addEventListener(
+    "click",
+    () => {
+
+        rankingScreen.style.display =
+            "none";
+    }
+);
+
+
+/* =====================================================
+   SALVAR RANKING
+===================================================== */
+
+async function saveScoreToRanking() {
+
+    if (rankingSent)
+        return;
+
+    const name =
+        getPlayerName();
+
+    if (!name)
+        return;
+
+    rankingSent = true;
+
+
+    try {
+
+        const {
+            error
+        } =
+        await supabaseClient
+            .from(
+                "they_are_coming_scores"
+            )
+            .insert({
+
+                player_name:name,
+
+                waves:wave,
+
+                total_money:
+                    player.money
+            });
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao salvar ranking:",
+                error
+            );
+
+            rankingSent = false;
+        }
+
+    } catch(error) {
+
+        console.error(
+            "Erro no ranking:",
+            error
+        );
+
+        rankingSent = false;
+    }
+}
+
+
+/* =====================================================
+   GAME OVER
+===================================================== */
+
+function endGame() {
+
+    if (gameEnded)
+        return;
+
+    gameEnded = true;
+
+    gameRunning = false;
+
+    waveActive = false;
+
+    preparation = false;
+
+    skipPreparationBtn.style.display =
+        "none";
+
+
+    finalScore.innerHTML = `
+
+        <strong>
+            ${escapeHTML(
+                getPlayerName() ||
+                "Jogador"
+            )}
+        </strong>
+
+        <br><br>
+
+        🧟 Ondas:
+        <strong>
+            ${wave}
+        </strong>
+
+        <br>
+
+        💵 Dinheiro:
+        <strong>
+            $${player.money.toLocaleString(
+                "pt-BR"
+            )}
+        </strong>
+
+        <br>
+
+        ⭐ Pontuação:
+        <strong>
+            ${player.score.toLocaleString(
+                "pt-BR"
+            )}
+        </strong>
+    `;
+
+
+    gameOver.style.display =
+        "flex";
+
+    saveScoreToRanking();
+}
+
+
+/* =====================================================
+   CATEGORIAS
+===================================================== */
+
+document
+    .querySelectorAll(
+        ".category-btn"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .querySelectorAll(
+                            ".category-btn"
+                        )
+                        .forEach(
+                            btn =>
+                                btn.classList
+                                    .remove(
+                                        "active"
+                                    )
+                        );
+
+                    button.classList.add(
+                        "active"
+                    );
+
+                    currentCategory =
+                        button.dataset.category;
+
+                    renderItems();
+                }
+            );
+        }
+    );
+
+
+/* =====================================================
+   RECOMEÇAR
+===================================================== */
+
+restartBtn.addEventListener(
+    "click",
+    () => {
+
+        location.reload();
+    }
+);
+
+
+/* =====================================================
+   LOOP PRINCIPAL
+===================================================== */
+
+function gameLoop(time) {
 
     const dt =
         Math.min(
             0.033,
-            (
-                time -
-                lastTime
-            ) / 1000
+            (time - lastTime) /
+            1000
         );
 
+    lastTime = time;
 
-    lastTime =
-        time;
 
+    /*
+    O MAPA SEMPRE É DESENHADO.
+    Isso garante que ele apareça assim
+    que a loja for fechada.
+    */
 
     drawBackground();
 
@@ -5203,27 +4447,19 @@ function gameLoop(
             preparation
         ) {
 
-            updatePreparation(
-                dt
-            );
+            updatePreparation(dt);
 
         } else if (
             waveActive
         ) {
 
-            updateZombies(
-                dt
-            );
+            updateZombies(dt);
 
-            updateBullets(
-                dt
-            );
+            updateBullets(dt);
 
             updateTraps();
 
-            updateBarricades(
-                dt
-            );
+            updateBarricades(dt);
 
 
             if (
@@ -5232,17 +4468,10 @@ function gameLoop(
             ) {
 
                 shoot();
-
             }
 
-
-            checkWaveComplete();
+            updateReload(dt);
         }
-
-
-        updateReload(
-            dt
-        );
 
 
         drawBarricades();
@@ -5253,12 +4482,10 @@ function gameLoop(
 
 
         for (
-            const z of
-            zombies
+            const z of zombies
         ) {
 
             drawZombie(z);
-
         }
 
 
@@ -5283,9 +4510,8 @@ function gameLoop(
 
 function init() {
 
-    player.y =
-        canvas.height / 2;
-
+    canvas.style.display =
+        "block";
 
     shopScreen.style.display =
         "block";
@@ -5306,17 +4532,50 @@ function init() {
         "none";
 
 
+    /*
+    A pistola inicial não é cobrada.
+    O jogador começa com ela.
+    */
+
+    const starter =
+        {
+            ...weapons[0],
+
+            currentAmmo:
+                weapons[0].magazine,
+
+            reserveAmmo:
+                weapons[0].ammo,
+
+            type:"gun"
+        };
+
+    weaponInventory = [
+        starter
+    ];
+
+    selectedWeapon = 0;
+
+    player.weapon =
+        starter;
+
+    syncWeaponAmmo();
+
+    player.y =
+        canvas.height / 2;
+
+
     renderItems();
 
-    renderInventory();
+    renderWeaponInventory();
 
     updateHUD();
-
-
-    requestAnimationFrame(
-        gameLoop
-    );
 }
 
 
 init();
+
+
+requestAnimationFrame(
+    gameLoop
+);
