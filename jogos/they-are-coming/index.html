@@ -1,390 +1,385 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
 
-    <title>They Are Coming - Ludix</title>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css">
+<meta name="description"
+      content="Ludix - They Are Coming">
+
+<title>They Are Coming - Ludix</title>
+
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- =========================
-         LOJA / MENU
-    ========================== -->
+<!-- =====================================================
+     CANVAS DO JOGO
+===================================================== -->
 
-    <div id="shopScreen">
+<canvas id="game"></canvas>
 
-        <div class="shop-container">
 
-            <div class="shop-header">
+<!-- =====================================================
+     LOJA
+===================================================== -->
 
-                <div>
-                    <h1>THEY ARE COMING</h1>
-                    <p>PREPARAÇÃO E ARMAMENTO</p>
-                </div>
+<div id="shopScreen">
 
-                <div class="money">
-                    💵 $<span id="money">500</span>
-                </div>
+    <div class="shop-container">
 
+        <div class="shop-header">
+
+            <div>
+                <h1>☠️ THEY ARE COMING</h1>
+                <p>LOJA • PREPARAÇÃO</p>
             </div>
 
-            <div class="player-box">
-
-                <input
-                    id="playerName"
-                    type="text"
-                    maxlength="16"
-                    placeholder="Nome do jogador"
-                    autocomplete="off"
-                >
-
-                <div id="nameWarning">
-                    Digite seu nome para começar.
-                </div>
-
+            <div class="money">
+                💵 $<span id="money">500</span>
             </div>
 
-            <button id="rankingBtn">
-                🏆 RANKING GLOBAL
+        </div>
+
+
+        <!-- NOME -->
+
+        <div class="player-box">
+
+            <label for="playerName">
+                NOME DO JOGADOR
+            </label>
+
+            <input
+                id="playerName"
+                type="text"
+                maxlength="16"
+                placeholder="Digite seu nome"
+                autocomplete="off"
+            >
+
+            <div id="nameWarning">
+                ⚠️ Digite seu nome antes de começar.
+            </div>
+
+        </div>
+
+
+        <!-- RANKING -->
+
+        <button id="rankingBtn">
+            🏆 RANKING GLOBAL
+        </button>
+
+
+        <!-- CATEGORIAS -->
+
+        <div class="categories">
+
+            <button
+                class="category-btn active"
+                data-category="armadura">
+                🛡️ Armadura
             </button>
 
+            <button
+                class="category-btn"
+                data-category="amigos">
+                🐾 Amigos
+            </button>
 
-            <!-- CATEGORIAS -->
+            <button
+                class="category-btn"
+                data-category="armas">
+                🔫 Armas
+            </button>
 
-            <div class="categories">
+            <button
+                class="category-btn"
+                data-category="corpo">
+                ⚔️ Corpo a Corpo
+            </button>
 
-                <button
-                    class="category-btn active"
-                    data-category="armadura">
-                    🛡️ Armadura
-                </button>
+            <button
+                class="category-btn"
+                data-category="municao">
+                📦 Munição
+            </button>
 
-                <button
-                    class="category-btn"
-                    data-category="amigos">
-                    🐾 Amigos
-                </button>
+            <button
+                class="category-btn"
+                data-category="kits">
+                🩹 Kits
+            </button>
 
-                <button
-                    class="category-btn"
-                    data-category="armas">
-                    🔫 Armas
-                </button>
+            <button
+                class="category-btn"
+                data-category="bombas">
+                💣 Bombas
+            </button>
 
-                <button
-                    class="category-btn"
-                    data-category="corpo">
-                    ⚔️ Corpo a Corpo
-                </button>
+            <button
+                class="category-btn"
+                data-category="armadilhas">
+                🪤 Armadilhas
+            </button>
 
-                <button
-                    class="category-btn"
-                    data-category="municao">
-                    📦 Munição
-                </button>
+            <button
+                class="category-btn"
+                data-category="barricadas">
+                🧱 Barricadas
+            </button>
 
-                <button
-                    class="category-btn"
-                    data-category="kits">
-                    🩹 Kits
-                </button>
+        </div>
 
-                <button
-                    class="category-btn"
-                    data-category="bombas">
-                    💣 Bombas
-                </button>
 
-                <button
-                    class="category-btn"
-                    data-category="armadilhas">
-                    🪤 Armadilhas
-                </button>
+        <!-- ITENS -->
 
-                <button
-                    class="category-btn"
-                    data-category="barricadas">
-                    🧱 Barricadas
-                </button>
+        <div id="shopContent"
+             class="shop-grid">
+        </div>
 
+
+        <!-- INVENTÁRIO -->
+
+        <div class="inventory-menu">
+
+            <h2>🎒 INVENTÁRIO — 5 ESPAÇOS</h2>
+
+            <p class="inventory-help">
+                Armas compradas ficam nos 5 espaços.
+                Clique em uma arma para equipá-la.
+            </p>
+
+            <div
+                id="menuInventory"
+                class="inventory-slots">
             </div>
 
-
-            <div id="shopContent"></div>
-
-
-            <!-- INVENTÁRIO -->
-
-            <div class="inventory-menu">
-
-                <h2>🎒 INVENTÁRIO — 5 ESPAÇOS</h2>
-
-                <p class="inventory-help">
-                    Use os números 1–5 para trocar de arma/item.
-                </p>
-
-                <div
-                    id="menuInventory"
-                    class="inventory-slots">
-                </div>
-
-            </div>
+        </div>
 
 
-            <!-- BOTÃO INICIAR -->
+        <!-- BOTÃO INICIAR -->
 
-            <div class="shop-actions">
+        <div class="shop-actions">
 
-                <button
-                    id="startWaveBtn"
-                    class="start-button">
+            <button
+                id="startWaveBtn"
+                class="start-button">
 
-                    ▶ INICIAR ONDA
+                ▶ INICIAR ONDA
 
-                </button>
+            </button>
 
-            </div>
+        </div>
 
 
-            <div class="shop-info">
+        <div class="shop-info">
 
-                <p>
-                    🧟 Zumbi normal:
-                    <strong>$50</strong>
-                </p>
+            <p>
+                🧟 Zumbi normal:
+                <strong>$50</strong>
+            </p>
 
-                <p>
-                    👹 Zumbis especiais aparecem a partir da
-                    <strong>onda 5</strong>.
-                </p>
+            <p>
+                👑 Boss: recompensa começa em
+                <strong>$5.000</strong>
+            </p>
 
-                <p>
-                    💀 Boss aparece nas ondas
-                    <strong>10, 20, 30...</strong>
-                </p>
+            <p>
+                ⏱️ Preparação:
+                <strong>30s → 25s → 20s → 15s</strong>
+            </p>
 
-                <p>
-                    💰 Recompensa inicial do Boss:
-                    <strong>$5.000</strong>
-                </p>
-
-                <p>
-                    ⏱️ Preparação:
-                    <strong>30s → 25s → 20s → 15s</strong>
-                </p>
-
-                <p>
-                    ⚡ Durante a preparação você pode
-                    <strong>pular o tempo</strong>.
-                </p>
-
-                <p>
-                    🧟 Os zumbis chegam pela
-                    <strong>direita</strong>.
-                </p>
-
-            </div>
+            <p>
+                🎮 WASD / setas para mover •
+                Mouse para mirar •
+                Clique para atirar •
+                R para recarregar
+            </p>
 
         </div>
 
     </div>
 
+</div>
 
-    <!-- =========================
-         RANKING
-    ========================== -->
 
-    <div id="rankingScreen">
+<!-- =====================================================
+     TELA DE RANKING
+===================================================== -->
 
-        <div class="ranking-container">
+<div id="rankingScreen">
 
-            <div class="ranking-header">
+    <div class="ranking-container">
 
-                <div>
-                    <h1>🏆 RANKING GLOBAL</h1>
+        <div class="ranking-header">
 
-                    <p>
-                        Sobreviva o maior número de ondas possível.
-                    </p>
-                </div>
+            <h1>🏆 RANKING GLOBAL</h1>
 
-                <button id="closeRankingBtn">
-                    ✕ FECHAR
-                </button>
+            <button id="closeRankingBtn">
+                ✕
+            </button>
 
+        </div>
+
+        <div id="rankingContent">
+            <div class="ranking-loading">
+                Carregando ranking...
             </div>
-
-            <div id="rankingContent">
-
-                <div class="ranking-loading">
-                    Carregando ranking...
-                </div>
-
-            </div>
-
         </div>
 
     </div>
 
-
-    <!-- =========================
-         CANVAS
-    ========================== -->
-
-    <canvas id="game"></canvas>
+</div>
 
 
-    <!-- =========================
-         HUD
-    ========================== -->
+<!-- =====================================================
+     HUD
+===================================================== -->
 
-    <div id="hud">
+<div id="hud">
 
-        <div class="hud-left">
+    <div class="hud-left">
 
-            <div id="nameHud">
-                Jogador
-            </div>
+        <div class="hud-name"
+             id="nameHud">
+            Jogador
+        </div>
 
-            <div class="bar-title">
-                ❤️ VIDA
-            </div>
-
-            <div class="health-box">
+        <div class="hud-stat">
+            ❤️ VIDA
+            <div class="bar">
                 <div id="healthBar"></div>
             </div>
+        </div>
 
-            <div class="bar-title">
-                🛡️ ARMADURA
-            </div>
-
-            <div class="armor-box">
+        <div class="hud-stat">
+            🛡️ ARMADURA
+            <div class="bar armor-box">
                 <div id="armorBar"></div>
             </div>
-
-        </div>
-
-
-        <div class="hud-center">
-
-            <div id="wave">
-                ONDA 1
-            </div>
-
-            <div id="enemies">
-                Zumbis: 0
-            </div>
-
-            <div id="preparationText">
-            </div>
-
-        </div>
-
-
-        <div class="hud-right">
-
-            <div id="weapon">
-                PISTOLA
-            </div>
-
-            <div id="ammo">
-                12 / 60
-            </div>
-
-            <div id="moneyHud">
-                💵 $500
-            </div>
-
         </div>
 
     </div>
 
 
-    <!-- =========================
-         BOTÃO PULAR PREPARAÇÃO
-    ========================== -->
+    <div class="hud-center">
 
-    <button id="skipPreparationBtn">
-        ⏩ PULAR PREPARAÇÃO
-    </button>
-
-
-    <!-- =========================
-         INVENTÁRIO DO JOGO
-    ========================== -->
-
-    <div id="gameInventory">
-
-        <div
-            class="inventory-slots"
-            id="gameInventorySlots">
+        <div id="wave">
+            ONDA 1
         </div>
 
-        <div class="inventory-key-help">
-            1 2 3 4 5
+        <div id="enemies">
+            Zumbis: 0
         </div>
 
     </div>
 
 
-    <!-- =========================
-         GAME OVER
-    ========================== -->
+    <div class="hud-right">
 
-    <div id="gameOver">
+        <div id="weapon">
+            PISTOLA
+        </div>
 
-        <div class="game-over-box">
+        <div id="ammo">
+            12 / 50
+        </div>
 
-            <h1>VOCÊ MORREU</h1>
-
-            <p id="finalScore"></p>
-
-            <button id="restartBtn">
-                🔄 RECOMEÇAR
-            </button>
-
+        <div id="moneyHud">
+            💵 $500
         </div>
 
     </div>
 
-
-    <!-- =========================
-         SUPABASE
-    ========================== -->
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-
-        const SUPABASE_URL =
-            "https://vkswxahmirkhcynwlzys.supabase.co";
-
-        const SUPABASE_PUBLISHABLE_KEY =
-            "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
-
-        const supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_PUBLISHABLE_KEY
-            );
-
-    </script>
+</div>
 
 
-    <!--
-        IMPORTANTE:
-        O arquivo deve se chamar games.js
-    -->
+<!-- =====================================================
+     BOTÃO PULAR PREPARAÇÃO
+===================================================== -->
 
-    <script src="games.js"></script>
+<button id="skipPreparationBtn">
+    ⏭️ PULAR PREPARAÇÃO
+</button>
+
+
+<!-- =====================================================
+     INVENTÁRIO DURANTE O JOGO
+===================================================== -->
+
+<div id="gameInventory">
+
+    <div
+        class="inventory-title">
+        ARMAS
+    </div>
+
+    <div
+        class="inventory-slots"
+        id="gameInventorySlots">
+    </div>
+
+    <div class="inventory-key-help">
+        Teclas 1–5 para trocar
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     GAME OVER
+===================================================== -->
+
+<div id="gameOver">
+
+    <div class="game-over-box">
+
+        <h1>☠️ VOCÊ MORREU</h1>
+
+        <p id="finalScore"></p>
+
+        <button id="restartBtn">
+            🔄 RECOMEÇAR
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL =
+    "https://vkswxahmirkhcynwlzys.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+</script>
+
+
+<!-- =====================================================
+     JOGO
+===================================================== -->
+
 <script src="game.js"></script>
 
 </body>
-
 </html>
