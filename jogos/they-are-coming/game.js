@@ -2,7 +2,6 @@
 
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-
 const shopScreen = document.getElementById("shopScreen");
 const shopContent = document.getElementById("shopContent");
 const moneyEl = document.getElementById("money");
@@ -3999,60 +3998,94 @@ function renderShop() {
 ========================= */
 
 function buyWeapon(name) {
+/* ============================================================
+   LUDIX / THEY ARE COMING
+   CONTINUAÇÃO CORRIGIDA
+   ============================================================ */
 
-    const weapon =
-        weapons.find(
-            w => w.name === name
-        );
+
+/* ============================================================
+   LOJA DE ARMAS
+============================================================ */
+
+function buyWeapon(name) {
+
+    const weapon = weapons.find(
+        w => w.name === name
+    );
 
     if (!weapon) return;
 
-    const price =
-        weapon.price || 0;
+    const price = weapon.price || 0;
 
     if (player.money < price) {
 
-        showMessage(
-            "Dinheiro insuficiente!"
-        );
+        showMessage("Dinheiro insuficiente!");
 
         return;
     }
 
+    /*
+       No sistema original, a arma atual é armazenada
+       diretamente em player.weapon.
+    */
+
     player.money -= price;
 
-    addWeaponToInventory(
-        weapon.name
-    );
+    player.weapon = weapon;
+
+    player.weaponPurchased = true;
+
+    player.ammo = weapon.magazine || 6;
+
+    player.reserveAmmo = weapon.ammo || 0;
+
+    /*
+       Também adicionamos a arma ao inventário original.
+    */
+
+    addInventory({
+        type: "weapon",
+        name: weapon.name,
+        icon: weapon.icon || "🔫",
+        weapon: weapon
+    });
+
+    selectedShopWeapon = weapon;
 
     showMessage(
-        weapon.name +
-        " adquirida!"
+        weapon.name + " adquirida!"
     );
 
     updateHUD();
-
-    renderShop();
+    renderInventory();
+    renderItems();
 }
 
 
-/* =========================
-   INVENTÁRIO
-========================= */
+/* ============================================================
+   INVENTÁRIO DE ARMAS
+============================================================ */
 
-function addWeaponToInventory(
-    weaponName
-) {
+function addWeaponToInventory(weaponName) {
 
-    if (!player.inventory) {
-        player.inventory = [];
-    }
+    const weapon = weapons.find(
+        w => w.name === weaponName
+    );
 
-    if (
-        player.inventory.includes(
-            weaponName
-        )
-    ) {
+    if (!weapon) return false;
+
+    /*
+       Evita duplicar a mesma arma.
+    */
+
+    const alreadyExists = inventory.some(
+        item =>
+            item.type === "weapon" &&
+            item.name === weaponName
+    );
+
+    if (alreadyExists) {
 
         showMessage(
             "Você já possui essa arma!"
@@ -4061,9 +4094,7 @@ function addWeaponToInventory(
         return false;
     }
 
-    if (
-        player.inventory.length >= 5
-    ) {
+    if (inventory.length >= INVENTORY_SIZE) {
 
         showMessage(
             "Inventário cheio!"
@@ -4072,176 +4103,239 @@ function addWeaponToInventory(
         return false;
     }
 
-    player.inventory.push(
-        weaponName
-    );
+    inventory.push({
+        type: "weapon",
+        name: weapon.name,
+        icon: weapon.icon || "🔫",
+        weapon: weapon
+    });
 
-    updateInventoryUI();
+    renderInventory();
 
     return true;
 }
 
 
-/* =========================
+/* ============================================================
    TROCAR ARMA
-========================= */
+============================================================ */
 
 function selectWeaponSlot(slot) {
 
-    if (!player.inventory) return;
-
     if (
         slot < 0 ||
-        slot >= player.inventory.length
+        slot >= inventory.length
     ) {
         return;
     }
 
-    player.selectedSlot = slot;
+    const item = inventory[slot];
 
-    const weapon =
-        getCurrentWeapon();
+    if (
+        !item ||
+        item.type !== "weapon"
+    ) {
+        return;
+    }
+
+    const weapon = weapons.find(
+        w => w.name === item.name
+    );
 
     if (!weapon) return;
 
-    player.magazineAmmo =
-        Math.min(
-            weapon.magazine || 6,
-            getWeaponAmmo(weapon)
-        );
+    player.weapon = weapon;
 
-    updateInventoryUI();
+    player.ammo = Math.min(
+        player.ammo || weapon.magazine,
+        weapon.magazine || 6
+    );
+
+    player.reserveAmmo =
+        player.reserveAmmo || weapon.ammo || 0;
+
     updateHUD();
+    renderInventory();
+
+    showMessage(
+        "Arma equipada: " +
+        weapon.name
+    );
 }
 
 
-/* =========================
-   INVENTÁRIO VISUAL
-========================= */
-
-function updateInventoryUI() {
-
-    const inventory =
-        document.getElementById(
-            "inventory"
-        );
-
-    if (!inventory) return;
-
-    inventory.innerHTML = "";
-
-    for (let i = 0; i < 5; i++) {
-
-        const slot =
-            document.createElement(
-                "div"
-            );
-
-        slot.className =
-            "inventory-slot";
-
-        if (
-            i === player.selectedSlot
-        ) {
-            slot.classList.add(
-                "selected"
-            );
-        }
-
-        const weaponName =
-            player.inventory &&
-            player.inventory[i];
-
-        if (weaponName) {
-
-            const weapon =
-                weapons.find(
-                    w =>
-                        w.name ===
-                        weaponName
-                );
-
-            slot.innerHTML = `
-
-                <span class="slot-number">
-                    ${i + 1}
-                </span>
-
-                <span class="slot-icon">
-                    ${weapon?.icon || "🔫"}
-                </span>
-
-                <span class="slot-name">
-                    ${weaponName}
-                </span>
-            `;
-        } else {
-
-            slot.innerHTML = `
-
-                <span class="slot-number">
-                    ${i + 1}
-                </span>
-
-                <span>
-                    VAZIO
-                </span>
-            `;
-        }
-
-        slot.addEventListener(
-            "click",
-            () => {
-                selectWeaponSlot(i);
-            }
-        );
-
-        inventory.appendChild(
-            slot
-        );
-    }
-}
-
-
-/* =========================
+/* ============================================================
    HUD
-========================= */
+============================================================ */
 
 function updateHUD() {
 
-    const hp =
-        document.getElementById(
-            "health"
-        );
+    /*
+       Vida
+    */
 
-    const money =
-        document.getElementById(
-            "money"
-        );
+    if (healthBar) {
 
-    const waveEl =
-        document.getElementById(
-            "wave"
-        );
+        const healthPercent =
+            Math.max(
+                0,
+                Math.min(
+                    100,
+                    (player.health /
+                        player.maxHealth) *
+                        100
+                )
+            );
 
-    const score =
-        document.getElementById(
-            "score"
-        );
+        healthBar.style.width =
+            healthPercent + "%";
+    }
 
-    const ammo =
-        document.getElementById(
-            "ammo"
-        );
 
-    if (hp) {
-        hp.textContent =
-            Math.ceil(
-                player.hp
+    /*
+       Armadura
+    */
+
+    if (armorBar) {
+
+        const armorPercent =
+            player.maxArmor > 0
+                ? Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        (player.armor /
+                            player.maxArmor) *
+                            100
+                    )
+                )
+                : 0;
+
+        armorBar.style.width =
+            armorPercent + "%";
+    }
+
+
+    /*
+       Nome
+    */
+
+    if (nameHud) {
+
+        nameHud.textContent =
+            getPlayerName() ||
+            playerName ||
+            "Jogador";
+    }
+
+
+    /*
+       Onda
+    */
+
+    if (waveEl) {
+
+        waveEl.textContent =
+            wave;
+    }
+
+
+    /*
+       Inimigos
+    */
+
+    if (enemiesEl) {
+
+        enemiesEl.textContent =
+            zombies.length;
+    }
+
+
+    /*
+       Dinheiro
+    */
+
+    if (moneyEl) {
+
+        moneyEl.textContent =
+            "$" +
+            Math.floor(
+                player.money
             );
     }
 
+    if (moneyHud) {
+
+        moneyHud.textContent =
+            "$" +
+            Math.floor(
+                player.money
+            );
+    }
+
+
+    /*
+       Arma
+    */
+
+    if (weaponEl) {
+
+        weaponEl.textContent =
+            player.weapon
+                ? player.weapon.name
+                : "Pistola";
+    }
+
+
+    /*
+       Munição
+    */
+
+    if (ammoEl) {
+
+        const weapon =
+            player.weapon;
+
+        if (!weapon) {
+
+            ammoEl.textContent =
+                "0 / 0";
+
+        } else {
+
+            ammoEl.textContent =
+                (player.ammo || 0) +
+                " / " +
+                (player.reserveAmmo || 0);
+        }
+    }
+
+
+    /*
+       Vida numérica, caso o HTML tenha esse elemento.
+    */
+
+    const hp =
+        document.getElementById("health");
+
+    if (hp) {
+
+        hp.textContent =
+            Math.ceil(
+                player.health
+            );
+    }
+
+
+    /*
+       Dinheiro alternativo.
+    */
+
+    const money =
+        document.getElementById("money");
+
     if (money) {
+
         money.textContent =
             "$" +
             Math.floor(
@@ -4249,44 +4343,32 @@ function updateHUD() {
             );
     }
 
-    if (waveEl) {
-        waveEl.textContent =
-            wave;
-    }
+
+    /*
+       Score.
+    */
+
+    const score =
+        document.getElementById("score");
 
     if (score) {
+
         score.textContent =
             player.score;
     }
 
-    if (ammo) {
 
-        const weapon =
-            getCurrentWeapon();
+    /*
+       Inventário.
+    */
 
-        if (!weapon) {
-
-            ammo.textContent =
-                "0 / 0";
-
-        } else {
-
-            ammo.textContent =
-                player.magazineAmmo +
-                " / " +
-                getWeaponAmmo(
-                    weapon
-                );
-        }
-    }
-
-    updateInventoryUI();
+    renderInventory();
 }
 
 
-/* =========================
+/* ============================================================
    MENSAGEM
-========================= */
+============================================================ */
 
 function showMessage(text) {
 
@@ -4308,197 +4390,344 @@ function showMessage(text) {
         document.body.appendChild(
             box
         );
+
+        box.style.position =
+            "fixed";
+
+        box.style.left =
+            "50%";
+
+        box.style.top =
+            "18%";
+
+        box.style.transform =
+            "translateX(-50%)";
+
+        box.style.zIndex =
+            "999999";
+
+        box.style.padding =
+            "12px 22px";
+
+        box.style.borderRadius =
+            "12px";
+
+        box.style.background =
+            "rgba(10,10,10,.9)";
+
+        box.style.color =
+            "#fff";
+
+        box.style.fontWeight =
+            "800";
+
+        box.style.pointerEvents =
+            "none";
+
+        box.style.opacity =
+            "0";
+
+        box.style.transition =
+            "opacity .2s";
     }
 
-    box.textContent = text;
+    box.textContent =
+        text;
 
-    box.classList.add(
-        "show"
-    );
+    box.style.opacity =
+        "1";
 
     clearTimeout(
         box._timer
     );
 
     box._timer =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            box.classList.remove(
-                "show"
-            );
+                box.style.opacity =
+                    "0";
 
-        }, 1800);
+            },
+            1800
+        );
 }
 
 
-/* =========================
+/* ============================================================
    GAME OVER
-========================= */
+============================================================ */
 
-function gameOver() {
+function endGame() {
 
+    if (gameEnded) {
+        return;
+    }
+
+    gameEnded = true;
     gameRunning = false;
-
     waveActive = false;
+    preparation = false;
 
-    saveScore();
+    saveAllScores();
 
-    const screen =
-        document.getElementById(
-            "gameOver"
-        );
+    if (gameOver) {
 
-    if (screen) {
+        gameOver.style.display =
+            "flex";
 
-        screen.classList.add(
+        gameOver.classList.add(
             "active"
         );
+    }
 
-        const finalScore =
-            screen.querySelector(
-                ".final-score"
-            );
+    if (finalScore) {
 
-        if (finalScore) {
-
-            finalScore.textContent =
-                player.score;
-        }
-
-        const finalWave =
-            screen.querySelector(
-                ".final-wave"
-            );
-
-        if (finalWave) {
-
-            finalWave.textContent =
-                wave;
-        }
+        finalScore.textContent =
+            player.score;
     }
 
     showMessage(
         "FIM DE JOGO"
     );
-}
 
+    setTimeout(
+        () => {
 
-/* =========================
-   REINICIAR
-========================= */
+            loadGlobalRanking();
 
-function restartGame() {
-
-    if (!player) return;
-
-    player.x =
-        world.width / 2;
-
-    player.y =
-        world.height / 2;
-
-    player.hp =
-        player.maxHp || 100;
-
-    player.armor = 0;
-
-    player.dead = false;
-
-    player.score = 0;
-
-    player.kills = 0;
-
-    player.money = 0;
-
-    player.selectedSlot = 0;
-
-    player.inventory = [];
-
-    player.ammo = {};
-
-    bullets.length = 0;
-
-    zombies.length = 0;
-
-    particles.length = 0;
-
-    explosionEffects.length = 0;
-
-    wave = 0;
-
-    zombiesSpawned = 0;
-
-    zombiesRemaining = 0;
-
-    waveActive = false;
-
-    gameRunning = true;
-
-    closeShop();
-
-    updateHUD();
-
-    startWave();
-
-    lastFrameTime =
-        performance.now();
-
-    requestAnimationFrame(
-        gameLoop
+        },
+        800
     );
 }
 
 
-/* =========================
-   CONTROLES DO TECLADO
-========================= */
+/*
+   Alias para compatibilidade.
+*/
+
+function gameOverScreenOpen() {
+    endGame();
+}
+
+
+/* ============================================================
+   REINICIAR
+============================================================ */
+
+function restartGame() {
+
+    if (gameOver) {
+
+        gameOver.style.display =
+            "none";
+
+        gameOver.classList.remove(
+            "active"
+        );
+    }
+
+    player.x =
+        180;
+
+    player.y =
+        canvas.height / 2;
+
+    player.health =
+        player.maxHealth;
+
+    player.armor = 0;
+
+    player.money = 500;
+
+    player.score = 0;
+
+    player.weapon =
+        weapons[0];
+
+    player.weaponPurchased =
+        false;
+
+    player.ammo =
+        weapons[0].magazine;
+
+    player.reserveAmmo =
+        weapons[0].ammo;
+
+    player.lastShot = 0;
+
+    player.reloadTime = 0;
+
+    zombies = [];
+
+    bullets = [];
+
+    placedTraps = [];
+
+    placedBarricades = [];
+
+    inventory = [];
+
+    wave = 1;
+
+    waveActive = false;
+
+    preparation = true;
+
+    preparationTime =
+        PREPARATION_TIME;
+
+    gameRunning = true;
+
+    gameEnded = false;
+
+    rankingSent = false;
+
+    friend = null;
+
+    renderInventory();
+
+    updateHUD();
+
+    lastFrameTime =
+        performance.now();
+}
+
+
+/* ============================================================
+   TECLADO
+============================================================ */
 
 document.addEventListener(
     "keydown",
     event => {
 
-        keys[event.key] = true;
+        keys[
+            event.key.toLowerCase()
+        ] = true;
 
-        if (
-            event.key >= "1" &&
-            event.key <= "5"
-        ) {
 
-            selectWeaponSlot(
-                Number(event.key) - 1
-            );
-        }
-
-        if (
-            event.key.toLowerCase() ===
-            "r"
-        ) {
-
-            reloadWeapon();
-        }
+        /*
+           Espaço
+        */
 
         if (
             event.code ===
             "Space"
         ) {
 
-            shoot();
+            event.preventDefault();
+
+            if (gameRunning) {
+                shoot();
+            }
+        }
+
+
+        /*
+           Recarregar
+        */
+
+        if (
+            event.key.toLowerCase() ===
+            "r"
+        ) {
+
+            if (gameRunning) {
+                reload();
+            }
+        }
+
+
+        /*
+           Inventário
+        */
+
+        if (
+            event.key >= "1" &&
+            event.key <= "5"
+        ) {
+
+            useInventory(
+                Number(event.key) - 1
+            );
+        }
+
+
+        /*
+           Usar item
+        */
+
+        if (
+            event.key.toLowerCase() ===
+            "e"
+        ) {
+
+            const slot =
+                inventory[0];
+
+            if (slot) {
+
+                useInventory(0);
+            }
+        }
+
+
+        /*
+           Vender arma.
+        */
+
+        if (
+            event.key.toLowerCase() ===
+            "t"
+        ) {
+
+            if (
+                shopScreen &&
+                shopScreen.style.display !==
+                "none"
+            ) {
+
+                sellSelectedWeapon();
+            }
+        }
+
+
+        /*
+           Escape fecha telas.
+        */
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeRanking();
+
+            if (shopScreen) {
+
+                shopScreen.style.display =
+                    "none";
+            }
         }
     }
 );
+
 
 document.addEventListener(
     "keyup",
     event => {
 
-        keys[event.key] = false;
+        keys[
+            event.key.toLowerCase()
+        ] = false;
     }
 );
 
 
-/* =========================
+/* ============================================================
    MOUSE
-========================= */
+============================================================ */
 
 if (canvas) {
 
@@ -4519,280 +4748,121 @@ if (canvas) {
         }
     );
 
+
     canvas.addEventListener(
         "mousedown",
         event => {
 
-            if (event.button === 0) {
+            if (
+                event.button === 0 &&
+                gameRunning
+            ) {
+
                 mouse.down = true;
+
                 shoot();
             }
         }
     );
 
+
     canvas.addEventListener(
         "mouseup",
         event => {
 
-            if (event.button === 0) {
+            if (
+                event.button === 0
+            ) {
+
                 mouse.down = false;
             }
         }
     );
 
+
+    canvas.addEventListener(
+        "mouseleave",
+        () => {
+
+            mouse.down = false;
+
+        }
+    );
+
+
     canvas.addEventListener(
         "contextmenu",
         event => {
+
             event.preventDefault();
+
         }
     );
 }
 
 
-/* =========================
+/* ============================================================
    TIRO AUTOMÁTICO
-========================= */
+============================================================ */
 
-setInterval(() => {
-
-    if (
-        gameRunning &&
-        mouse &&
-        mouse.down
-    ) {
-
-        shoot();
-    }
-
-}, 35);
-
-
-/* =========================
-   BOTÕES
-========================= */
-
-document.addEventListener(
-    "click",
-    event => {
-
-        const target =
-            event.target;
+setInterval(
+    () => {
 
         if (
-            target.id ===
-            "startWaveBtn"
+            gameRunning &&
+            mouse.down
         ) {
 
-            closeShop();
+            shoot();
+        }
+
+    },
+    35
+);
+
+
+/* ============================================================
+   BOTÕES
+============================================================ */
+
+if (startWaveBtn) {
+
+    startWaveBtn.addEventListener(
+        "click",
+        () => {
 
             startWave();
 
-            if (!gameRunning) {
-                gameRunning = true;
-            }
-
-            lastFrameTime =
-                performance.now();
-
-            requestAnimationFrame(
-                gameLoop
-            );
         }
+    );
+}
 
-        if (
-            target.id ===
-            "restartBtn"
-        ) {
+
+if (restartBtn) {
+
+    restartBtn.addEventListener(
+        "click",
+        () => {
 
             restartGame();
+
         }
-
-        if (
-            target.id ===
-            "closeShopBtn"
-        ) {
-
-            closeShop();
-        }
-    }
-);
-
-
-/* =========================
-   INICIALIZAÇÃO
-========================= */
-
-function initializeGame() {
-
-    if (!canvas) {
-        console.error(
-            "Canvas do jogo não encontrado."
-        );
-        return;
-    }
-
-    canvas.width =
-        window.innerWidth;
-
-    canvas.height =
-        window.innerHeight;
-
-    if (!player) {
-
-        player = {
-
-            x:
-                world.width / 2,
-
-            y:
-                world.height / 2,
-
-            radius: 18,
-
-            speed: 3.5,
-
-            hp: 100,
-
-            maxHp: 100,
-
-            armor: 0,
-
-            money: 100,
-
-            score: 0,
-
-            kills: 0,
-
-            angle: 0,
-
-            selectedSlot: 0,
-
-            inventory: [],
-
-            ammo: {},
-
-            magazineAmmo: 0,
-
-            lastShot: 0,
-
-            reloading: false,
-
-            dead: false,
-
-            invincibleUntil: 0
-        };
-    }
-
-    /* arma inicial */
-
-    const firstWeapon =
-        weapons[0];
-
-    if (
-        firstWeapon &&
-        player.inventory.length === 0
-    ) {
-
-        player.inventory.push(
-            firstWeapon.name
-        );
-
-        if (
-            firstWeapon.ammo &&
-            firstWeapon.ammo !==
-            "infinita"
-        ) {
-
-            player.ammo[
-                firstWeapon.ammo
-            ] =
-                firstWeapon.startAmmo ||
-                60;
-        }
-
-        player.magazineAmmo =
-            firstWeapon.magazine ||
-            6;
-    }
-
-    updateInventoryUI();
-
-    updateHUD();
-
-    gameRunning = true;
-
-    startWave();
-
-    lastFrameTime =
-        performance.now();
-
-    requestAnimationFrame(
-        gameLoop
     );
 }
 
 
-/* =========================
-   RESPONSIVIDADE
-========================= */
+if (closeRankingBtn) {
 
-window.addEventListener(
-    "resize",
-    () => {
-
-        if (!canvas) return;
-
-        canvas.width =
-            window.innerWidth;
-
-        canvas.height =
-            window.innerHeight;
-    }
-);
-
-
-/* =========================
-   INICIAR
-========================= */
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeGame
+    closeRankingBtn.addEventListener(
+        "click",
+        closeRanking
     );
-
-} else {
-
-    initializeGame();
 }
-/* ============================================================
-   LUDIX / THEY ARE COMING
-   GAME.JS — PARTE 4/4
-   RANKING GLOBAL + SUPABASE + SALVAMENTO
-============================================================ */
 
 
 /* ============================================================
-   CONFIGURAÇÃO DO SUPABASE
+   RANKING GLOBAL
 ============================================================ */
-
-/*
-   COLOQUE AQUI OS DADOS DO SEU PROJETO SUPABASE.
-
-   Exemplo:
-
-   const SUPABASE_URL =
-       "https://xxxxxxxxxxxx.supabase.co";
-
-   const SUPABASE_ANON_KEY =
-       "eyJhbGciOiJIUzI1NiIs...";
-
-   NÃO coloque a Service Role Key aqui.
-*/
 
 const SUPABASE_URL =
     window.SUPABASE_URL ||
@@ -4802,12 +4872,16 @@ const SUPABASE_ANON_KEY =
     window.SUPABASE_ANON_KEY ||
     "";
 
+let supabaseClient = null;
+
+let playerName = "";
+
+let rankingRefreshTimer = null;
+
 
 /* ============================================================
-   CLIENTE SUPABASE
+   SUPABASE
 ============================================================ */
-
-let supabaseClient = null;
 
 function initializeSupabase() {
 
@@ -4817,7 +4891,7 @@ function initializeSupabase() {
     ) {
 
         console.warn(
-            "Biblioteca do Supabase não encontrada."
+            "Supabase não encontrado."
         );
 
         return false;
@@ -4829,7 +4903,7 @@ function initializeSupabase() {
     ) {
 
         console.warn(
-            "SUPABASE_URL ou SUPABASE_ANON_KEY não configurados."
+            "Supabase não configurado."
         );
 
         return false;
@@ -4848,7 +4922,7 @@ function initializeSupabase() {
     } catch (error) {
 
         console.error(
-            "Erro ao iniciar Supabase:",
+            "Erro no Supabase:",
             error
         );
 
@@ -4861,62 +4935,41 @@ function initializeSupabase() {
    NOME DO JOGADOR
 ============================================================ */
 
-let playerName = "";
-
-
-/* ============================================================
-   PEGAR NOME SALVO
-============================================================ */
-
 function loadPlayerName() {
 
     try {
 
-        const saved =
+        playerName =
             localStorage.getItem(
                 "ludix_player_name"
-            );
-
-        if (saved) {
-            playerName = saved;
-        }
+            ) || "";
 
     } catch (error) {
 
-        console.warn(
-            "Não foi possível carregar o nome."
-        );
+        playerName = "";
     }
 }
 
 
-/* ============================================================
-   SALVAR NOME
-============================================================ */
-
 function savePlayerName(name) {
 
-    name =
+    playerName =
         String(name || "")
         .trim()
-        .replace(/\s+/g, " ");
-
-    if (!name) {
-        name = "Jogador";
-    }
-
-    /*
-       Limite de segurança para não permitir
-       nomes gigantes no ranking.
-    */
-
-    name =
-        name.substring(
+        .replace(
+            /\s+/g,
+            " "
+        )
+        .slice(
             0,
             20
         );
 
-    playerName = name;
+    if (!playerName) {
+
+        playerName =
+            "Jogador";
+    }
 
     try {
 
@@ -4925,33 +4978,28 @@ function savePlayerName(name) {
             playerName
         );
 
-    } catch (error) {
-
-        console.warn(
-            "Não foi possível salvar o nome."
-        );
-    }
+    } catch (error) {}
 
     return playerName;
 }
 
 
 /* ============================================================
-   TELA PARA DIGITAR O NOME
+   TELA DO NOME
 ============================================================ */
 
 function createNameScreen() {
 
-    let existing =
+    let screen =
         document.getElementById(
             "playerNameScreen"
         );
 
-    if (existing) {
-        return existing;
+    if (screen) {
+        return screen;
     }
 
-    const screen =
+    screen =
         document.createElement(
             "div"
         );
@@ -4977,15 +5025,15 @@ function createNameScreen() {
             </p>
 
             <input
-                id="playerNameInput"
+                id="globalPlayerName"
                 type="text"
                 maxlength="20"
-                autocomplete="off"
                 placeholder="Seu nome"
+                autocomplete="off"
             >
 
             <button
-                id="confirmPlayerName"
+                id="confirmGlobalName"
                 type="button"
             >
                 COMEÇAR
@@ -4998,62 +5046,28 @@ function createNameScreen() {
         screen
     );
 
-    return screen;
-}
-
-
-/* ============================================================
-   PEDIR NOME
-============================================================ */
-
-function askPlayerName() {
-
-    const screen =
-        createNameScreen();
-
     const input =
         document.getElementById(
-            "playerNameInput"
+            "globalPlayerName"
         );
 
     const button =
         document.getElementById(
-            "confirmPlayerName"
+            "confirmGlobalName"
         );
-
-    if (
-        playerName &&
-        input
-    ) {
-
-        input.value =
-            playerName;
-    }
-
-    screen.classList.add(
-        "active"
-    );
-
-    if (input) {
-
-        setTimeout(() => {
-
-            input.focus();
-
-            input.select();
-
-        }, 100);
-    }
 
     if (button) {
 
-        button.onclick =
-            confirmPlayerName;
+        button.addEventListener(
+            "click",
+            confirmPlayerName
+        );
     }
 
     if (input) {
 
-        input.onkeydown =
+        input.addEventListener(
+            "keydown",
             event => {
 
                 if (
@@ -5063,20 +5077,55 @@ function askPlayerName() {
 
                     confirmPlayerName();
                 }
-            };
+            }
+        );
     }
+
+    return screen;
 }
 
 
-/* ============================================================
-   CONFIRMAR NOME
-============================================================ */
+function askPlayerName() {
+
+    const screen =
+        createNameScreen();
+
+    const input =
+        document.getElementById(
+            "globalPlayerName"
+        );
+
+    if (input) {
+
+        input.value =
+            playerName || "";
+    }
+
+    screen.classList.add(
+        "active"
+    );
+
+    setTimeout(
+        () => {
+
+            if (input) {
+
+                input.focus();
+
+                input.select();
+            }
+
+        },
+        100
+    );
+}
+
 
 function confirmPlayerName() {
 
     const input =
         document.getElementById(
-            "playerNameInput"
+            "globalPlayerName"
         );
 
     if (!input) return;
@@ -5089,9 +5138,6 @@ function confirmPlayerName() {
         input.classList.add(
             "error"
         );
-
-        input.placeholder =
-            "Digite seu nome!";
 
         return;
     }
@@ -5112,159 +5158,100 @@ function confirmPlayerName() {
         );
     }
 
-    startActualGame();
+    startGameAfterName();
 }
 
 
 /* ============================================================
-   INICIAR JOGO DE VERDADE
+   INICIAR APÓS NOME
 ============================================================ */
 
-function startActualGame() {
+function startGameAfterName() {
 
-    if (!player) {
+    gameEnded = false;
 
-        initializeGame();
+    rankingSent = false;
 
-        return;
-    }
+    player.health =
+        player.maxHealth;
 
-    player.dead =
+    player.armor = 0;
+
+    player.money = 500;
+
+    player.score = 0;
+
+    player.weapon =
+        weapons[0];
+
+    player.weaponPurchased =
         false;
 
-    player.hp =
-        player.maxHp;
+    player.ammo =
+        weapons[0].magazine;
 
-    player.score =
-        0;
-
-    player.kills =
-        0;
-
-    player.money =
-        100;
+    player.reserveAmmo =
+        weapons[0].ammo;
 
     player.x =
-        world.width / 2;
+        180;
 
     player.y =
-        world.height / 2;
+        canvas.height / 2;
 
-    player.inventory =
-        [];
+    zombies = [];
 
-    player.ammo =
-        {};
+    bullets = [];
 
-    player.selectedSlot =
-        0;
+    inventory = [];
 
-    player.magazineAmmo =
-        0;
+    placedTraps = [];
 
-    zombies.length = 0;
+    placedBarricades = [];
 
-    bullets.length = 0;
+    wave = 1;
 
-    particles.length = 0;
-
-    explosionEffects.length = 0;
-
-    wave = 0;
-
-    zombiesSpawned = 0;
-
-    zombiesRemaining = 0;
+    preparation = true;
 
     waveActive = false;
 
+    preparationTime =
+        PREPARATION_TIME;
+
     gameRunning = true;
 
-    closeGameOver();
+    if (shopScreen) {
+
+        shopScreen.style.display =
+            "block";
+    }
+
+    renderInventory();
 
     updateHUD();
-
-    startWave();
-
-    lastFrameTime =
-        performance.now();
-
-    requestAnimationFrame(
-        gameLoop
-    );
 }
 
 
 /* ============================================================
-   FECHAR GAME OVER
-============================================================ */
-
-function closeGameOver() {
-
-    const screen =
-        document.getElementById(
-            "gameOver"
-        );
-
-    if (!screen) return;
-
-    screen.classList.remove(
-        "active"
-    );
-}
-
-
-/* ============================================================
-   PREPARAR SCORE
-============================================================ */
-
-function createScoreData() {
-
-    return {
-
-        player_name:
-            playerName ||
-            "Jogador",
-
-        score:
-            Number(
-                player?.score || 0
-            ),
-
-        wave:
-            Number(
-                wave || 0
-            ),
-
-        kills:
-            Number(
-                player?.kills || 0
-            )
-    };
-}
-
-
-/* ============================================================
-   SALVAR SCORE NO SUPABASE
+   SALVAR SCORE
 ============================================================ */
 
 async function saveScore() {
 
-    if (!player) return;
+    if (rankingSent) {
+        return;
+    }
 
-    if (
-        !playerName ||
-        playerName.trim() === ""
-    ) {
+    if (!player) {
+        return;
+    }
+
+    if (!playerName) {
 
         loadPlayerName();
     }
 
-    if (
-        !playerName ||
-        playerName.trim() === ""
-    ) {
-
+    if (!playerName) {
         return;
     }
 
@@ -5276,29 +5263,42 @@ async function saveScore() {
     }
 
     if (!supabaseClient) {
-
-        console.warn(
-            "Ranking global indisponível: Supabase não configurado."
-        );
-
         return;
     }
 
-    const data =
-        createScoreData();
-
     if (
-        data.score <= 0
+        Number(player.score) <= 0
     ) {
 
         return;
     }
 
+    rankingSent = true;
+
+    const data = {
+
+        player_name:
+            playerName,
+
+        score:
+            Number(
+                player.score || 0
+            ),
+
+        wave:
+            Number(
+                wave || 0
+            ),
+
+        kills:
+            Number(
+                player.kills || 0
+            )
+    };
+
     try {
 
-        const {
-            error
-        } =
+        const result =
             await supabaseClient
             .from(
                 "they_are_coming_scores"
@@ -5307,24 +5307,28 @@ async function saveScore() {
                 data
             ]);
 
-        if (error) {
+        if (result.error) {
+
+            rankingSent = false;
 
             console.error(
                 "Erro ao salvar ranking:",
-                error
+                result.error
             );
 
             return;
         }
 
         console.log(
-            "Pontuação enviada ao ranking global."
+            "Score enviado para o ranking."
         );
 
     } catch (error) {
 
+        rankingSent = false;
+
         console.error(
-            "Erro de conexão com ranking:",
+            "Erro no ranking:",
             error
         );
     }
@@ -5332,7 +5336,39 @@ async function saveScore() {
 
 
 /* ============================================================
-   BUSCAR RANKING GLOBAL
+   ESCAPAR HTML
+============================================================ */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+}
+
+
+/* ============================================================
+   CARREGAR RANKING
 ============================================================ */
 
 async function loadGlobalRanking() {
@@ -5355,24 +5391,18 @@ async function loadGlobalRanking() {
 
     if (!supabaseClient) {
 
-        container.innerHTML = `
-
-            <div class="ranking-empty">
+        container.innerHTML =
+            `<div class="ranking-empty">
                 Ranking global indisponível.
-            </div>
-
-        `;
+            </div>`;
 
         return;
     }
 
-    container.innerHTML = `
-
-        <div class="ranking-loading">
+    container.innerHTML =
+        `<div class="ranking-loading">
             Carregando ranking...
-        </div>
-
-    `;
+        </div>`;
 
     try {
 
@@ -5385,7 +5415,7 @@ async function loadGlobalRanking() {
                 "they_are_coming_scores"
             )
             .select(
-                "player_name, score, wave, kills, created_at"
+                "player_name,score,wave,kills,created_at"
             )
             .order(
                 "score",
@@ -5402,13 +5432,10 @@ async function loadGlobalRanking() {
                 error
             );
 
-            container.innerHTML = `
-
-                <div class="ranking-empty">
-                    Não foi possível carregar o ranking.
-                </div>
-
-            `;
+            container.innerHTML =
+                `<div class="ranking-empty">
+                    Erro ao carregar ranking.
+                </div>`;
 
             return;
         }
@@ -5420,48 +5447,41 @@ async function loadGlobalRanking() {
     } catch (error) {
 
         console.error(
-            "Erro no ranking:",
             error
         );
 
-        container.innerHTML = `
-
-            <div class="ranking-empty">
+        container.innerHTML =
+            `<div class="ranking-empty">
                 Erro de conexão.
-            </div>
-
-        `;
+            </div>`;
     }
 }
 
 
 /* ============================================================
-   RENDERIZAR RANKING
+   RENDER RANKING
 ============================================================ */
 
-function renderGlobalRanking(
-    scores
-) {
+function renderGlobalRanking(scores) {
 
     const container =
         document.getElementById(
             "globalRanking"
         );
 
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
     if (
         !scores ||
         scores.length === 0
     ) {
 
-        container.innerHTML = `
-
-            <div class="ranking-empty">
+        container.innerHTML =
+            `<div class="ranking-empty">
                 Ainda não existem pontuações.
-            </div>
-
-        `;
+            </div>`;
 
         return;
     }
@@ -5479,21 +5499,18 @@ function renderGlobalRanking(
             row.className =
                 "ranking-row";
 
-            const position =
+            let medal =
                 index + 1;
 
-            let medal =
-                position;
-
-            if (position === 1) {
+            if (index === 0) {
                 medal = "🥇";
             }
 
-            else if (position === 2) {
+            if (index === 1) {
                 medal = "🥈";
             }
 
-            else if (position === 3) {
+            if (index === 2) {
                 medal = "🥉";
             }
 
@@ -5512,7 +5529,8 @@ function renderGlobalRanking(
                     </strong>
 
                     <span>
-                        Onda ${Number(
+                        Onda
+                        ${Number(
                             item.wave || 0
                         )}
                         ·
@@ -5543,142 +5561,21 @@ function renderGlobalRanking(
 
 
 /* ============================================================
-   PROTEÇÃO DE TEXTO HTML
+   PAINEL DE RANKING
 ============================================================ */
 
-function escapeHTML(
-    value
-) {
+function createRankingPanel() {
 
-    return String(
-        value ?? ""
-    )
-    .replace(
-        /&/g,
-        "&amp;"
-    )
-    .replace(
-        /</g,
-        "&lt;"
-    )
-    .replace(
-        />/g,
-        "&gt;"
-    )
-    .replace(
-        /"/g,
-        "&quot;"
-    )
-    .replace(
-        /'/g,
-        "&#039;"
-    );
-}
-
-
-/* ============================================================
-   ATUALIZAÇÃO AUTOMÁTICA DO RANKING
-============================================================ */
-
-let rankingRefreshTimer =
-    null;
-
-function startRankingRefresh() {
-
-    if (
-        rankingRefreshTimer
-    ) {
-
-        clearInterval(
-            rankingRefreshTimer
-        );
-    }
-
-    rankingRefreshTimer =
-        setInterval(
-            () => {
-
-                loadGlobalRanking();
-
-            },
-            15000
-        );
-}
-
-
-/* ============================================================
-   ABRIR RANKING
-============================================================ */
-
-function openRanking() {
-
-    const ranking =
-        document.getElementById(
-            "rankingPanel"
-        );
-
-    if (!ranking) {
-
-        /*
-           Se o HTML ainda não possui
-           painel de ranking, criamos um.
-        */
-
-        createRankingPanel();
-
-    }
-
-    const panel =
+    let panel =
         document.getElementById(
             "rankingPanel"
         );
 
     if (panel) {
-
-        panel.classList.add(
-            "active"
-        );
+        return panel;
     }
 
-    loadGlobalRanking();
-}
-
-
-/* ============================================================
-   FECHAR RANKING
-============================================================ */
-
-function closeRanking() {
-
-    const panel =
-        document.getElementById(
-            "rankingPanel"
-        );
-
-    if (!panel) return;
-
-    panel.classList.remove(
-        "active"
-    );
-}
-
-
-/* ============================================================
-   CRIAR PAINEL DE RANKING
-============================================================ */
-
-function createRankingPanel() {
-
-    if (
-        document.getElementById(
-            "rankingPanel"
-        )
-    ) {
-
-        return;
-    }
-
-    const panel =
+    panel =
         document.createElement(
             "div"
         );
@@ -5691,7 +5588,7 @@ function createRankingPanel() {
         <div class="ranking-box">
 
             <button
-                id="closeRankingBtn"
+                id="closeRankingDynamic"
                 class="close-ranking"
             >
                 ✕
@@ -5710,7 +5607,7 @@ function createRankingPanel() {
                     </h2>
 
                     <p>
-                        Os maiores sobreviventes
+                        Maiores pontuações
                     </p>
 
                 </div>
@@ -5720,7 +5617,8 @@ function createRankingPanel() {
             <div
                 id="globalRanking"
                 class="global-ranking"
-            ></div>
+            >
+            </div>
 
         </div>
     `;
@@ -5731,7 +5629,7 @@ function createRankingPanel() {
 
     const close =
         document.getElementById(
-            "closeRankingBtn"
+            "closeRankingDynamic"
         );
 
     if (close) {
@@ -5739,6 +5637,37 @@ function createRankingPanel() {
         close.addEventListener(
             "click",
             closeRanking
+        );
+    }
+
+    return panel;
+}
+
+
+function openRanking() {
+
+    const panel =
+        createRankingPanel();
+
+    panel.classList.add(
+        "active"
+    );
+
+    loadGlobalRanking();
+}
+
+
+function closeRanking() {
+
+    const panel =
+        document.getElementById(
+            "rankingPanel"
+        );
+
+    if (panel) {
+
+        panel.classList.remove(
+            "active"
         );
     }
 }
@@ -5752,55 +5681,21 @@ document.addEventListener(
     "click",
     event => {
 
-        const target =
-            event.target;
-
-        if (
-            target.closest(
+        const rankingButton =
+            event.target.closest(
                 "#rankingBtn"
-            )
-        ) {
+            );
+
+        if (rankingButton) {
 
             openRanking();
         }
-
     }
 );
 
 
 /* ============================================================
-   TECLA TAB — RANKING
-============================================================ */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key ===
-            "Tab"
-        ) {
-
-            /*
-               Não bloquear o comportamento
-               normal do navegador.
-            */
-        }
-
-        if (
-            event.key ===
-            "Escape"
-        ) {
-
-            closeRanking();
-            closeShop();
-        }
-    }
-);
-
-
-/* ============================================================
-   SCORE LOCAL
+   RECORDE LOCAL
 ============================================================ */
 
 function getLocalBestScore() {
@@ -5820,21 +5715,18 @@ function getLocalBestScore() {
 }
 
 
-/* ============================================================
-   SALVAR MELHOR SCORE LOCAL
-============================================================ */
-
 function saveLocalBestScore() {
 
-    if (!player) return;
+    if (!player) {
+        return;
+    }
 
-    const oldScore =
+    const old =
         getLocalBestScore();
 
     if (
-        player.score <= oldScore
+        player.score <= old
     ) {
-
         return;
     }
 
@@ -5847,18 +5739,9 @@ function saveLocalBestScore() {
             )
         );
 
-    } catch (error) {
-
-        console.warn(
-            "Não foi possível salvar recorde local."
-        );
-    }
+    } catch (error) {}
 }
 
-
-/* ============================================================
-   RANKING + RECORDE LOCAL
-============================================================ */
 
 function saveAllScores() {
 
@@ -5869,32 +5752,47 @@ function saveAllScores() {
 
 
 /* ============================================================
-   SUBSTITUIR GAME OVER
+   ATUALIZAÇÃO AUTOMÁTICA
 ============================================================ */
 
-const originalGameOver =
-    gameOver;
+function startRankingRefresh() {
 
-gameOver =
-    function () {
+    if (
+        rankingRefreshTimer
+    ) {
 
-        saveAllScores();
+        clearInterval(
+            rankingRefreshTimer
+        );
+    }
 
-        originalGameOver();
-
-        setTimeout(
+    rankingRefreshTimer =
+        setInterval(
             () => {
 
-                loadGlobalRanking();
+                const panel =
+                    document.getElementById(
+                        "rankingPanel"
+                    );
+
+                if (
+                    panel &&
+                    panel.classList.contains(
+                        "active"
+                    )
+                ) {
+
+                    loadGlobalRanking();
+                }
 
             },
-            800
+            15000
         );
-    };
+}
 
 
 /* ============================================================
-   INICIALIZAR SISTEMA DE RANKING
+   INICIALIZAÇÃO DO RANKING
 ============================================================ */
 
 function initializeRankingSystem() {
@@ -5903,8 +5801,6 @@ function initializeRankingSystem() {
 
     initializeSupabase();
 
-    createNameScreen();
-
     createRankingPanel();
 
     startRankingRefresh();
@@ -5912,27 +5808,7 @@ function initializeRankingSystem() {
 
 
 /* ============================================================
-   INICIAR SISTEMA
-============================================================ */
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeRankingSystem
-    );
-
-} else {
-
-    initializeRankingSystem();
-}
-
-
-/* ============================================================
-   CSS AUTOMÁTICO PARA ELEMENTOS CRIADOS
+   ESTILO DO RANKING
 ============================================================ */
 
 (function injectRankingStyles() {
@@ -5942,7 +5818,6 @@ if (
             "ludixRankingStyles"
         )
     ) {
-
         return;
     }
 
@@ -5956,14 +5831,14 @@ if (
 
     style.textContent = `
 
-        #playerNameScreen,
-        #rankingPanel {
+        #rankingPanel,
+        #playerNameScreen {
 
             position: fixed;
 
             inset: 0;
 
-            z-index: 99999;
+            z-index: 999999;
 
             display: none;
 
@@ -5978,17 +5853,17 @@ if (
                 blur(8px);
         }
 
-        #playerNameScreen.active,
-        #rankingPanel.active {
+        #rankingPanel.active,
+        #playerNameScreen.active {
 
             display: flex;
         }
 
-        .name-box,
-        .ranking-box {
+        .ranking-box,
+        .name-box {
 
             width:
-                min(92vw, 520px);
+                min(92vw,520px);
 
             max-height:
                 90vh;
@@ -5997,7 +5872,10 @@ if (
                 auto;
 
             padding:
-                30px;
+                28px;
+
+            box-sizing:
+                border-box;
 
             border-radius:
                 20px;
@@ -6009,121 +5887,12 @@ if (
                 1px solid
                 rgba(255,255,255,.12);
 
+            color:
+                #fff;
+
             box-shadow:
                 0 25px 80px
-                rgba(0,0,0,.6);
-
-            color:
-                white;
-
-            text-align:
-                center;
-        }
-
-        .name-icon {
-
-            font-size:
-                60px;
-
-            margin-bottom:
-                10px;
-        }
-
-        .name-box h1 {
-
-            margin:
-                0 0 10px;
-
-            font-size:
-                28px;
-        }
-
-        .name-box p {
-
-            color:
-                #aeb6c2;
-
-            margin-bottom:
-                22px;
-        }
-
-        #playerNameInput {
-
-            width:
-                100%;
-
-            box-sizing:
-                border-box;
-
-            padding:
-                14px 16px;
-
-            border-radius:
-                10px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.15);
-
-            background:
-                #080b0f;
-
-            color:
-                white;
-
-            outline:
-                none;
-
-            font-size:
-                16px;
-
-            margin-bottom:
-                12px;
-        }
-
-        #playerNameInput:focus {
-
-            border-color:
-                #4d9cff;
-        }
-
-        #playerNameInput.error {
-
-            border-color:
-                #ff4545;
-        }
-
-        #confirmPlayerName {
-
-            width:
-                100%;
-
-            padding:
-                14px;
-
-            border:
-                0;
-
-            border-radius:
-                10px;
-
-            background:
-                #267cff;
-
-            color:
-                white;
-
-            font-weight:
-                800;
-
-            cursor:
-                pointer;
-        }
-
-        #confirmPlayerName:hover {
-
-            filter:
-                brightness(1.15);
+                rgba(0,0,0,.65);
         }
 
         .ranking-header {
@@ -6135,10 +5904,7 @@ if (
                 center;
 
             gap:
-                15px;
-
-            text-align:
-                left;
+                14px;
 
             margin-bottom:
                 20px;
@@ -6154,9 +5920,6 @@ if (
 
             margin:
                 0;
-
-            font-size:
-                24px;
         }
 
         .ranking-header p {
@@ -6197,20 +5960,17 @@ if (
             width:
                 38px;
 
-            font-size:
-                19px;
-
             font-weight:
-                800;
+                900;
+
+            font-size:
+                18px;
         }
 
         .ranking-player {
 
             flex:
                 1;
-
-            text-align:
-                left;
 
             display:
                 flex;
@@ -6219,41 +5979,35 @@ if (
                 column;
         }
 
-        .ranking-player strong {
-
-            font-size:
-                15px;
-        }
-
         .ranking-player span {
 
-            margin-top:
-                3px;
-
             color:
-                #8f99a8;
+                #8993a2;
 
             font-size:
                 11px;
+
+            margin-top:
+                3px;
         }
 
         .ranking-score {
 
             font-weight:
                 900;
-
-            font-size:
-                16px;
         }
 
         .ranking-empty,
         .ranking-loading {
 
+            text-align:
+                center;
+
             padding:
-                30px 10px;
+                30px;
 
             color:
-                #a5afbd;
+                #9da7b5;
         }
 
         .close-ranking {
@@ -6261,59 +6015,124 @@ if (
             position:
                 absolute;
 
-            margin:
-                -18px -18px 0 0;
+            top:
+                20px;
 
             right:
-                50%;
+                20px;
 
-            transform:
-                translateX(250px);
+            width:
+                40px;
+
+            height:
+                40px;
 
             border:
                 0;
 
+            border-radius:
+                50%;
+
             background:
-                rgba(255,255,255,.08);
+                rgba(255,255,255,.1);
 
             color:
                 white;
 
-            width:
-                38px;
-
-            height:
-                38px;
-
-            border-radius:
-                50%;
+            font-size:
+                18px;
 
             cursor:
                 pointer;
+        }
+
+        .name-box {
+
+            text-align:
+                center;
+        }
+
+        .name-icon {
 
             font-size:
-                18px;
+                60px;
+
+            margin-bottom:
+                10px;
+        }
+
+        .name-box input {
+
+            width:
+                100%;
+
+            box-sizing:
+                border-box;
+
+            padding:
+                14px;
+
+            border-radius:
+                10px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.15);
+
+            background:
+                #080b0f;
+
+            color:
+                white;
+
+            font-size:
+                16px;
+
+            outline:
+                none;
+
+            margin:
+                15px 0 10px;
+        }
+
+        .name-box button {
+
+            width:
+                100%;
+
+            padding:
+                14px;
+
+            border:
+                0;
+
+            border-radius:
+                10px;
+
+            background:
+                #267cff;
+
+            color:
+                white;
+
+            font-weight:
+                900;
+
+            cursor:
+                pointer;
         }
 
         @media(max-width:600px) {
 
-            .name-box,
-            .ranking-box {
+            .ranking-box,
+            .name-box {
+
+                width:
+                    94vw;
 
                 padding:
-                    22px;
-
+                    20px;
             }
-
-            .close-ranking {
-
-                right:
-                    15px;
-
-                transform:
-                    none;
-            }
-
         }
 
     `;
@@ -6323,3 +6142,26 @@ if (
     );
 
 })();
+
+
+/* ============================================================
+   INICIALIZAÇÃO FINAL
+============================================================ */
+
+loadPlayerName();
+
+initializeSupabase();
+
+initializeRankingSystem();
+
+
+/*
+   NÃO iniciamos automaticamente uma nova partida aqui.
+
+   O sistema original controla o início do jogo através
+   da tela/loja e do botão de iniciar.
+*/
+
+console.log(
+    "LUDIX — They Are Coming carregado corretamente."
+);
