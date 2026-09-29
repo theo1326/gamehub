@@ -5,158 +5,129 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>They Are Coming - GameHub</title>
+    <title>They Are Coming - Ludix</title>
 
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* ================================
-           RANKING GLOBAL
-           ================================ */
-
         #rankingScreen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background:
-                radial-gradient(circle at center, #20251f 0%, #080a08 75%);
-            color: white;
-            overflow-y: auto;
-            padding: 30px 15px;
+            display:none;
+            position:fixed;
+            inset:0;
+            z-index:9999;
+            background:radial-gradient(circle at center,#20251f 0%,#080a08 75%);
+            color:white;
+            overflow-y:auto;
+            padding:30px 15px;
         }
 
         .ranking-container {
-            width: min(900px, 100%);
-            margin: auto;
-            background: rgba(12, 15, 12, .96);
-            border: 1px solid #4c564c;
-            box-shadow: 0 0 40px rgba(0, 0, 0, .8);
-            padding: 25px;
+            width:min(900px,100%);
+            margin:auto;
+            background:rgba(12,15,12,.96);
+            border:1px solid #4c564c;
+            box-shadow:0 0 40px rgba(0,0,0,.8);
+            padding:25px;
         }
 
         .ranking-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:15px;
+            margin-bottom:25px;
         }
 
         .ranking-header h1 {
-            margin: 0;
-            font-size: clamp(24px, 5vw, 42px);
+            margin:0;
+            font-size:clamp(24px,5vw,42px);
         }
 
         .ranking-header p {
-            color: #aaa;
-            margin: 5px 0 0;
+            color:#aaa;
+            margin:5px 0 0;
         }
 
         #closeRankingBtn {
-            border: 1px solid #666;
-            background: #171a17;
-            color: white;
-            padding: 10px 18px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #closeRankingBtn:hover {
-            background: #292d29;
+            border:1px solid #666;
+            background:#171a17;
+            color:white;
+            padding:10px 18px;
+            cursor:pointer;
+            font-weight:bold;
         }
 
         .ranking-table {
-            width: 100%;
-            border-collapse: collapse;
+            width:100%;
+            border-collapse:collapse;
         }
 
         .ranking-table th,
         .ranking-table td {
-            padding: 13px 10px;
-            border-bottom: 1px solid #303530;
-            text-align: left;
+            padding:13px 10px;
+            border-bottom:1px solid #303530;
+            text-align:left;
         }
 
         .ranking-table th {
-            color: #aaa;
-            font-size: 13px;
-            text-transform: uppercase;
-        }
-
-        .ranking-table td {
-            font-size: 16px;
-        }
-
-        .ranking-position {
-            width: 65px;
-            font-weight: bold;
+            color:#aaa;
+            font-size:13px;
+            text-transform:uppercase;
         }
 
         .ranking-player {
-            font-weight: bold;
+            font-weight:bold;
         }
 
         .ranking-money {
-            color: #72d572;
-            font-weight: bold;
+            color:#72d572;
+            font-weight:bold;
         }
 
         .ranking-loading,
         .ranking-empty,
         .ranking-error {
-            text-align: center;
-            padding: 35px 10px;
-            color: #aaa;
+            text-align:center;
+            padding:35px 10px;
+            color:#aaa;
         }
 
         .ranking-error {
-            color: #ff7777;
+            color:#ff7777;
         }
 
         #rankingBtn {
-            width: 100%;
-            margin: 15px 0;
-            padding: 15px;
-            background: #242924;
-            color: white;
-            border: 1px solid #596259;
-            cursor: pointer;
-            font-size: 17px;
-            font-weight: bold;
+            width:100%;
+            margin:15px 0;
+            padding:15px;
+            background:#242924;
+            color:white;
+            border:1px solid #596259;
+            cursor:pointer;
+            font-size:17px;
+            font-weight:bold;
         }
-
-        #rankingBtn:hover {
-            background: #343a34;
-        }
-
-        /* NOME OBRIGATÓRIO */
 
         #nameWarning {
-            display: none;
-            color: #ff7777;
-            font-size: 14px;
-            margin-top: 8px;
+            display:none;
+            color:#ff7777;
+            font-size:14px;
+            margin-top:8px;
         }
 
-        @media (max-width: 600px) {
-
+        @media(max-width:600px) {
             .ranking-container {
-                padding: 15px;
+                padding:15px;
             }
 
             .ranking-table th,
             .ranking-table td {
-                padding: 10px 5px;
-                font-size: 13px;
+                padding:10px 5px;
+                font-size:13px;
             }
 
             .ranking-header {
-                align-items: flex-start;
-            }
-
-            .ranking-header h1 {
-                font-size: 25px;
+                align-items:flex-start;
             }
         }
     </style>
@@ -165,8 +136,8 @@
 <body>
 
 <!-- =====================================================
-     MENU / LOJA
-     ===================================================== -->
+     MENU
+===================================================== -->
 
 <div id="shopScreen">
 
@@ -176,7 +147,7 @@
 
             <div>
                 <h1>THEY ARE COMING</h1>
-                <p>PREPARAÇÃO</p>
+                <p>LUDIX • PREPARAÇÃO</p>
             </div>
 
             <div class="money">
@@ -201,51 +172,45 @@
 
         </div>
 
-        <!-- RANKING -->
-
         <button id="rankingBtn">
             🏆 RANKING GLOBAL
         </button>
 
         <div class="categories">
 
-            <button class="category-btn active"
-                data-category="armadura">
+            <button class="category-btn active" data-category="armadura">
                 🛡️ Armadura
             </button>
 
-            <button class="category-btn"
-                data-category="amigos">
+            <button class="category-btn" data-category="amigos">
                 🐾 Amigos
             </button>
 
-            <button class="category-btn"
-                data-category="armas">
+            <button class="category-btn" data-category="armas">
                 🔫 Armas
             </button>
 
-            <button class="category-btn"
-                data-category="municao">
+            <button class="category-btn" data-category="corpo">
+                ⚔️ Corpo a Corpo
+            </button>
+
+            <button class="category-btn" data-category="municao">
                 📦 Munição
             </button>
 
-            <button class="category-btn"
-                data-category="kits">
+            <button class="category-btn" data-category="kits">
                 🩹 Kits
             </button>
 
-            <button class="category-btn"
-                data-category="bombas">
+            <button class="category-btn" data-category="bombas">
                 💣 Bombas
             </button>
 
-            <button class="category-btn"
-                data-category="armadilhas">
+            <button class="category-btn" data-category="armadilhas">
                 🪤 Armadilhas
             </button>
 
-            <button class="category-btn"
-                data-category="barricadas">
+            <button class="category-btn" data-category="barricadas">
                 🧱 Barricadas
             </button>
 
@@ -257,21 +222,14 @@
 
             <h2>🎒 INVENTÁRIO — 5 ESPAÇOS</h2>
 
-            <div
-                id="menuInventory"
-                class="inventory-slots">
-            </div>
+            <div id="menuInventory" class="inventory-slots"></div>
 
         </div>
 
         <div class="shop-actions">
 
-            <button
-                id="startWaveBtn"
-                class="start-button">
-
+            <button id="startWaveBtn" class="start-button">
                 ▶ INICIAR ONDA
-
             </button>
 
         </div>
@@ -280,7 +238,12 @@
 
             <p>
                 🧟 Cada zumbi eliminado:
-                <strong>$100+</strong>
+                <strong>$50</strong>
+            </p>
+
+            <p>
+                👹 Boss:
+                <strong>$5.000 e dobra a cada Boss</strong>
             </p>
 
             <p>
@@ -294,28 +257,23 @@
             </p>
 
             <p>
-                ⚡ Velocidade:
-                <strong>+5 por compra</strong>
-            </p>
-
-            <p>
-                💡 Kits médicos funcionam no menu.
-            </p>
-
-            <p>
-                🪤 Armadilhas e barricadas podem ser
-                colocadas durante a preparação.
-            </p>
-
-            <p>
-                ⏱️ Você tem:
+                ⏱️ Preparação inicial:
                 <strong>30 segundos</strong>
-                antes de cada onda.
             </p>
 
             <p>
-                🧟 Os zumbis chegam:
-                <strong>pela direita.</strong>
+                ⏱️ A preparação diminui 5 segundos por onda,
+                até chegar a <strong>15 segundos</strong>.
+            </p>
+
+            <p>
+                🧟 Zumbis especiais aparecem a partir da
+                <strong>onda 5</strong>.
+            </p>
+
+            <p>
+                👹 O Boss aparece somente nas ondas
+                <strong>10, 20, 30...</strong>
             </p>
 
         </div>
@@ -326,8 +284,8 @@
 
 
 <!-- =====================================================
-     RANKING GLOBAL
-     ===================================================== -->
+     RANKING
+===================================================== -->
 
 <div id="rankingScreen">
 
@@ -361,26 +319,22 @@
 
 <!-- =====================================================
      CANVAS
-     ===================================================== -->
+===================================================== -->
 
 <canvas id="game"></canvas>
 
 
 <!-- =====================================================
      HUD
-     ===================================================== -->
+===================================================== -->
 
 <div id="hud">
 
     <div class="hud-left">
 
-        <div id="nameHud">
-            Jogador
-        </div>
+        <div id="nameHud">Jogador</div>
 
-        <div class="bar-title">
-            ❤️ VIDA
-        </div>
+        <div class="bar-title">❤️ VIDA</div>
 
         <div class="health-box">
             <div id="healthBar"></div>
@@ -388,9 +342,7 @@
 
         <div id="armorHud">
 
-            <div class="bar-title">
-                🛡️ ARMADURA
-            </div>
+            <div class="bar-title">🛡️ ARMADURA</div>
 
             <div class="armor-box">
                 <div id="armorBar"></div>
@@ -408,6 +360,10 @@
 
         <div id="enemies">
             Zumbis: 0
+        </div>
+
+        <div id="preparationHud">
+            PREPARAÇÃO: 30
         </div>
 
     </div>
@@ -432,8 +388,8 @@
 
 
 <!-- =====================================================
-     INVENTÁRIO DURANTE O JOGO
-     ===================================================== -->
+     INVENTÁRIO
+===================================================== -->
 
 <div id="gameInventory">
 
@@ -447,7 +403,7 @@
 
 <!-- =====================================================
      GAME OVER
-     ===================================================== -->
+===================================================== -->
 
 <div id="gameOver">
 
@@ -464,31 +420,28 @@
 
 <!-- =====================================================
      SUPABASE
-     ===================================================== -->
+===================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-    /*
-     * COLOQUE AQUI OS MESMOS DADOS DO SEU SUPABASE
-     * QUE VOCÊ USOU NO JOGO SNAKE.
-     */
+const SUPABASE_URL =
+    "https://vkswxahmirkhcynwlzys.supabase.co";
 
-    const SUPABASE_URL = "https://vkswxahmirkhcynwlzys.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
 
-    const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
-
-    const supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY
-        );
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
 
 </script>
 
-<script src="game.js"></script>
+<!-- CORRIGIDO: seu arquivo é games.js -->
+<script src="games.js"></script>
 
 </body>
 </html>
