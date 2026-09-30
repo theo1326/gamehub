@@ -1,4 +1,3 @@
-```javascript
 const games = [
     {
         name: "They Are Coming",
@@ -70,7 +69,6 @@ const games = [
     }
 ];
 
-
 const grid = document.getElementById("gameGrid");
 const search = document.getElementById("search");
 const empty = document.getElementById("empty");
@@ -78,13 +76,10 @@ const count = document.getElementById("resultCount");
 
 let category = "Todos";
 
-
 function render() {
-
     const query = search.value.trim().toLowerCase();
 
     const filtered = games.filter(function(game) {
-
         const matchesSearch =
             game.name.toLowerCase().includes(query) ||
             game.description.toLowerCase().includes(query);
@@ -96,16 +91,12 @@ function render() {
         return matchesSearch && matchesCategory;
     });
 
-
     grid.innerHTML = "";
 
-
     filtered.forEach(function(game) {
-
         const card = document.createElement("div");
 
         card.className = "game-card";
-
 
         card.innerHTML = `
             <div class="game-icon">
@@ -113,7 +104,6 @@ function render() {
             </div>
 
             <div class="game-info">
-
                 <span class="game-category">
                     ${game.category}
                 </span>
@@ -125,45 +115,28 @@ function render() {
                 <button class="play-btn">
                     ▶ Jogar
                 </button>
-
             </div>
         `;
 
-
         const button = card.querySelector(".play-btn");
 
-
         button.addEventListener("click", function() {
-
             if (game.link) {
-
                 window.location.href = game.link;
-
             } else {
-
-                alert("Esse jogo ainda não foi adicionado ao Ludix.");
-
+                alert("Esse jogo ainda não foi adicionado ao GameHub.");
             }
-
         });
 
-
         grid.appendChild(card);
-
     });
-
 
     count.textContent = filtered.length + " jogos";
 
-
     if (filtered.length === 0) {
-
         empty.classList.remove("hidden");
-
     } else {
-
         empty.classList.add("hidden");
-
     }
 }
 
@@ -172,32 +145,20 @@ function render() {
    CATEGORIAS
 ========================= */
 
-document
-    .querySelectorAll(".filter")
-    .forEach(function(button) {
+document.querySelectorAll(".filter").forEach(function(button) {
+    button.addEventListener("click", function() {
 
-        button.addEventListener("click", function() {
-
-            document
-                .querySelectorAll(".filter")
-                .forEach(function(btn) {
-
-                    btn.classList.remove("active");
-
-                });
-
-
-            button.classList.add("active");
-
-
-            category = button.dataset.category;
-
-
-            render();
-
+        document.querySelectorAll(".filter").forEach(function(btn) {
+            btn.classList.remove("active");
         });
 
+        button.classList.add("active");
+
+        category = button.dataset.category;
+
+        render();
     });
+});
 
 
 /* =========================
@@ -205,9 +166,7 @@ document
 ========================= */
 
 search.addEventListener("input", function() {
-
     render();
-
 });
 
 
@@ -217,26 +176,17 @@ search.addEventListener("input", function() {
 
 const themeBtn = document.getElementById("themeBtn");
 
-
 if (themeBtn) {
-
     themeBtn.addEventListener("click", function() {
 
         document.body.classList.toggle("light");
 
-
         if (document.body.classList.contains("light")) {
-
             themeBtn.textContent = "🌙";
-
         } else {
-
             themeBtn.textContent = "☀️";
-
         }
-
     });
-
 }
 
 
@@ -245,4 +195,3 @@ if (themeBtn) {
 ========================= */
 
 render();
-```
