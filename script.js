@@ -4,7 +4,7 @@ const games = [
     category: "Aventura",
     icon: "🌎",
     description: "Explore, construa, quebre blocos e descubra um mundo cheio de aventuras.",
-    link: "jogos/sandbox/index.html"
+    link: "jogos/jogos/sandbox/index.html"
     },
     
     {
