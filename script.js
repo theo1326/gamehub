@@ -1,5 +1,12 @@
 const games = [
     {
+    name: "Basquete 2 Jogadores",
+    category: "Esportes",
+    icon: "🏀",
+    description: "Enfrente outro jogador no mesmo computador em uma partida de basquete.",
+    link: "jogos/basquete/index.html"
+},
+    {
         name: "Space Waves",
         category: "Ação",
         icon: "🚀",
