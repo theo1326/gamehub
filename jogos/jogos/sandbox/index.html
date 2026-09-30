@@ -1,1 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>Sandbox Adventure</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="game">
+
+        <canvas id="canvas"></canvas>
+
+        <div id="hud">
+
+            <div class="status">
+                ❤️ <span id="health">100</span>
+            </div>
+
+            <div class="coordinates">
+                X: <span id="posX">0</span>
+                Y: <span id="posY">0</span>
+            </div>
+
+        </div>
+
+        <div id="hotbar">
+
+            <div class="slot selected" data-slot="0">
+                ⛏️
+            </div>
+
+            <div class="slot" data-slot="1">
+                🟫
+            </div>
+
+            <div class="slot" data-slot="2">
+                🪨
+            </div>
+
+            <div class="slot" data-slot="3">
+                🪵
+            </div>
+
+            <div class="slot" data-slot="4">
+                💎
+            </div>
+
+        </div>
+
+        <div id="help">
+            <b>WASD</b> / Setas = mover<br>
+            <b>Mouse esquerdo</b> = quebrar<br>
+            <b>Mouse direito</b> = colocar<br>
+            <b>1-5</b> = selecionar item
+        </div>
+
+    </div>
+
+    <script src="game.js"></script>
+
+</body>
+</html>
