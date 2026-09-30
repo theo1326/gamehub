@@ -1,18 +1,21 @@
+```javascript
 const games = [
     {
-    name: "They Are Coming",
-    category: "Ação",
-    icon: "🧟",
-    description: "Sobreviva às ondas de inimigos, compre armas e tente chegar o mais longe possível.",
-    link: "jogos/they-are-coming/"
-}
+        name: "They Are Coming",
+        category: "Ação",
+        icon: "🧟",
+        description: "Sobreviva às ondas de inimigos, compre armas e tente chegar o mais longe possível.",
+        link: "jogos/they-are-coming/"
+    },
+
     {
-    name: "Basquete 2 Jogadores",
-    category: "Esportes",
-    icon: "🏀",
-    description: "Enfrente outro jogador no mesmo computador em uma partida de basquete.",
-    link: "jogos/basquete/index.html"
-},
+        name: "Basquete 2 Jogadores",
+        category: "Esportes",
+        icon: "🏀",
+        description: "Enfrente outro jogador no mesmo computador em uma partida de basquete.",
+        link: "jogos/basquete/index.html"
+    },
+
     {
         name: "Space Waves",
         category: "Ação",
@@ -22,7 +25,7 @@ const games = [
     },
 
     {
-        name: "Batalha ",
+        name: "Batalha",
         category: "Ação",
         icon: "🚢",
         description: "Destrua seus inimigos usando seu navio e se torne o líder da marinha."
@@ -233,3 +236,4 @@ if (themeBtn) {
 
 
 render();
+```
