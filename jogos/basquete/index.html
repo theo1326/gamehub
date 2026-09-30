@@ -513,7 +513,15 @@ const ball = {
 
     heldBy:player1,
 
-    scored:false
+    scored:false,
+
+    /*
+        NOVO:
+        impede que o jogador pegue
+        a bola imediatamente depois
+        de arremessá-la.
+    */
+    pickupCooldown:0
 
 };
 
@@ -567,6 +575,8 @@ function resetGame(){
     ball.heldBy = player1;
 
     ball.scored = false;
+
+    ball.pickupCooldown = 0;
 
 }
 
@@ -708,6 +718,15 @@ function shootBall(player){
     */
 
     ball.z = 20;
+
+
+    /*
+        NOVO:
+        impede o jogador de pegar
+        a bola imediatamente.
+    */
+
+    ball.pickupCooldown = 0.35;
 
 
     /*
@@ -858,6 +877,23 @@ function updatePlayer(
 
 function updateBall(dt){
 
+    /*
+        NOVO:
+        diminui o tempo de bloqueio
+        para pegar a bola.
+    */
+
+    if(ball.pickupCooldown > 0){
+
+        ball.pickupCooldown -= dt;
+
+        if(ball.pickupCooldown < 0){
+            ball.pickupCooldown = 0;
+        }
+
+    }
+
+
     if(ball.heldBy){
 
         const hand =
@@ -943,6 +979,18 @@ function updateBall(dt){
 function tryPickupBall(player){
 
     if(ball.heldBy){
+        return;
+    }
+
+
+    /*
+        NOVO:
+        não permite pegar a bola
+        durante o pequeno intervalo
+        após o arremesso.
+    */
+
+    if(ball.pickupCooldown > 0){
         return;
     }
 
@@ -1084,6 +1132,8 @@ function checkBasketCollision(){
             ball.vx = 0;
             ball.vy = 0;
             ball.vz = 0;
+
+            ball.pickupCooldown = 0;
 
 
             if(
