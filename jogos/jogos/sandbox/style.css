@@ -576,3 +576,252 @@ body {
         height: 120px;
     }
 }
+
+/* =========================================================
+   MESA DE TRABALHO
+========================================================= */
+
+#craftingTableOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: rgba(0,0,0,.72);
+
+    z-index: 10000;
+
+}
+
+
+#craftingTableOverlay.open {
+
+    display: flex;
+
+}
+
+
+#craftingTablePanel {
+
+    width: 620px;
+
+    max-width: 92vw;
+
+    padding: 28px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #292929,
+            #171717
+        );
+
+    border: 3px solid #777;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 0 35px rgba(0,0,0,.9);
+
+    color: white;
+
+    text-align: center;
+
+}
+
+
+#craftingTableTitle {
+
+    font-size: 25px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 25px;
+
+    color: #f0c36b;
+
+}
+
+
+#craftingTableContent {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 30px;
+
+}
+
+
+#tableCraftGrid {
+
+    width: 270px;
+
+    height: 270px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    grid-template-rows:
+        repeat(3, 1fr);
+
+    gap: 7px;
+
+    padding: 8px;
+
+    background: #111;
+
+    border: 3px solid #555;
+
+    border-radius: 8px;
+
+}
+
+
+.table-craft-slot {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 100%;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #404040,
+            #242424
+        );
+
+    border: 2px solid #666;
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    box-shadow:
+        inset 0 0 8px rgba(0,0,0,.8);
+
+}
+
+
+.table-craft-slot:hover {
+
+    border-color: #f0c36b;
+
+    background: #353535;
+
+}
+
+
+#tableCraftArrow {
+
+    font-size: 50px;
+
+    color: #f0c36b;
+
+    text-shadow:
+        0 0 10px rgba(240,195,107,.5);
+
+}
+
+
+#tableCraftResult {
+
+    width: 90px;
+
+    height: 90px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            #4a4a4a,
+            #292929
+        );
+
+    border: 3px solid #888;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+}
+
+
+#tableCraftResult:hover {
+
+    border-color: #f0c36b;
+
+    transform: scale(1.04);
+
+}
+
+
+#tableRecipeName {
+
+    min-height: 25px;
+
+    margin-top: 20px;
+
+    color: #ddd;
+
+    font-size: 15px;
+
+}
+
+
+#closeCraftingTable {
+
+    margin-top: 20px;
+
+    padding: 10px 25px;
+
+    border: 2px solid #777;
+
+    border-radius: 7px;
+
+    background: #242424;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+#closeCraftingTable:hover {
+
+    background: #3b3b3b;
+
+    border-color: #f0c36b;
+
+}
