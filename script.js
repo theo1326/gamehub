@@ -1,5 +1,12 @@
 const games = [
     {
+    name: "They Are Coming",
+    category: "Ação",
+    icon: "🧟",
+    description: "Sobreviva às ondas de inimigos, compre armas e tente chegar o mais longe possível.",
+    link: "jogos/they-are-coming/"
+}
+    {
     name: "Basquete 2 Jogadores",
     category: "Esportes",
     icon: "🏀",
