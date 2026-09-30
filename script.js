@@ -32,35 +32,6 @@ const games = [
     },
 
     {
-        name: "Batalha",
-        category: "Ação",
-        icon: "🚢",
-        description: "Destrua seus inimigos usando seu navio e se torne o líder da marinha."
-    },
-
-    {
-        name: "Minecraft",
-        category: "Aventura",
-        icon: "🌴",
-        description: "Explore um mundo cheio de desafios."
-    },
-
-    {
-        name: "Blox Fruits",
-        category: "Ação",
-        icon: "🍈",
-        description: "One Piece."
-    },
-
-    {
-        name: "GTA 5",
-        category: "Corrida",
-        icon: "🏎️",
-        description: "Explore uma cidade 3D, dirija carros e complete missões.",
-        link: "jogos/gta5/index.html"
-    },
-
-    {
         name: "Cobrinha",
         category: "Ação",
         icon: "🐍",
