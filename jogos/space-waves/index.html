@@ -409,7 +409,7 @@ canvas{
         <div class="help">
             ⌨️ Segure <b>ESPAÇO</b> para subir<br>
             📱 Segure a tela para subir<br>
-            🚀 Atravesse o mapa sem tocar nos obstáculos
+            🚀 Desvie dos obstáculos e sobreviva!
         </div>
 
     </div>
@@ -687,7 +687,18 @@ let playerNameValue = "";
 
 let holding = false;
 
-let cameraX = 0;
+
+/* =========================================================
+   PROGRESSÃO
+========================================================= */
+
+let speedLevel = 0;
+
+let obstacleLevel = 0;
+
+let nextSpeedDistance = 150;
+
+let nextObstacleScore = 500;
 
 
 /* =========================================================
@@ -808,7 +819,13 @@ function startGame(){
 
     gameSpeed = 5;
 
-    cameraX = 0;
+    speedLevel = 0;
+
+    obstacleLevel = 0;
+
+    nextSpeedDistance = 150;
+
+    nextObstacleScore = 500;
 
     obstacles = [];
 
@@ -816,9 +833,11 @@ function startGame(){
 
     createPlayer();
 
-    createLevel();
+    createInitialObstacles();
 
     running = true;
+
+    holding = false;
 
     lastTime =
         performance.now();
@@ -839,17 +858,6 @@ function startGame(){
    CONTROLE
 ========================================================= */
 
-function setHolding(value){
-
-    holding = value;
-
-}
-
-
-/* =========================================================
-   TECLADO
-========================================================= */
-
 window.addEventListener(
     "keydown",
     e => {
@@ -860,7 +868,8 @@ window.addEventListener(
 
             e.preventDefault();
 
-            holding = true;
+            if(running)
+                holding = true;
 
         }
 
@@ -885,10 +894,6 @@ window.addEventListener(
     }
 );
 
-
-/* =========================================================
-   TOUCH / MOUSE
-========================================================= */
 
 canvas.addEventListener(
     "pointerdown",
@@ -916,196 +921,207 @@ window.addEventListener(
 
 
 /* =========================================================
-   CRIAR MAPA
+   CRIAR OBSTÁCULOS INICIAIS
 ========================================================= */
 
-function createLevel(){
+function createInitialObstacles(){
 
     obstacles = [];
 
-    let x = W + 300;
+    let x =
+        W + 300;
 
-    const levelLength =
-        12000;
-
-    while(
-        x < levelLength + W
+    for(
+        let i=0;
+        i<12;
+        i++
     ){
 
-        const type =
-            Math.floor(
-                Math.random() * 6
-            );
+        createObstacleAt(
+            x
+        );
 
-        const gap =
-            Math.max(
-                125,
-                190 - distance * .01
-            );
+        x +=
+            300 +
+            Math.random()*180;
 
-        const center =
-            100 +
-            Math.random() *
-            Math.max(
-                100,
-                H - 200
-            );
+    }
 
-        if(type === 0){
+}
 
-            obstacles.push({
 
-                type:"triangle",
+/* =========================================================
+   CRIAR UM OBSTÁCULO
+========================================================= */
 
-                x:x,
+function createObstacleAt(x){
 
-                y:
-                    center,
+    const margin =
+        90;
 
-                size:55
+    const usableHeight =
+        Math.max(
+            100,
+            H - margin*2
+        );
 
-            });
+    const y =
+        margin +
+        Math.random()*usableHeight;
 
-            x += 280;
 
-        }
+    const typeRoll =
+        Math.random();
 
-        else if(type === 1){
 
-            obstacles.push({
+    /* ESPINHO */
 
-                type:"triangle",
+    if(
+        typeRoll < .32
+    ){
 
-                x:x,
+        obstacles.push({
 
-                y:
-                    center - 100,
+            type:
+                "spike",
 
-                size:65,
+            x:
+                x,
 
-                flip:true
+            y:
+                y,
 
-            });
+            size:
+                28 +
+                obstacleLevel * 2,
 
-            obstacles.push({
+            flip:
+                Math.random() < .5
 
-                type:"triangle",
+        });
 
-                x:x + 110,
+        return;
 
-                y:
-                    center + 100,
+    }
 
-                size:65
 
-            });
+    /* SERRA */
 
-            x += 370;
+    if(
+        typeRoll < .57
+    ){
 
-        }
+        obstacles.push({
 
-        else if(type === 2){
+            type:
+                "saw",
 
-            obstacles.push({
+            x:
+                x,
 
-                type:"wall",
+            y:
+                y,
 
-                x:x,
+            radius:
+                22 +
+                obstacleLevel * 2,
 
-                y:0,
+            rotation:
+                0,
 
-                width:45,
+            rotationSpeed:
+                .15
 
-                height:
-                    center - gap/2
+        });
 
-            });
+        return;
 
-            obstacles.push({
+    }
 
-                type:"wall",
 
-                x:x,
+    /* FORMA GEOMÉTRICA */
 
-                y:
-                    center + gap/2,
+    if(
+        typeRoll < .82
+    ){
 
-                width:45,
+        obstacles.push({
 
-                height:
-                    H -
-                    (center + gap/2)
+            type:
+                "diamond",
 
-            });
+            x:
+                x,
 
-            x += 330;
+            y:
+                y,
 
-        }
+            size:
+                28 +
+                obstacleLevel * 2,
 
-        else if(type === 3){
+            rotation:
+                Math.PI / 4
 
-            obstacles.push({
+        });
 
-                type:"slope",
+        return;
 
-                x:x,
+    }
 
-                y:0,
 
-                width:220,
+    /* BLOCO COM ESPINHOS */
 
-                height:100,
+    obstacles.push({
 
-                direction:1
+        type:
+            "dangerBlock",
 
-            });
+        x:
+            x,
 
-            x += 400;
+        y:
+            y,
 
-        }
+        width:
+            50,
 
-        else if(type === 4){
+        height:
+            50
 
-            obstacles.push({
+    });
 
-                type:"slope",
+}
 
-                x:x,
 
-                y:H,
+/* =========================================================
+   ADICIONAR MAIS OBSTÁCULOS
+========================================================= */
 
-                width:220,
+function addMoreObstacles(){
 
-                height:100,
+    obstacleLevel++;
 
-                direction:-1
+    const amount =
+        3 +
+        obstacleLevel;
 
-            });
+    let x =
+        W + 300;
 
-            x += 400;
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
 
-        }
+        createObstacleAt(
+            x
+        );
 
-        else{
-
-            obstacles.push({
-
-                type:"block",
-
-                x:x,
-
-                y:
-                    center - 35,
-
-                width:70,
-
-                height:70
-
-            });
-
-            x += 300;
-
-        }
+        x +=
+            180 +
+            Math.random()*160;
 
     }
 
@@ -1154,57 +1170,84 @@ function createParticles(
 
 
 /* =========================================================
-   COLISÃO
+   COLISÃO CÍRCULO / CÍRCULO
 ========================================================= */
 
-function pointInTriangle(
-    px,
-    py,
-    ax,
-    ay,
-    bx,
-    by,
-    cx,
-    cy
+function circleCollision(
+    x1,
+    y1,
+    r1,
+    x2,
+    y2,
+    r2
 ){
 
-    const d =
-        (by-cy)*(ax-cx) +
-        (cx-bx)*(ay-cy);
+    const dx =
+        x1-x2;
 
-    const a =
-        ((by-cy)*(px-cx) +
-        (cx-bx)*(py-cy)) / d;
-
-    const b =
-        ((cy-ay)*(px-cx) +
-        (ax-cx)*(py-cy)) / d;
-
-    const c =
-        1-a-b;
+    const dy =
+        y1-y2;
 
     return (
-        a>=0 &&
-        b>=0 &&
-        c>=0
+        dx*dx +
+        dy*dy
+    ) <
+    (
+        r1+r2
+    ) *
+    (
+        r1+r2
     );
 
 }
 
+
+/* =========================================================
+   COLISÃO
+========================================================= */
 
 function collision(){
 
     const p =
         player;
 
-    /* teto */
+
+    /*
+       IMPORTANTE:
+       O chão e o teto NÃO MATAM.
+       Eles apenas impedem a nave
+       de sair da área jogável.
+    */
+
+    const ceiling =
+        38;
+
+    const floor =
+        H - 38;
+
 
     if(
-        p.y - p.size <= 0 ||
-        p.y + p.size >= H
+        p.y - p.size < ceiling
     ){
 
-        return true;
+        p.y =
+            ceiling +
+            p.size;
+
+        p.velocity = 0;
+
+    }
+
+
+    if(
+        p.y + p.size > floor
+    ){
+
+        p.y =
+            floor -
+            p.size;
+
+        p.velocity = 0;
 
     }
 
@@ -1213,104 +1256,32 @@ function collision(){
         const o of obstacles
     ){
 
+        /* =================================================
+           ESPINHO
+        ================================================= */
+
         if(
-            o.type === "triangle"
+            o.type === "spike"
         ){
 
-            const left =
+            const dx =
+                p.x -
                 o.x;
 
-            const right =
-                o.x + o.size;
+            const dy =
+                p.y -
+                o.y;
 
-            const top =
-                o.y - o.size;
-
-            const bottom =
-                o.y + o.size;
-
-            if(
-                p.x + p.size > left &&
-                p.x - p.size < right &&
-                p.y + p.size > top &&
-                p.y - p.size < bottom
-            ){
-
-                let ax,ay,bx,by,cx,cy;
-
-                if(o.flip){
-
-                    ax =
-                        left;
-
-                    ay =
-                        o.y;
-
-                    bx =
-                        right;
-
-                    by =
-                        top;
-
-                    cx =
-                        right;
-
-                    cy =
-                        bottom;
-
-                }else{
-
-                    ax =
-                        left;
-
-                    ay =
-                        top;
-
-                    bx =
-                        left;
-
-                    by =
-                        bottom;
-
-                    cx =
-                        right;
-
-                    cy =
-                        o.y;
-
-                }
-
-                if(
-                    pointInTriangle(
-                        p.x,
-                        p.y,
-                        ax,ay,
-                        bx,by,
-                        cx,cy
-                    )
-                ){
-
-                    return true;
-
-                }
-
-            }
-
-        }
-
-
-        if(
-            o.type === "wall" ||
-            o.type === "block"
-        ){
+            const dist =
+                Math.sqrt(
+                    dx*dx +
+                    dy*dy
+                );
 
             if(
-                p.x + p.size > o.x &&
-                p.x - p.size <
-                    o.x + o.width &&
-                p.y + p.size > o.y &&
-                p.y - p.size <
-                    o.y + o.height
+                dist <
+                p.size +
+                o.size*.55
             ){
 
                 return true;
@@ -1320,65 +1291,78 @@ function collision(){
         }
 
 
+        /* =================================================
+           SERRA
+        ================================================= */
+
         if(
-            o.type === "slope"
+            o.type === "saw"
         ){
 
             if(
-                p.x + p.size >
-                    o.x &&
-                p.x - p.size <
-                    o.x + o.width
+                circleCollision(
+                    p.x,
+                    p.y,
+                    p.size,
+                    o.x,
+                    o.y,
+                    o.radius
+                )
             ){
 
-                const local =
-                    p.x - o.x;
+                return true;
 
-                let line;
+            }
 
-                if(
-                    o.direction === 1
-                ){
+        }
 
-                    line =
-                        o.y +
-                        local *
-                        (o.height/o.width);
 
-                }else{
+        /* =================================================
+           DIAMANTE
+        ================================================= */
 
-                    line =
-                        o.y -
-                        local *
-                        (o.height/o.width);
+        if(
+            o.type === "diamond"
+        ){
 
-                }
+            if(
+                Math.abs(
+                    p.x-o.x
+                ) <
+                o.size &&
+                Math.abs(
+                    p.y-o.y
+                ) <
+                o.size
+            ){
 
-                if(
-                    o.y < H/2
-                ){
+                return true;
 
-                    if(
-                        p.y - p.size <
-                        line
-                    ){
+            }
 
-                        return true;
+        }
 
-                    }
 
-                }else{
+        /* =================================================
+           BLOCO PERIGOSO
+        ================================================= */
 
-                    if(
-                        p.y + p.size >
-                        line
-                    ){
+        if(
+            o.type === "dangerBlock"
+        ){
 
-                        return true;
+            if(
+                p.x+p.size >
+                    o.x &&
+                p.x-p.size <
+                    o.x+o.width &&
+                p.y+p.size >
+                    o.y &&
+                p.y-p.size <
+                    o.y+o.height
+            ){
 
-                    }
-
-                }
+                return true;
 
             }
 
@@ -1427,10 +1411,6 @@ function loop(time){
 
 function update(dt){
 
-    cameraX +=
-        gameSpeed *
-        dt;
-
     distance +=
         gameSpeed *
         .09 *
@@ -1441,12 +1421,60 @@ function update(dt){
             distance
         );
 
+
+    /* =====================================================
+       VELOCIDADE A CADA 150 METROS
+    ===================================================== */
+
+    while(
+        distance >=
+        nextSpeedDistance
+    ){
+
+        speedLevel++;
+
+        /*
+           Aumenta a velocidade
+           progressivamente.
+        */
+
+        gameSpeed =
+            5 +
+            speedLevel * 1.15;
+
+        nextSpeedDistance +=
+            150;
+
+    }
+
+
+    /*
+       Garante a velocidade correta
+       mesmo depois de grandes saltos.
+    */
+
     gameSpeed =
         5 +
-        Math.min(
-            7,
-            distance / 300
-        );
+        Math.floor(
+            distance / 150
+        ) * 1.15;
+
+
+    /* =====================================================
+       MAIS OBSTÁCULOS A CADA 500 SCORE
+    ===================================================== */
+
+    while(
+        score >=
+        nextObstacleScore
+    ){
+
+        addMoreObstacles();
+
+        nextObstacleScore +=
+            500;
+
+    }
 
 
     scoreEl.textContent =
@@ -1463,7 +1491,7 @@ function update(dt){
 
 
     /* =====================================================
-       MOVIMENTO WAVE
+       MOVIMENTO DA NAVE
     ===================================================== */
 
     const direction =
@@ -1471,13 +1499,16 @@ function update(dt){
         ? -1
         : 1;
 
+
     player.velocity =
         direction *
         player.waveSpeed;
 
+
     player.y +=
         player.velocity *
         dt;
+
 
     player.angle =
         direction < 0
@@ -1486,7 +1517,7 @@ function update(dt){
 
 
     /* =====================================================
-       OBSTÁCULOS
+       MOVIMENTO DOS OBSTÁCULOS
     ===================================================== */
 
     for(
@@ -1502,9 +1533,20 @@ function update(dt){
             gameSpeed *
             dt;
 
+
         if(
-            o.x <
-            -300
+            o.type === "saw"
+        ){
+
+            o.rotation +=
+                o.rotationSpeed *
+                dt;
+
+        }
+
+
+        if(
+            o.x < -150
         ){
 
             obstacles.splice(
@@ -1512,7 +1554,60 @@ function update(dt){
                 1
             );
 
-            continue;
+        }
+
+    }
+
+
+    /*
+       Mantém obstáculos chegando
+       continuamente.
+    */
+
+    const lastObstacle =
+        obstacles.length
+        ? obstacles[
+            obstacles.length-1
+          ]
+        : null;
+
+
+    if(
+        !lastObstacle ||
+        lastObstacle.x <
+        W - 250
+    ){
+
+        let amount =
+            1 +
+            Math.floor(
+                obstacleLevel / 2
+            );
+
+
+        for(
+            let i=0;
+            i<amount;
+            i++
+        ){
+
+            const last =
+                obstacles.length
+                ? obstacles[
+                    obstacles.length-1
+                  ]
+                : null;
+
+            const x =
+                last
+                ? last.x +
+                  240 +
+                  Math.random()*180
+                : W + 300;
+
+            createObstacleAt(
+                x
+            );
 
         }
 
@@ -1589,7 +1684,7 @@ function update(dt){
 
 
     /* =====================================================
-       RASTRO DA NAVE
+       RASTRO
     ===================================================== */
 
     if(
@@ -1732,38 +1827,117 @@ function drawBackground(){
 
     ctx.globalAlpha = 1;
 
+}
 
-    /* linhas de velocidade */
 
-    ctx.globalAlpha =
-        .08;
+/* =========================================================
+   CHÃO E TETO
+========================================================= */
+
+function drawBorders(){
+
+    const borderHeight =
+        38;
+
+
+    /*
+       TETO
+    */
+
+    ctx.fillStyle =
+        "#cfcfd3";
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        borderHeight
+    );
+
+
+    /*
+       CHÃO
+    */
+
+    ctx.fillStyle =
+        "#cfcfd3";
+
+    ctx.fillRect(
+        0,
+        H-borderHeight,
+        W,
+        borderHeight
+    );
+
+
+    /*
+       linhas internas
+    */
+
+    ctx.fillStyle =
+        "#77777d";
+
+    ctx.fillRect(
+        0,
+        borderHeight-3,
+        W,
+        3
+    );
+
+    ctx.fillRect(
+        0,
+        H-borderHeight,
+        W,
+        3
+    );
+
+
+    /*
+       pequenos detalhes
+    */
+
+    ctx.strokeStyle =
+        "#ffffff55";
+
+    ctx.lineWidth =
+        2;
 
     for(
-        let i=0;
-        i<12;
-        i++
+        let x=0;
+        x<W;
+        x+=45
     ){
-
-        const y =
-            (i/12)*H;
 
         ctx.beginPath();
 
         ctx.moveTo(
-            0,
-            y
+            x,
+            8
         );
 
         ctx.lineTo(
-            W,
-            y
+            x+20,
+            30
+        );
+
+        ctx.stroke();
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            H-8
+        );
+
+        ctx.lineTo(
+            x+20,
+            H-30
         );
 
         ctx.stroke();
 
     }
-
-    ctx.globalAlpha = 1;
 
 }
 
@@ -1778,22 +1952,18 @@ function drawObstacles(){
         const o of obstacles
     ){
 
-        /* TRIÂNGULOS */
+        /* =================================================
+           ESPINHO
+        ================================================= */
 
         if(
-            o.type === "triangle"
+            o.type === "spike"
         ){
 
             ctx.save();
 
-            ctx.shadowBlur =
-                14;
-
-            ctx.shadowColor =
-                "#ffffff55";
-
             ctx.fillStyle =
-                "#dedee2";
+                "#cfcfd3";
 
             ctx.strokeStyle =
                 "#ffffff";
@@ -1801,17 +1971,27 @@ function drawObstacles(){
             ctx.lineWidth =
                 2;
 
+            ctx.shadowBlur =
+                12;
+
+            ctx.shadowColor =
+                "#ffffff44";
+
+
             ctx.beginPath();
 
-            if(o.flip){
+
+            if(
+                o.flip
+            ){
 
                 ctx.moveTo(
-                    o.x,
-                    o.y
+                    o.x-o.size,
+                    o.y+o.size
                 );
 
                 ctx.lineTo(
-                    o.x+o.size,
+                    o.x,
                     o.y-o.size
                 );
 
@@ -1823,7 +2003,7 @@ function drawObstacles(){
             }else{
 
                 ctx.moveTo(
-                    o.x,
+                    o.x-o.size,
                     o.y-o.size
                 );
 
@@ -1834,7 +2014,7 @@ function drawObstacles(){
 
                 ctx.lineTo(
                     o.x+o.size,
-                    o.y
+                    o.y-o.size
                 );
 
             }
@@ -1850,16 +2030,212 @@ function drawObstacles(){
         }
 
 
-        /* PAREDES */
+        /* =================================================
+           SERRA CIRCULAR
+        ================================================= */
 
         if(
-            o.type === "wall"
+            o.type === "saw"
+        ){
+
+            ctx.save();
+
+            ctx.translate(
+                o.x,
+                o.y
+            );
+
+            ctx.rotate(
+                o.rotation
+            );
+
+
+            ctx.shadowBlur =
+                14;
+
+            ctx.shadowColor =
+                "#ffffff55";
+
+
+            /*
+               dentes da serra
+            */
+
+            ctx.fillStyle =
+                "#d5d5d9";
+
+            ctx.strokeStyle =
+                "#ffffff";
+
+            ctx.lineWidth =
+                2;
+
+            ctx.beginPath();
+
+
+            const teeth =
+                16;
+
+            for(
+                let i=0;
+                i<teeth;
+                i++
+            ){
+
+                const angle =
+                    i *
+                    Math.PI*2 /
+                    teeth;
+
+                const radius =
+                    i%2===0
+                    ? o.radius+7
+                    : o.radius;
+
+                const x =
+                    Math.cos(angle) *
+                    radius;
+
+                const y =
+                    Math.sin(angle) *
+                    radius;
+
+                if(i===0)
+                    ctx.moveTo(x,y);
+                else
+                    ctx.lineTo(x,y);
+
+            }
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.stroke();
+
+
+            /*
+               centro
+            */
+
+            ctx.fillStyle =
+                "#55555b";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                0,
+                o.radius*.38,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fill();
+
+            ctx.stroke();
+
+
+            ctx.fillStyle =
+                "#111116";
+
+            ctx.beginPath();
+
+            ctx.arc(
+                0,
+                0,
+                o.radius*.14,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fill();
+
+
+            ctx.restore();
+
+        }
+
+
+        /* =================================================
+           DIAMANTE
+        ================================================= */
+
+        if(
+            o.type === "diamond"
+        ){
+
+            ctx.save();
+
+            ctx.translate(
+                o.x,
+                o.y
+            );
+
+            ctx.rotate(
+                o.rotation
+            );
+
+            ctx.fillStyle =
+                "#bfc0c5";
+
+            ctx.strokeStyle =
+                "#ffffff";
+
+            ctx.lineWidth =
+                2;
+
+            ctx.shadowBlur =
+                12;
+
+            ctx.shadowColor =
+                "#ffffff44";
+
+            ctx.beginPath();
+
+            ctx.moveTo(
+                o.size,
+                0
+            );
+
+            ctx.lineTo(
+                0,
+                o.size
+            );
+
+            ctx.lineTo(
+                -o.size,
+                0
+            );
+
+            ctx.lineTo(
+                0,
+                -o.size
+            );
+
+            ctx.closePath();
+
+            ctx.fill();
+
+            ctx.stroke();
+
+            ctx.restore();
+
+        }
+
+
+        /* =================================================
+           BLOCO PERIGOSO
+        ================================================= */
+
+        if(
+            o.type === "dangerBlock"
         ){
 
             ctx.save();
 
             ctx.fillStyle =
-                "#cfcfd3";
+                "#bfc0c5";
 
             ctx.strokeStyle =
                 "#ffffff";
@@ -1887,153 +2263,82 @@ function drawObstacles(){
                 o.height
             );
 
-            ctx.restore();
 
-        }
-
-
-        /* BLOCOS */
-
-        if(
-            o.type === "block"
-        ){
-
-            ctx.save();
-
-            ctx.fillStyle =
-                "#bcbcc2";
+            /*
+               X no centro
+            */
 
             ctx.strokeStyle =
-                "#ffffff";
+                "#55555b";
 
             ctx.lineWidth =
-                2;
-
-            ctx.shadowBlur =
-                14;
-
-            ctx.shadowColor =
-                "#ffffff44";
-
-            ctx.fillRect(
-                o.x,
-                o.y,
-                o.width,
-                o.height
-            );
-
-            ctx.strokeRect(
-                o.x,
-                o.y,
-                o.width,
-                o.height
-            );
-
-            /* detalhe interno */
-
-            ctx.strokeStyle =
-                "#77777d";
-
-            ctx.lineWidth =
-                2;
+                3;
 
             ctx.beginPath();
 
             ctx.moveTo(
-                o.x+10,
-                o.y+10
+                o.x+8,
+                o.y+8
             );
 
             ctx.lineTo(
-                o.x+o.width-10,
-                o.y+o.height-10
+                o.x+o.width-8,
+                o.y+o.height-8
             );
 
             ctx.moveTo(
-                o.x+o.width-10,
-                o.y+10
+                o.x+o.width-8,
+                o.y+8
             );
 
             ctx.lineTo(
-                o.x+10,
-                o.y+o.height-10
+                o.x+8,
+                o.y+o.height-8
             );
 
             ctx.stroke();
 
-            ctx.restore();
 
-        }
-
-
-        /* RAMPAS */
-
-        if(
-            o.type === "slope"
-        ){
-
-            ctx.save();
+            /*
+               pequenos espinhos
+            */
 
             ctx.fillStyle =
-                "#cfcfd3";
+                "#eeeeef";
 
-            ctx.strokeStyle =
-                "#ffffff";
-
-            ctx.lineWidth =
-                2;
-
-            ctx.shadowBlur =
-                15;
-
-            ctx.shadowColor =
-                "#ffffff44";
-
-            ctx.beginPath();
-
-            if(
-                o.direction === 1
+            for(
+                let i=0;
+                i<4;
+                i++
             ){
 
-                ctx.moveTo(
-                    o.x,
-                    o.y
-                );
+                const sx =
+                    o.x +
+                    5 +
+                    i*13;
 
-                ctx.lineTo(
-                    o.x+o.width,
-                    o.y+o.height
-                );
-
-                ctx.lineTo(
-                    o.x+o.width,
-                    o.y
-                );
-
-            }else{
+                ctx.beginPath();
 
                 ctx.moveTo(
-                    o.x,
+                    sx,
                     o.y
                 );
 
                 ctx.lineTo(
-                    o.x+o.width,
-                    o.y-o.height
+                    sx+5,
+                    o.y-10
                 );
 
                 ctx.lineTo(
-                    o.x+o.width,
+                    sx+10,
                     o.y
                 );
+
+                ctx.closePath();
+
+                ctx.fill();
 
             }
-
-            ctx.closePath();
-
-            ctx.fill();
-
-            ctx.stroke();
 
             ctx.restore();
 
@@ -2243,6 +2548,8 @@ function drawParticles(){
 function draw(){
 
     drawBackground();
+
+    drawBorders();
 
     drawObstacles();
 
