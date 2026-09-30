@@ -1,182 +1,555 @@
+/* ============================================================
+   LUDIX — THEY ARE COMING
+   STYLE.CSS
+   Compatível com index.html + game.js
+============================================================ */
+
+
+/* ============================================================
+   RESET
+============================================================ */
+
 * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
+
 
 html,
 body {
-    margin: 0;
-    padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #090b09;
-    color: #fff;
 }
 
 
-/* =====================================================
+body {
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #17212b 0%,
+            #0d1217 55%,
+            #07090c 100%
+        );
+
+    color: #ffffff;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    user-select: none;
+}
+
+
+button,
+input {
+    font-family: inherit;
+}
+
+
+button {
+    cursor: pointer;
+}
+
+
+input {
+    outline: none;
+}
+
+
+/* ============================================================
    CANVAS
-===================================================== */
+============================================================ */
 
 #game {
     position: fixed;
+
     inset: 0;
 
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
 
     display: block;
 
-    z-index: 1;
+    background:
+        radial-gradient(
+            circle at center,
+            #18232d 0%,
+            #10171d 55%,
+            #090d11 100%
+        );
 
-    background: #101510;
+    cursor: crosshair;
+
+    z-index: 1;
 }
 
 
-/* =====================================================
-   LOJA
-===================================================== */
+/* ============================================================
+   HUD
+============================================================ */
 
-#shopScreen {
+#hud {
     position: fixed;
+
     inset: 0;
 
     z-index: 100;
+
+    pointer-events: none;
+
+    display: none;
+}
+
+
+.hud-top {
+    position: absolute;
+
+    top: 18px;
+    left: 18px;
+    right: 18px;
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.hud-left {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    flex-wrap: wrap;
+}
+
+
+.hud-card {
+    min-width: 105px;
+
+    padding: 10px 14px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(5, 8, 12, .84);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .10);
+
+    backdrop-filter:
+        blur(8px);
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, .30);
+}
+
+
+.hud-label {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #8994a3;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+
+.hud-value {
+    display: block;
+
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 900;
+}
+
+
+/* ============================================================
+   VIDA
+============================================================ */
+
+.health-card {
+    width: 180px;
+}
+
+
+.health-bar {
+    width: 100%;
+
+    height: 8px;
+
+    margin-top: 6px;
+
+    overflow: hidden;
+
+    border-radius: 99px;
+
+    background: #292f36;
+}
+
+
+#healthBar {
+    width: 100%;
+
+    height: 100%;
+
+    border-radius: 99px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #d92332,
+            #ff5964
+        );
+
+    transition:
+        width .15s ease;
+}
+
+
+#armorBar {
+    width: 100%;
+
+    height: 100%;
+
+    border-radius: 99px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #2477ee,
+            #65b4ff
+        );
+
+    transition:
+        width .15s ease;
+}
+
+
+/* ============================================================
+   ARMA / MUNIÇÃO
+============================================================ */
+
+#weaponHUD {
+    position: absolute;
+
+    right: 20px;
+    bottom: 125px;
+
+    min-width: 215px;
+
+    padding: 15px;
+
+    border-radius: 15px;
+
+    background:
+        rgba(5, 8, 12, .88);
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .10);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0, 0, 0, .35);
+
+    text-align: right;
+}
+
+
+#weapon {
+    color: #ffffff;
+
+    font-size: 18px;
+
+    font-weight: 900;
+}
+
+
+#ammo {
+    margin-top: 5px;
+
+    color: #ffd34d;
+
+    font-size: 28px;
+
+    font-weight: 1000;
+}
+
+
+/* ============================================================
+   BOTÃO RANKING
+============================================================ */
+
+#rankingBtn {
+    position: fixed;
+
+    top: 20px;
+    right: 20px;
+
+    z-index: 500;
+
+    padding: 11px 15px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .10);
+
+    border-radius: 10px;
+
+    background:
+        rgba(5, 8, 12, .84);
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, .25);
+
+    transition:
+        .15s ease;
+}
+
+
+#rankingBtn:hover {
+    background:
+        rgba(40, 126, 255, .30);
+
+    border-color:
+        rgba(100, 170, 255, .30);
+
+    transform:
+        translateY(-2px);
+}
+
+
+/* ============================================================
+   MENU PRINCIPAL / LOJA
+============================================================ */
+
+#shopScreen {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 2000;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
 
     overflow-y: auto;
 
     background:
         radial-gradient(
-            circle at top,
-            #202920,
-            #090b09 70%
+            circle at center,
+            rgba(25, 54, 82, .38),
+            rgba(0, 0, 0, .92)
         );
 
-    pointer-events: auto;
+    backdrop-filter:
+        blur(8px);
 }
 
 
-.shop-container {
-    width: min(1200px, 95%);
-    margin: 20px auto 40px;
+.menu-box {
+    width:
+        min(96vw, 1000px);
 
-    padding: 22px;
+    max-height:
+        94vh;
 
-    border: 1px solid #384238;
+    overflow-y: auto;
 
-    border-radius: 18px;
+    padding: 30px;
+
+    border-radius: 24px;
 
     background:
-        rgba(13,17,13,.97);
+        linear-gradient(
+            145deg,
+            #151b22,
+            #0d1116
+        );
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .10);
 
     box-shadow:
-        0 20px 70px rgba(0,0,0,.6);
+        0 30px 100px
+        rgba(0, 0, 0, .72);
 }
 
 
-.shop-header {
+/* ============================================================
+   CABEÇALHO DO MENU
+============================================================ */
+
+.menu-header {
     display: flex;
 
+    align-items: flex-start;
+
     justify-content: space-between;
-    align-items: center;
 
     gap: 20px;
 
-    margin-bottom: 18px;
+    margin-bottom: 25px;
 }
 
 
-.shop-header h1 {
+.game-title {
     margin: 0;
 
-    font-size: 30px;
+    color: #ffffff;
 
-    letter-spacing: 2px;
+    font-size: 42px;
+
+    font-weight: 1000;
+
+    line-height: 1.05;
+
+    letter-spacing: -1px;
 }
 
 
-.shop-header p {
-    margin: 5px 0 0;
+.game-subtitle {
+    max-width: 650px;
 
-    color: #9ca69c;
+    margin-top: 9px;
 
-    font-size: 13px;
+    color: #8994a3;
 
-    letter-spacing: 2px;
+    font-size: 14px;
+
+    line-height: 1.5;
 }
 
 
-.money {
+.money-box {
+    min-width: 120px;
+
     padding: 12px 18px;
 
     border-radius: 12px;
 
-    background: #182018;
+    background:
+        rgba(255, 211, 77, .08);
 
-    border: 1px solid #445044;
+    border:
+        1px solid
+        rgba(255, 211, 77, .15);
 
-    color: #7bea83;
+    color: #ffd34d;
 
-    font-size: 22px;
+    font-weight: 900;
 
-    font-weight: bold;
+    text-align: center;
 
     white-space: nowrap;
 }
 
 
-/* =====================================================
-   NOME
-===================================================== */
+/* ============================================================
+   ÁREA DO NOME
+============================================================ */
 
-.player-box {
-    padding: 16px;
+.name-area {
+    margin-bottom: 20px;
 
-    margin-bottom: 14px;
+    padding: 18px;
 
-    border-radius: 12px;
+    border-radius: 15px;
 
-    background: #111611;
+    background:
+        rgba(255, 255, 255, .035);
 
-    border: 1px solid #303830;
+    border:
+        1px solid
+        rgba(255, 255, 255, .07);
 }
 
 
-.player-box label {
+.name-label {
     display: block;
 
     margin-bottom: 8px;
 
-    color: #b7c0b7;
+    color: #aab4c0;
 
-    font-size: 13px;
+    font-size: 12px;
 
-    font-weight: bold;
+    font-weight: 900;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
 }
 
 
-.player-box input {
+#playerName {
     width: 100%;
 
-    padding: 13px;
+    padding: 14px 15px;
 
-    border-radius: 8px;
+    border:
+        1px solid
+        rgba(255, 255, 255, .12);
 
-    border: 1px solid #465046;
+    border-radius: 10px;
 
-    outline: none;
+    background: #080b0f;
 
-    background: #080a08;
-
-    color: white;
+    color: #ffffff;
 
     font-size: 16px;
+
+    transition:
+        .15s ease;
 }
 
 
-.player-box input:focus {
-    border-color: #79a86c;
+#playerName::placeholder {
+    color: #596472;
+}
+
+
+#playerName:focus {
+    border-color: #3f91ff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(63, 145, 255, .10);
 }
 
 
@@ -185,156 +558,154 @@ body {
 
     margin-top: 8px;
 
-    color: #ff7777;
+    color: #ff5964;
 
-    font-size: 13px;
+    font-size: 12px;
+
+    font-weight: 800;
 }
 
 
-/* =====================================================
-   RANKING
-===================================================== */
-
-#rankingBtn {
-    width: 100%;
-
-    margin-bottom: 15px;
-
-    padding: 14px;
-
-    border: 1px solid #4b564b;
-
-    border-radius: 10px;
-
-    background: #1c221c;
-
-    color: white;
-
-    cursor: pointer;
-
-    font-size: 16px;
-
-    font-weight: bold;
-}
-
-
-#rankingBtn:hover {
-    background: #293129;
-}
-
-
-/* =====================================================
+/* ============================================================
    CATEGORIAS
-===================================================== */
+============================================================ */
 
-.categories {
+.category-bar {
     display: flex;
+
+    align-items: center;
 
     flex-wrap: wrap;
 
     gap: 8px;
 
-    margin-bottom: 15px;
-
-    max-height: 130px;
-
-    overflow-y: auto;
+    margin-bottom: 18px;
 }
 
 
 .category-btn {
     padding: 10px 13px;
 
-    border: 1px solid #3d463d;
+    border: 0;
 
     border-radius: 9px;
 
-    background: #151a15;
+    background:
+        rgba(255, 255, 255, .06);
 
-    color: #cbd1cb;
+    color: #aab4c0;
 
-    cursor: pointer;
+    font-size: 12px;
 
-    font-weight: bold;
+    font-weight: 900;
 
-    transition: .15s;
+    transition:
+        .15s ease;
 }
 
 
 .category-btn:hover {
-    background: #252d25;
+    background:
+        rgba(40, 126, 255, .20);
+
+    color: #ffffff;
+
+    transform:
+        translateY(-1px);
 }
 
 
-.category-btn.active {
-    background: #536c4e;
-
-    color: white;
-
-    border-color: #7e9e76;
+.category-btn:active {
+    transform:
+        translateY(0);
 }
 
 
-/* =====================================================
-   LOJA / CARDS
-===================================================== */
+/* ============================================================
+   LOJA
+============================================================ */
 
-.shop-grid {
+#shopContent {
     display: grid;
 
     grid-template-columns:
-        repeat(auto-fill, minmax(190px, 1fr));
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
 
-    gap: 13px;
+    gap: 12px;
 
-    max-height: 420px;
+    max-height: 48vh;
 
     overflow-y: auto;
 
-    padding: 5px;
+    padding-right: 4px;
 }
 
 
 .shop-item {
-    min-height: 245px;
+    position: relative;
 
-    padding: 15px;
+    padding: 16px;
 
-    border-radius: 13px;
+    overflow: hidden;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .07);
+
+    border-radius: 15px;
+
+    background:
+        rgba(255, 255, 255, .035);
+
+    transition:
+        .15s ease;
+}
+
+
+.shop-item::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 2px;
 
     background:
         linear-gradient(
-            145deg,
-            #1a201a,
-            #101410
+            90deg,
+            transparent,
+            rgba(80, 150, 255, .55),
+            transparent
         );
 
-    border: 1px solid #394239;
-
-    text-align: center;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: space-between;
-
-    transition: .15s;
+    opacity: .5;
 }
 
 
 .shop-item:hover {
-    transform: translateY(-2px);
+    transform:
+        translateY(-3px);
 
-    border-color: #70856b;
+    background:
+        rgba(80, 140, 255, .06);
+
+    border-color:
+        rgba(111, 179, 255, .25);
 
     box-shadow:
-        0 8px 25px rgba(0,0,0,.35);
+        0 12px 30px
+        rgba(0, 0, 0, .20);
 }
 
 
 .item-visual {
-    height: 90px;
+    min-height: 58px;
 
     display: flex;
 
@@ -342,56 +713,52 @@ body {
 
     justify-content: center;
 
-    font-size: 52px;
-
-    background:
-        radial-gradient(
-            circle,
-            #273027,
-            #111611
-        );
-
-    border-radius: 10px;
-
     margin-bottom: 10px;
-}
 
+    color: #ffffff;
 
-.item-visual.weapon-visual {
-    font-size: 16px;
+    font-size: 34px;
 
-    font-weight: bold;
-
-    letter-spacing: 1px;
+    text-align: center;
 }
 
 
 .shop-item h3 {
-    margin: 4px 0;
+    margin:
+        0 0 7px;
 
-    font-size: 17px;
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 900;
 }
 
 
 .shop-item p {
-    min-height: 40px;
+    min-height: 44px;
 
-    margin: 5px 0;
+    margin:
+        0 0 12px;
 
-    color: #9da59d;
+    color: #8994a3;
 
-    font-size: 12px;
+    font-size: 11px;
+
+    line-height: 1.45;
 }
 
 
 .shop-item strong {
     display: block;
 
-    margin: 8px;
+    margin-bottom: 10px;
 
-    color: #72df78;
+    color: #ffd34d;
 
-    font-size: 18px;
+    font-size: 16px;
+
+    font-weight: 1000;
 }
 
 
@@ -402,91 +769,89 @@ body {
 
     border: 0;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    background: #59704f;
+    background:
+        linear-gradient(
+            135deg,
+            #1f9d62,
+            #15794a
+        );
 
-    color: white;
+    color: #ffffff;
 
-    cursor: pointer;
+    font-size: 12px;
 
-    font-weight: bold;
+    font-weight: 1000;
+
+    transition:
+        .15s ease;
 }
 
 
 .shop-item button:hover {
-    background: #718d65;
+    filter:
+        brightness(1.15);
+
+    transform:
+        translateY(-1px);
 }
 
 
-.shop-item button:disabled {
-    opacity: .45;
-
-    cursor: not-allowed;
+.shop-item button:active {
+    transform:
+        translateY(0);
 }
 
 
-.shop-item.equipped {
-    border-color: #e1bb4a;
-
-    box-shadow:
-        0 0 18px rgba(225,187,74,.15);
-}
-
-
-/* =====================================================
+/* ============================================================
    INVENTÁRIO
-===================================================== */
+============================================================ */
 
-.inventory-menu {
-    margin-top: 18px;
-
-    padding: 15px;
-
-    border-radius: 12px;
-
-    background: #101510;
-
-    border: 1px solid #303830;
-}
-
-
-.inventory-menu h2 {
-    margin: 0;
-
-    font-size: 17px;
-}
-
-
-.inventory-help {
-    margin: 6px 0 12px;
-
-    color: #899189;
-
-    font-size: 12px;
-}
-
-
-.inventory-slots {
+#menuInventory {
     display: flex;
 
-    gap: 9px;
+    align-items: center;
+
+    justify-content: center;
 
     flex-wrap: wrap;
+
+    gap: 8px;
+
+    min-height: 74px;
+}
+
+
+#gameInventory {
+    position: fixed;
+
+    left: 50%;
+    bottom: 18px;
+
+    z-index: 200;
+
+    display: none;
+
+    transform:
+        translateX(-50%);
+
+    pointer-events: auto;
+}
+
+
+#gameInventorySlots {
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
 }
 
 
 .inventory-slot {
-    position: relative;
-
-    width: 68px;
-    height: 68px;
-
-    border-radius: 10px;
-
-    border: 1px solid #465046;
-
-    background: #090c09;
+    width: 74px;
+    height: 74px;
 
     display: flex;
 
@@ -494,88 +859,109 @@ body {
 
     justify-content: center;
 
-    color: #777;
+    overflow: hidden;
 
-    font-size: 26px;
+    border:
+        2px solid
+        rgba(255, 255, 255, .08);
 
-    cursor: pointer;
+    border-radius: 12px;
+
+    background:
+        rgba(5, 8, 12, .88);
+
+    color: #8994a3;
+
+    font-size: 20px;
+
+    font-weight: 900;
+
+    transition:
+        .15s ease;
 }
 
 
 .inventory-slot:hover {
-    border-color: #91a78a;
+    border-color:
+        rgba(111, 179, 255, .35);
+
+    background:
+        rgba(40, 126, 255, .10);
+
+    color: #ffffff;
+
+    transform:
+        translateY(-4px);
 }
 
 
-.inventory-slot.selected {
-    border-color: #e7c24c;
+.inventory-slot span {
+    font-size: 17px;
 
-    box-shadow:
-        0 0 15px rgba(231,194,76,.25);
+    font-weight: 1000;
 }
 
 
-.inventory-slot.empty {
-    opacity: .55;
+/* ============================================================
+   BOTÕES PRINCIPAIS
+============================================================ */
+
+.primary-btn {
+    padding: 14px 20px;
+
+    border: 0;
+
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #287eff,
+            #1657c9
+        );
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 1000;
+
+    transition:
+        .15s ease;
 }
 
 
-.slot-number {
-    position: absolute;
+.primary-btn:hover {
+    filter:
+        brightness(1.12);
 
-    left: 5px;
-    top: 4px;
-
-    font-size: 10px;
-
-    color: #8d958d;
+    transform:
+        translateY(-2px);
 }
 
 
-.slot-name {
-    position: absolute;
-
-    left: 3px;
-    right: 3px;
-    bottom: 3px;
-
-    overflow: hidden;
-
-    white-space: nowrap;
-
-    text-overflow: ellipsis;
-
-    font-size: 8px;
-
-    color: #b7beb7;
+.primary-btn:active {
+    transform:
+        translateY(0);
 }
 
 
-.slot-ammo {
-    position: absolute;
+.menu-actions {
+    display: grid;
 
-    right: 4px;
-    top: 4px;
+    grid-template-columns:
+        1fr 1fr;
 
-    font-size: 9px;
+    gap: 10px;
 
-    color: #78df7d;
+    margin-top: 20px;
 }
 
 
-/* =====================================================
-   INICIAR
-===================================================== */
-
-.shop-actions {
-    margin-top: 18px;
-}
-
-
-.start-button {
+#startWaveBtn {
     width: 100%;
 
-    padding: 17px;
+    padding: 16px;
 
     border: 0;
 
@@ -584,310 +970,101 @@ body {
     background:
         linear-gradient(
             135deg,
-            #648653,
-            #3f5938
+            #287eff,
+            #1657c9
         );
 
-    color: white;
-
-    cursor: pointer;
-
-    font-size: 18px;
-
-    font-weight: bold;
-}
-
-
-.start-button:hover {
-    filter: brightness(1.15);
-}
-
-
-.shop-info {
-    margin-top: 14px;
-
-    padding: 10px;
-
-    color: #899189;
-
-    font-size: 12px;
-
-    text-align: center;
-}
-
-
-.shop-info p {
-    margin: 5px;
-}
-
-
-/* =====================================================
-   HUD
-===================================================== */
-
-#hud {
-    position: fixed;
-
-    left: 0;
-    top: 0;
-    right: 0;
-
-    z-index: 30;
-
-    display: none;
-
-    padding: 12px 15px;
-
-    pointer-events: none;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(5,7,5,.92),
-            rgba(5,7,5,.35),
-            transparent
-        );
-
-    display: none;
-
-    grid-template-columns: 1fr auto 1fr;
-
-    align-items: start;
-}
-
-
-.hud-left {
-    width: 240px;
-}
-
-
-.hud-name {
-    margin-bottom: 5px;
+    color: #ffffff;
 
     font-size: 16px;
 
-    font-weight: bold;
+    font-weight: 1000;
+
+    box-shadow:
+        0 8px 25px
+        rgba(40, 126, 255, .18);
+
+    transition:
+        .15s ease;
 }
 
 
-.hud-stat {
-    margin: 4px 0;
+#startWaveBtn:hover {
+    filter:
+        brightness(1.12);
 
-    font-size: 10px;
-
-    font-weight: bold;
+    transform:
+        translateY(-2px);
 }
 
 
-.bar {
-    width: 210px;
-    height: 8px;
-
-    margin-top: 3px;
-
-    border-radius: 5px;
-
-    overflow: hidden;
-
-    background: #252925;
+#startWaveBtn:active {
+    transform:
+        translateY(0);
 }
 
 
-#healthBar {
-    width: 100%;
-    height: 100%;
-
-    background: #48c75c;
-}
-
-
-#armorBar {
-    width: 0%;
-    height: 100%;
-
-    background: #5297e8;
-}
-
-
-.hud-center {
-    text-align: center;
-
-    font-weight: bold;
-
-    font-size: 18px;
-}
-
-
-.hud-center #enemies {
-    margin-top: 5px;
-
-    font-size: 12px;
-
-    color: #bbb;
-}
-
-
-.hud-right {
-    justify-self: end;
-
-    text-align: right;
-
-    font-weight: bold;
-}
-
-
-#weapon {
-    font-size: 15px;
-}
-
-
-#ammo {
-    margin-top: 3px;
-
-    color: #f1d55b;
-}
-
-
-#moneyHud {
-    margin-top: 3px;
-
-    color: #6ddd78;
-}
-
-
-/* =====================================================
-   PULAR PREPARAÇÃO
-===================================================== */
-
-#skipPreparationBtn {
-    position: fixed;
-
-    right: 20px;
-    bottom: 25px;
-
-    z-index: 40;
-
-    display: none;
-
-    padding: 13px 18px;
-
-    border: 1px solid #899d80;
-
-    border-radius: 10px;
-
-    background: rgba(31,43,29,.95);
-
-    color: white;
-
-    cursor: pointer;
-
-    font-weight: bold;
-}
-
-
-#skipPreparationBtn:hover {
-    background: #536b4d;
-}
-
-
-/* =====================================================
-   INVENTÁRIO NO JOGO
-===================================================== */
-
-#gameInventory {
-    position: fixed;
-
-    left: 50%;
-
-    bottom: 15px;
-
-    transform: translateX(-50%);
-
-    z-index: 35;
-
-    display: none;
-
-    padding: 8px 12px;
-
-    border-radius: 12px;
-
-    background: rgba(7,9,7,.85);
-
-    border: 1px solid #384138;
-
-    pointer-events: auto;
-
-    text-align: center;
-}
-
-
-.inventory-title {
-    margin-bottom: 5px;
-
-    font-size: 10px;
-
-    color: #9ba39b;
-
-    font-weight: bold;
-}
-
-
-#gameInventory .inventory-slots {
-    flex-wrap: nowrap;
-}
-
-
-#gameInventory .inventory-slot {
-    width: 58px;
-    height: 58px;
-}
-
-
-.inventory-key-help {
-    margin-top: 4px;
-
-    color: #777;
-
-    font-size: 9px;
-}
-
-
-/* =====================================================
-   RANKING
-===================================================== */
-
+/* ============================================================
+   RANKING GLOBAL
+============================================================ */
+
+#rankingPanel,
 #rankingScreen {
     position: fixed;
 
     inset: 0;
 
-    z-index: 1000;
+    z-index: 3000;
 
     display: none;
 
-    overflow-y: auto;
+    align-items: center;
 
-    padding: 30px 15px;
-
-    background:
-        rgba(0,0,0,.88);
-}
-
-
-.ranking-container {
-    width: min(800px, 100%);
-
-    margin: 0 auto;
+    justify-content: center;
 
     padding: 20px;
 
-    border-radius: 15px;
+    background:
+        rgba(0, 0, 0, .82);
 
-    background: #111611;
+    backdrop-filter:
+        blur(8px);
+}
 
-    border: 1px solid #465046;
 
-    box-shadow: 0 20px 70px #000;
+.ranking-box {
+    position: relative;
+
+    width:
+        min(95vw, 760px);
+
+    max-height:
+        90vh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    padding: 28px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .10);
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #151b22,
+            #0d1116
+        );
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, .70);
 }
 
 
@@ -896,99 +1073,249 @@ body {
 
     align-items: center;
 
-    justify-content: space-between;
+    gap: 14px;
+
+    margin-bottom: 20px;
 }
 
 
-.ranking-header h1 {
+.ranking-header h2 {
     margin: 0;
 
+    color: #ffffff;
+
     font-size: 25px;
+
+    font-weight: 1000;
 }
 
 
-#closeRankingBtn {
-    width: 40px;
-    height: 40px;
+.ranking-header p {
+    margin-top: 4px;
 
-    border-radius: 8px;
+    color: #8e98a7;
 
-    border: 1px solid #555;
+    font-size: 13px;
+}
 
-    background: #252a25;
 
-    color: white;
+.ranking-title {
+    color: #ffffff;
 
-    cursor: pointer;
+    font-size: 25px;
+
+    font-weight: 1000;
+}
+
+
+.ranking-subtitle {
+    margin-top: 4px;
+
+    color: #8e98a7;
+
+    font-size: 13px;
+}
+
+
+.global-ranking,
+#rankingContent {
+    overflow-y: auto;
+
+    padding-right: 4px;
+}
+
+
+/* ============================================================
+   LINHAS DO RANKING
+============================================================ */
+
+.ranking-row {
+    display: grid;
+
+    grid-template-columns:
+        55px
+        1fr
+        120px;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 8px;
+
+    padding: 11px 12px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, .05);
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, .035);
+
+    transition:
+        .15s ease;
+}
+
+
+.ranking-row:hover {
+    background:
+        rgba(80, 140, 255, .08);
+
+    border-color:
+        rgba(80, 140, 255, .15);
+}
+
+
+.ranking-position {
+    color: #d9e5f5;
+
+    font-size: 22px;
+
+    font-weight: 900;
+
+    text-align: center;
+}
+
+
+.ranking-player {
+    min-width: 0;
+}
+
+
+.ranking-player-name {
+    overflow: hidden;
+
+    color: #ffffff;
+
+    font-size: 16px;
+
+    font-weight: 800;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.ranking-details {
+    margin-top: 4px;
+
+    color: #8995a3;
+
+    font-size: 12px;
+}
+
+
+.ranking-score {
+    color: #6fb3ff;
+
+    font-size: 20px;
+
+    font-weight: 1000;
+
+    text-align: right;
+}
+
+
+/* ============================================================
+   RANKING — LOADING / VAZIO
+============================================================ */
+
+.ranking-loading,
+.ranking-empty {
+    padding: 55px 20px;
+
+    color: #aab4c0;
+
+    text-align: center;
+}
+
+
+.ranking-empty-icon {
+    margin-bottom: 12px;
+
+    font-size: 42px;
+}
+
+
+.ranking-empty strong {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #ffffff;
 
     font-size: 18px;
 }
 
 
-.ranking-table {
-    width: 100%;
+.ranking-empty p {
+    margin: 0;
 
-    margin-top: 15px;
+    color: #858f9c;
 
-    border-collapse: collapse;
+    font-size: 13px;
 }
 
 
-.ranking-table th,
-.ranking-table td {
-    padding: 12px 8px;
+/* ============================================================
+   FECHAR RANKING
+============================================================ */
 
-    border-bottom: 1px solid #303630;
+.close-ranking,
+.ranking-close {
+    position: absolute;
 
-    text-align: left;
+    top: 15px;
+    right: 15px;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, .08);
+
+    color: #ffffff;
+
+    font-size: 18px;
+
+    transition:
+        .15s ease;
 }
 
 
-.ranking-table th {
-    color: #858e85;
+.close-ranking:hover,
+.ranking-close:hover {
+    background:
+        rgba(255, 70, 70, .20);
 
-    font-size: 11px;
+    transform:
+        rotate(5deg);
 }
 
 
-.ranking-player {
-    font-weight: bold;
-}
-
-
-.ranking-money {
-    color: #70d977;
-
-    font-weight: bold;
-}
-
-
-.ranking-loading,
-.ranking-empty,
-.ranking-error {
-    padding: 35px 10px;
-
-    text-align: center;
-
-    color: #999;
-}
-
-
-.ranking-error {
-    color: #ff7777;
-}
-
-
-/* =====================================================
+/* ============================================================
    GAME OVER
-===================================================== */
+============================================================ */
 
 #gameOver {
     position: fixed;
 
     inset: 0;
 
-    z-index: 2000;
+    z-index: 4000;
 
     display: none;
 
@@ -996,173 +1323,458 @@ body {
 
     justify-content: center;
 
+    padding: 20px;
+
     background:
-        rgba(0,0,0,.78);
+        rgba(0, 0, 0, .88);
+
+    backdrop-filter:
+        blur(8px);
 }
 
 
-.game-over-box {
-    width: min(500px, 90%);
+#gameOver.active {
+    display: flex;
+}
 
-    padding: 30px;
 
-    border-radius: 16px;
+.gameover-box {
+    width:
+        min(92vw, 500px);
 
-    border: 1px solid #5d665d;
+    padding: 35px;
 
-    background: #111511;
+    border:
+        1px solid
+        rgba(255, 255, 255, .10);
+
+    border-radius: 20px;
+
+    background:
+        #11151b;
+
+    box-shadow:
+        0 30px 100px
+        rgba(0, 0, 0, .70);
 
     text-align: center;
 }
 
 
-.game-over-box h1 {
-    color: #ff5555;
+.gameover-icon {
+    font-size: 65px;
+
+    line-height: 1;
 }
 
 
-.game-over-box button {
+.gameover-box h1 {
+    margin:
+        12px 0 8px;
+
+    color: #ffffff;
+
+    font-size: 38px;
+
+    font-weight: 1000;
+}
+
+
+.gameover-box p {
+    color: #8994a3;
+
+    line-height: 1.5;
+}
+
+
+.final-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 10px;
+
+    margin:
+        20px 0;
+}
+
+
+.final-stat {
+    padding: 15px;
+
+    border-radius: 12px;
+
+    background:
+        rgba(255, 255, 255, .05);
+}
+
+
+.final-stat span {
+    display: block;
+
+    color: #7f8997;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.final-stat strong {
+    display: block;
+
+    margin-top: 5px;
+
+    color: #ffffff;
+
+    font-size: 22px;
+
+    font-weight: 1000;
+}
+
+
+#restartBtn,
+#gameOverRankingBtn {
     width: 100%;
 
-    padding: 14px;
-
-    border: 0;
-
-    border-radius: 9px;
-
-    background: #526b49;
-
-    color: white;
-
-    cursor: pointer;
-
-    font-weight: bold;
+    margin-top: 8px;
 }
 
 
-/* =====================================================
-   SCROLLBARS
-===================================================== */
+/* ============================================================
+   CONTROLES
+============================================================ */
 
-::-webkit-scrollbar {
-    width: 8px;
-}
+#controlsHelp {
+    position: fixed;
 
+    left: 20px;
+    bottom: 20px;
 
-::-webkit-scrollbar-track {
-    background: #0c0f0c;
-}
+    z-index: 120;
 
+    padding: 10px 13px;
 
-::-webkit-scrollbar-thumb {
-    background: #3d473d;
+    border:
+        1px solid
+        rgba(255, 255, 255, .06);
 
     border-radius: 10px;
+
+    background:
+        rgba(5, 8, 12, .72);
+
+    color: #8f99a7;
+
+    font-size: 11px;
+
+    pointer-events: none;
 }
 
 
-/* =====================================================
-   MOBILE
-===================================================== */
+/* ============================================================
+   BARRAS DE ROLAGEM
+============================================================ */
+
+#shopContent::-webkit-scrollbar,
+#rankingContent::-webkit-scrollbar,
+.global-ranking::-webkit-scrollbar,
+.menu-box::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+#shopContent::-webkit-scrollbar-track,
+#rankingContent::-webkit-scrollbar-track,
+.global-ranking::-webkit-scrollbar-track,
+.menu-box::-webkit-scrollbar-track {
+    background:
+        rgba(255, 255, 255, .03);
+}
+
+
+#shopContent::-webkit-scrollbar-thumb,
+#rankingContent::-webkit-scrollbar-thumb,
+.global-ranking::-webkit-scrollbar-thumb,
+.menu-box::-webkit-scrollbar-thumb {
+    border-radius: 99px;
+
+    background:
+        rgba(255, 255, 255, .14);
+}
+
+
+#shopContent::-webkit-scrollbar-thumb:hover,
+#rankingContent::-webkit-scrollbar-thumb:hover,
+.global-ranking::-webkit-scrollbar-thumb:hover,
+.menu-box::-webkit-scrollbar-thumb:hover {
+    background:
+        rgba(255, 255, 255, .25);
+}
+
+
+/* ============================================================
+   SELEÇÃO
+============================================================ */
+
+::selection {
+    background:
+        rgba(40, 126, 255, .35);
+
+    color: #ffffff;
+}
+
+
+/* ============================================================
+   RESPONSIVO
+============================================================ */
+
+@media (max-width: 900px) {
+
+    .hud-top {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+    }
+
+
+    .hud-card {
+        min-width: auto;
+
+        padding:
+            8px 10px;
+    }
+
+
+    .health-card {
+        width: 145px;
+    }
+
+
+    .game-title {
+        font-size: 34px;
+    }
+
+
+    #weaponHUD {
+        right: 12px;
+        bottom: 105px;
+    }
+
+}
+
 
 @media (max-width: 700px) {
 
-    .shop-container {
-        width: 96%;
-
-        margin: 8px auto;
-
-        padding: 13px;
+    #shopScreen {
+        padding: 10px;
     }
 
 
-    .shop-header {
-        align-items: flex-start;
-
-        flex-direction: column;
-    }
-
-
-    .shop-header h1 {
-        font-size: 22px;
-    }
-
-
-    .money {
+    .menu-box {
         width: 100%;
 
-        text-align: center;
+        padding: 20px;
+
+        border-radius: 18px;
     }
 
 
-    .shop-grid {
+    .menu-header {
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+
+    .game-title {
+        font-size: 30px;
+    }
+
+
+    .game-subtitle {
+        font-size: 12px;
+    }
+
+
+    .money-box {
+        width: 100%;
+    }
+
+
+    #shopContent {
         grid-template-columns:
-            repeat(2, minmax(0,1fr));
+            1fr;
 
-        max-height: 350px;
+        max-height: 42vh;
     }
 
 
-    .shop-item {
-        min-height: 220px;
-    }
-
-
-    .item-visual {
-        height: 70px;
-
-        font-size: 38px;
-    }
-
-
-    #hud {
-        grid-template-columns: 1fr 1fr;
-
-        gap: 5px;
-    }
-
-
-    .hud-center {
-        grid-column: 1 / -1;
-
-        grid-row: 1;
-
-        order: -1;
-    }
-
-
-    .hud-left {
-        width: 150px;
-    }
-
-
-    .bar {
-        width: 140px;
-    }
-
-
-    .hud-right {
-        font-size: 11px;
+    .menu-actions {
+        grid-template-columns:
+            1fr;
     }
 
 
     #gameInventory {
-        bottom: 5px;
+        bottom: 8px;
     }
 
 
-    #gameInventory .inventory-slot {
-        width: 48px;
-        height: 48px;
+    #gameInventorySlots {
+        gap: 4px;
     }
 
 
-    #skipPreparationBtn {
+    .inventory-slot {
+        width: 58px;
+        height: 58px;
+
+        font-size: 16px;
+    }
+
+
+    #weaponHUD {
+        right: 10px;
+        bottom: 90px;
+
+        min-width: 160px;
+
+        padding: 10px;
+    }
+
+
+    #weapon {
+        font-size: 14px;
+    }
+
+
+    #ammo {
+        font-size: 22px;
+    }
+
+
+    #rankingBtn {
+        top: 10px;
         right: 10px;
 
-        bottom: 85px;
+        padding:
+            9px 11px;
 
         font-size: 11px;
+    }
+
+
+    #controlsHelp {
+        display: none;
+    }
+
+
+    .ranking-box {
+        width: 96vw;
+
+        padding: 20px;
+    }
+
+
+    .ranking-row {
+        grid-template-columns:
+            42px
+            1fr
+            90px;
+
+        gap: 8px;
+
+        padding: 9px;
+    }
+
+
+    .ranking-position {
+        font-size: 18px;
+    }
+
+
+    .ranking-player-name {
+        font-size: 14px;
+    }
+
+
+    .ranking-details {
+        font-size: 10px;
+    }
+
+
+    .ranking-score {
+        font-size: 15px;
+    }
+
+
+    .gameover-box {
+        padding: 25px;
+    }
+
+
+    .gameover-box h1 {
+        font-size: 31px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .hud-top {
+        gap: 5px;
+    }
+
+
+    .hud-left {
+        gap: 5px;
+    }
+
+
+    .hud-card {
+        padding:
+            7px 8px;
+    }
+
+
+    .hud-label {
+        font-size: 8px;
+    }
+
+
+    .hud-value {
+        font-size: 14px;
+    }
+
+
+    .health-card {
+        width: 115px;
+    }
+
+
+    .health-bar {
+        height: 6px;
+    }
+
+
+    .final-stats {
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .final-stat {
+        padding: 11px;
+    }
+
+
+    .final-stat strong {
+        font-size: 18px;
     }
 
 }
