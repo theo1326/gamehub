@@ -3,65 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Sandbox Adventure</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div id="game">
+<div id="game">
 
-        <canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas>
 
-        <div id="hud">
+    <!-- HUD -->
+    <div id="hud">
 
-            <div class="status">
-                ❤️ <span id="health">100</span>
+        <div class="hud-left">
+
+            <div class="hud-box">
+                <div class="hud-title">VIDA</div>
+                <div class="bar">
+                    <div id="healthBar"></div>
+                </div>
+                <span id="health">100</span>/100
             </div>
 
-            <div class="coordinates">
-                X: <span id="posX">0</span>
-                Y: <span id="posY">0</span>
-            </div>
-
-        </div>
-
-        <div id="hotbar">
-
-            <div class="slot selected" data-slot="0">
-                ⛏️
-            </div>
-
-            <div class="slot" data-slot="1">
-                🟫
-            </div>
-
-            <div class="slot" data-slot="2">
-                🪨
-            </div>
-
-            <div class="slot" data-slot="3">
-                🪵
-            </div>
-
-            <div class="slot" data-slot="4">
-                💎
+            <div class="hud-box">
+                <div class="hud-title">FOME</div>
+                <div class="bar hunger-bar">
+                    <div id="hungerBar"></div>
+                </div>
+                <span id="hunger">20</span>/20
             </div>
 
         </div>
 
-        <div id="help">
-            <b>WASD</b> / Setas = mover<br>
-            <b>Mouse esquerdo</b> = quebrar<br>
-            <b>Mouse direito</b> = colocar<br>
-            <b>1-5</b> = selecionar item
+        <div class="coordinates hud-box">
+            X: <span id="posX">0</span><br>
+            Y: <span id="posY">0</span>
+            <div id="timeText">Dia</div>
         </div>
 
     </div>
 
-    <script src="game.js"></script>
+    <!-- MENSAGEM -->
+    <div id="message"></div>
+
+    <!-- HOTBAR -->
+    <div id="hotbar">
+
+        <div class="slot selected" data-slot="0">
+            <span class="slot-icon"></span>
+            <span class="slot-number">1</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="1">
+            <span class="slot-icon"></span>
+            <span class="slot-number">2</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="2">
+            <span class="slot-icon"></span>
+            <span class="slot-number">3</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="3">
+            <span class="slot-icon"></span>
+            <span class="slot-number">4</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="4">
+            <span class="slot-icon"></span>
+            <span class="slot-number">5</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="5">
+            <span class="slot-icon"></span>
+            <span class="slot-number">6</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="6">
+            <span class="slot-icon"></span>
+            <span class="slot-number">7</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="7">
+            <span class="slot-icon"></span>
+            <span class="slot-number">8</span>
+            <span class="item-count"></span>
+        </div>
+
+        <div class="slot" data-slot="8">
+            <span class="slot-icon"></span>
+            <span class="slot-number">9</span>
+            <span class="item-count"></span>
+        </div>
+
+    </div>
+
+    <!-- INVENTÁRIO -->
+    <div id="inventoryOverlay">
+
+        <div id="inventoryPanel">
+
+            <div class="inventory-title">
+                Inventário
+                <button id="closeInventory">✕</button>
+            </div>
+
+            <div class="inventory-body">
+
+                <div class="armor-area">
+
+                    <div class="armor-slot">🪖</div>
+                    <div class="armor-slot">👕</div>
+                    <div class="armor-slot">👖</div>
+                    <div class="armor-slot">👢</div>
+
+                </div>
+
+                <div>
+
+                    <div id="inventoryGrid"></div>
+
+                    <div class="inventory-separator"></div>
+
+                    <div id="inventoryHotbar"></div>
+
+                </div>
+
+            </div>
+
+            <div class="inventory-help">
+                Clique em um item para mover • Clique duas vezes em comida para comer
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAUSA -->
+    <div id="pauseMenu">
+
+        <div class="pause-panel">
+
+            <h1>PAUSADO</h1>
+
+            <p>O mundo está congelado.</p>
+
+            <button id="resumeButton">
+                Continuar
+            </button>
+
+            <button id="pauseInventoryButton">
+                Inventário
+            </button>
+
+            <button id="reloadButton">
+                Reiniciar mundo
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CONTROLES -->
+    <div id="help">
+
+        <b>WASD / SETAS</b> — mover<br>
+        <b>ESPAÇO</b> — pular<br>
+        <b>CLIQUE ESQUERDO</b> — atacar / quebrar<br>
+        <b>CLIQUE DIREITO</b> — colocar / comer<br>
+        <b>1-9</b> — selecionar item<br>
+        <b>E</b> — inventário<br>
+        <b>ESC / P</b> — pausar<br>
+        <b>R</b> — comer item selecionado
+
+    </div>
+
+</div>
+
+<script src="game.js"></script>
 
 </body>
 </html>
