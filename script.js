@@ -15,7 +15,7 @@ const games = [
     },
 
     {
-        name: "Batalha Naval",
+        name: "Batalha ",
         category: "Ação",
         icon: "🚢",
         description: "Destrua seus inimigos usando seu navio e se torne o líder da marinha."
