@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -297,7 +296,6 @@ let W = window.innerWidth;
 let H = window.innerHeight;
 
 const groundY = 765;
-
 const gravity = 2100;
 
 
@@ -316,115 +314,89 @@ let resetTimer = 0;
 
 
 /* =====================================================
-   SISTEMA DE MOVIMENTO
+   TECLADO
 ===================================================== */
 
 const keys = Object.create(null);
 
 
 /*
-    Aqui NÃO usamos mais outro sistema
-    de teclado para F e L.
+    CONTROLE DO TECLADO
 
-    O teclado inteiro é controlado
-    por este único evento.
+    F  = arremesso do jogador 1
+    L  = arremesso do jogador 2
 */
 
-document.addEventListener(
-    "keydown",
-    function(e){
+document.addEventListener("keydown", function(e){
 
-        /*
-            Guarda a tecla para movimentação.
-        */
-
-        keys[e.code] = true;
+    keys[e.code] = true;
 
 
-        /*
-            =========================================
-            JOGADOR 1 — F
-            =========================================
-        */
+    /* =========================================
+       JOGADOR 1 — F
+    ========================================= */
+
+    if(e.code === "KeyF"){
+
+        e.preventDefault();
 
         if(
-            e.code === "KeyF" ||
-            e.key === "f" ||
-            e.key === "F"
+            playing &&
+            ball.heldBy === player1
         ){
 
-            e.preventDefault();
-            e.stopPropagation();
-
-            if(
-                playing &&
-                ball.heldBy === player1
-            ){
-
-                shootBall(player1);
-
-            }
+            shootBall(player1);
 
         }
 
+        return;
+    }
 
-        /*
-            =========================================
-            JOGADOR 2 — L
-            =========================================
-        */
+
+    /* =========================================
+       JOGADOR 2 — L
+    ========================================= */
+
+    if(e.code === "KeyL"){
+
+        e.preventDefault();
 
         if(
-            e.code === "KeyL" ||
-            e.key === "l" ||
-            e.key === "L"
+            playing &&
+            ball.heldBy === player2
         ){
 
-            e.preventDefault();
-            e.stopPropagation();
-
-            if(
-                playing &&
-                ball.heldBy === player2
-            ){
-
-                shootBall(player2);
-
-            }
+            shootBall(player2);
 
         }
 
-
-        /*
-            Impede as setas de mexerem
-            na página.
-        */
-
-        if(
-            e.code === "ArrowLeft" ||
-            e.code === "ArrowRight" ||
-            e.code === "ArrowUp" ||
-            e.code === "ArrowDown"
-        ){
-
-            e.preventDefault();
-
-        }
-
-    },
-    true
-);
+        return;
+    }
 
 
-document.addEventListener(
-    "keyup",
-    function(e){
+    /* =========================================
+       SETAS
+    ========================================= */
 
-        keys[e.code] = false;
+    if(
+        e.code === "ArrowLeft" ||
+        e.code === "ArrowRight" ||
+        e.code === "ArrowUp" ||
+        e.code === "ArrowDown"
+    ){
 
-    },
-    true
-);
+        e.preventDefault();
+
+    }
+
+}, true);
+
+
+document.addEventListener("keyup", function(e){
+
+    keys[e.code] = false;
+
+}, true);
 
 
 /* =====================================================
@@ -473,7 +445,6 @@ const basket2 = {
 const player1 = {
 
     x:400,
-
     y:groundY-105,
 
     vx:0,
@@ -488,7 +459,6 @@ const player1 = {
     facing:1,
 
     onGround:true,
-
     crouching:false,
 
     shootCooldown:0
@@ -503,7 +473,6 @@ const player1 = {
 const player2 = {
 
     x:1138,
-
     y:groundY-105,
 
     vx:0,
@@ -518,7 +487,6 @@ const player2 = {
     facing:-1,
 
     onGround:true,
-
     crouching:false,
 
     shootCooldown:0
@@ -533,7 +501,6 @@ const player2 = {
 const ball = {
 
     x:400,
-
     y:groundY-105,
 
     z:0,
@@ -561,12 +528,12 @@ function resetGame(){
     score2 = 0;
 
     matchTime = 120;
-
     resetTimer = 0;
 
 
     player1.x = 400;
-    player1.y = groundY-player1.height;
+    player1.y =
+        groundY-player1.height;
 
     player1.vx = 0;
     player1.vy = 0;
@@ -577,7 +544,8 @@ function resetGame(){
 
 
     player2.x = 1138;
-    player2.y = groundY-player2.height;
+    player2.y =
+        groundY-player2.height;
 
     player2.vx = 0;
     player2.vy = 0;
@@ -690,33 +658,20 @@ function getHandPosition(player){
 
 
 /* =====================================================
-   ARREMESSAR
+   ARREMESSO — F / L
 ===================================================== */
 
 function shootBall(player){
-
-    /*
-        Só permite arremessar durante a partida.
-    */
 
     if(!playing){
         return;
     }
 
 
-    /*
-        A bola precisa estar nas mãos
-        desse jogador.
-    */
-
     if(ball.heldBy !== player){
         return;
     }
 
-
-    /*
-        Pequeno intervalo entre arremessos.
-    */
 
     if(player.shootCooldown > 0){
         return;
@@ -726,42 +681,37 @@ function shootBall(player){
     player.shootCooldown = 0.65;
 
 
-    /*
-        Cesta adversária.
-    */
-
     const target =
         player === player1
         ? basket2
         : basket1;
 
 
-    /*
-        Posição da mão.
-    */
-
     const hand =
         getHandPosition(player);
 
 
     /*
-        SOLTA A BOLA.
+        SOLTA A BOLA
     */
 
     ball.heldBy = null;
 
+
     ball.x = hand.x;
     ball.y = hand.y;
 
+
     /*
-        A bola começa um pouco acima da mão.
+        A bola começa
+        ligeiramente acima da mão.
     */
 
     ball.z = 20;
 
 
     /*
-        Direção horizontal.
+        DISTÂNCIA ATÉ A CESTA
     */
 
     const dx =
@@ -770,7 +720,7 @@ function shootBall(player){
 
 
     /*
-        Velocidade horizontal.
+        MOVIMENTO HORIZONTAL
     */
 
     ball.vx =
@@ -778,19 +728,13 @@ function shootBall(player){
 
 
     /*
-        Força para cima.
+        MOVIMENTO PARA CIMA
     */
 
     ball.vz = 1250;
 
 
-    /*
-        Não altera a posição
-        vertical da quadra.
-    */
-
     ball.vy = 0;
-
 
     ball.scored = false;
 
@@ -798,7 +742,7 @@ function shootBall(player){
 
 
 /* =====================================================
-   MOVIMENTO
+   MOVIMENTO DO JOGADOR
 ===================================================== */
 
 function updatePlayer(
@@ -878,8 +822,7 @@ function updatePlayer(
     ){
 
         player.y =
-            groundY -
-            player.height;
+            groundY-player.height;
 
         player.vy = 0;
 
@@ -931,14 +874,18 @@ function updateBall(dt){
     }
 
 
-    ball.x += ball.vx*dt;
+    ball.x +=
+        ball.vx*dt;
 
-    ball.y += ball.vy*dt;
+    ball.y +=
+        ball.vy*dt;
 
 
-    ball.vz -= gravity*dt;
+    ball.vz -=
+        gravity*dt;
 
-    ball.z += ball.vz*dt;
+    ball.z +=
+        ball.vz*dt;
 
 
     if(ball.z < 0){
@@ -974,7 +921,10 @@ function updateBall(dt){
     }
 
 
-    if(ball.x > WORLD_WIDTH-25){
+    if(
+        ball.x >
+        WORLD_WIDTH-25
+    ){
 
         ball.x =
             WORLD_WIDTH-25;
@@ -1052,7 +1002,6 @@ function checkBasketCollision(){
         return;
     }
 
-
     if(ball.scored){
         return;
     }
@@ -1081,20 +1030,17 @@ function checkBasketCollision(){
 
         const horizontal =
             Math.abs(
-                ball.x -
-                b.x
+                ball.x-b.x
             );
 
 
         const ballScreenY =
-            ball.y -
-            ball.z;
+            ball.y-ball.z;
 
 
         const vertical =
             Math.abs(
-                ballScreenY -
-                b.rimY
+                ballScreenY-b.rimY
             );
 
 
@@ -1126,7 +1072,6 @@ function checkBasketCollision(){
 
             ball.heldBy =
                 nextPlayer;
-
 
             ball.x =
                 nextPlayer.x;
@@ -2334,4 +2279,3 @@ requestAnimationFrame(
 
 </body>
 </html>
-```
