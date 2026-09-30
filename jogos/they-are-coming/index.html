@@ -2,7 +2,6 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -10,1376 +9,30 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Ludix — They Are Coming</title>
-
     <meta
         name="description"
-        content="Ludix — They Are Coming. Sobreviva às ondas de zumbis e entre no ranking global."
+        content="Ludix — They Are Coming. Sobreviva às ondas de inimigos."
     >
 
-    <!-- =====================================================
-         SUPABASE
-    ====================================================== -->
+    <title>Ludix — They Are Coming</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
-    <!-- =====================================================
-         CONFIGURAÇÃO DO SUPABASE
-    ====================================================== -->
-
-    <script>
-
-        /*
-         * COLOQUE AQUI OS DADOS DO SEU PROJETO SUPABASE.
-         *
-         * Project Settings
-         * → API
-         *
-         * Use a:
-         * Project URL
-         * Publishable / anon key
-         *
-         * NÃO USE A SERVICE_ROLE KEY.
-         */
-
-        window.SUPABASE_URL =
-            "COLE_AQUI_SUA_SUPABASE_URL";
-
-        window.SUPABASE_ANON_KEY =
-            "COLE_AQUI_SUA_ANON_KEY";
-
-    </script>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-
-            margin: 0;
-            padding: 0;
-
-            width: 100%;
-            height: 100%;
-
-            overflow: hidden;
-
-            background: #080b0f;
-
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            color: white;
-        }
-
-
-        body {
-            user-select: none;
-        }
-
-
-        button,
-        input {
-            font-family: inherit;
-        }
-
-
-        button {
-            cursor: pointer;
-        }
-
-
-        /* =====================================================
-           CANVAS
-        ====================================================== */
-
-        #game {
-
-            position: fixed;
-
-            inset: 0;
-
-            width: 100%;
-            height: 100%;
-
-            display: block;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    #18212a 0%,
-                    #0d1217 55%,
-                    #080b0f 100%
-                );
-
-            cursor: crosshair;
-
-            z-index: 1;
-        }
-
-
-        /* =====================================================
-           HUD
-        ====================================================== */
-
-        #hud {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 100;
-
-            pointer-events: none;
-
-            display: none;
-        }
-
-
-        .hud-top {
-
-            position: absolute;
-
-            top: 18px;
-            left: 18px;
-            right: 18px;
-
-            display: flex;
-
-            align-items: flex-start;
-
-            justify-content: space-between;
-
-            gap: 15px;
-        }
-
-
-        .hud-left {
-
-            display: flex;
-
-            gap: 10px;
-
-            align-items: center;
-
-            flex-wrap: wrap;
-        }
-
-
-        .hud-card {
-
-            min-width: 105px;
-
-            padding: 10px 14px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(5, 8, 12, .82);
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            backdrop-filter:
-                blur(8px);
-
-            box-shadow:
-                0 8px 25px
-                rgba(0,0,0,.25);
-        }
-
-
-        .hud-label {
-
-            display: block;
-
-            color: #8994a3;
-
-            font-size: 10px;
-
-            text-transform: uppercase;
-
-            margin-bottom: 3px;
-
-            letter-spacing: 1px;
-        }
-
-
-        .hud-value {
-
-            font-size: 18px;
-
-            font-weight: 900;
-        }
-
-
-        /* =====================================================
-           VIDA
-        ====================================================== */
-
-        .health-card {
-            width: 180px;
-        }
-
-
-        .health-bar {
-
-            width: 100%;
-
-            height: 8px;
-
-            margin-top: 6px;
-
-            overflow: hidden;
-
-            border-radius: 99px;
-
-            background: #2a2f36;
-        }
-
-
-        #healthBar {
-
-            width: 100%;
-
-            height: 100%;
-
-            border-radius: 99px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #e52b36,
-                    #ff5964
-                );
-
-            transition:
-                width .15s ease;
-        }
-
-
-        #armorBar {
-
-            width: 100%;
-
-            height: 100%;
-
-            border-radius: 99px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #287eff,
-                    #65b4ff
-                );
-        }
-
-
-        /* =====================================================
-           ARMA
-        ====================================================== */
-
-        #weaponHUD {
-
-            position: absolute;
-
-            right: 20px;
-
-            bottom: 125px;
-
-            min-width: 210px;
-
-            padding: 15px;
-
-            border-radius: 15px;
-
-            background:
-                rgba(5,8,12,.86);
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            text-align: right;
-        }
-
-
-        #weapon {
-
-            font-size: 18px;
-
-            font-weight: 900;
-        }
-
-
-        #ammo {
-
-            margin-top: 5px;
-
-            font-size: 28px;
-
-            font-weight: 900;
-
-            color: #ffd34d;
-        }
-
-
-        /* =====================================================
-           INVENTÁRIO
-        ====================================================== */
-
-        #gameInventory {
-
-            position: fixed;
-
-            left: 50%;
-
-            bottom: 18px;
-
-            transform:
-                translateX(-50%);
-
-            z-index: 200;
-
-            display: none;
-
-            pointer-events: auto;
-        }
-
-
-        #gameInventorySlots {
-
-            display: flex;
-
-            gap: 8px;
-        }
-
-
-        #menuInventory {
-
-            display: flex;
-
-            gap: 8px;
-
-            justify-content: center;
-
-            margin-top: 18px;
-        }
-
-
-        .inventory-slot {
-
-            position: relative;
-
-            width: 74px;
-
-            height: 74px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            justify-content: center;
-
-            border-radius: 12px;
-
-            background:
-                rgba(5,8,12,.88);
-
-            border:
-                2px solid
-                rgba(255,255,255,.08);
-
-            color: #8994a3;
-
-            transition:
-                .15s ease;
-        }
-
-
-        .inventory-slot:hover {
-
-            transform:
-                translateY(-4px);
-
-            border-color:
-                rgba(255,255,255,.25);
-
-            color: white;
-        }
-
-
-        .inventory-slot span {
-
-            font-size: 16px;
-
-            font-weight: 900;
-        }
-
-
-        /* =====================================================
-           BOTÃO RANKING
-        ====================================================== */
-
-        #rankingBtn {
-
-            position: fixed;
-
-            right: 20px;
-
-            top: 20px;
-
-            z-index: 500;
-
-            pointer-events: auto;
-
-            padding: 11px 15px;
-
-            border-radius: 10px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            background:
-                rgba(5,8,12,.82);
-
-            color: white;
-
-            font-weight: 800;
-
-            transition: .15s ease;
-        }
-
-
-        #rankingBtn:hover {
-
-            background:
-                rgba(40,126,255,.30);
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        /* =====================================================
-           MENU PRINCIPAL
-        ====================================================== */
-
-        #shopScreen {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 2000;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(25,54,82,.35),
-                    rgba(0,0,0,.92)
-                );
-
-            backdrop-filter:
-                blur(8px);
-
-            overflow-y: auto;
-        }
-
-
-        .menu-box {
-
-            width:
-                min(96vw, 1000px);
-
-            max-height:
-                94vh;
-
-            overflow-y: auto;
-
-            padding: 30px;
-
-            border-radius: 24px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #151b22,
-                    #0d1116
-                );
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            box-shadow:
-                0 30px 100px
-                rgba(0,0,0,.70);
-        }
-
-
-        .menu-header {
-
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            align-items:
-                flex-start;
-
-            gap: 20px;
-
-            margin-bottom: 25px;
-        }
-
-
-        .game-title {
-
-            margin: 0;
-
-            font-size: 42px;
-
-            font-weight: 1000;
-
-            letter-spacing: -1px;
-
-            background:
-                linear-gradient(
-                    90deg,
-                    #ffffff,
-                    #6fb3ff
-                );
-
-            -webkit-background-clip:
-                text;
-
-            -webkit-text-fill-color:
-                transparent;
-        }
-
-
-        .game-subtitle {
-
-            margin:
-                8px 0 0;
-
-            color:
-                #8994a3;
-
-            line-height: 1.5;
-        }
-
-
-        .money-box {
-
-            padding: 12px 18px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,211,77,.08);
-
-            border:
-                1px solid
-                rgba(255,211,77,.15);
-
-            color:
-                #ffd34d;
-
-            font-weight: 900;
-
-            white-space:
-                nowrap;
-        }
-
-
-        /* =====================================================
-           NOME
-        ====================================================== */
-
-        .name-area {
-
-            padding: 18px;
-
-            border-radius: 15px;
-
-            background:
-                rgba(255,255,255,.035);
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-
-            margin-bottom: 20px;
-        }
-
-
-        .name-label {
-
-            display: block;
-
-            margin-bottom: 8px;
-
-            color:
-                #aab4c0;
-
-            font-size: 12px;
-
-            font-weight: 800;
-
-            text-transform:
-                uppercase;
-
-            letter-spacing: 1px;
-        }
-
-
-        #playerName {
-
-            width: 100%;
-
-            padding: 14px 15px;
-
-            border-radius: 10px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.12);
-
-            background:
-                #080b0f;
-
-            color: white;
-
-            outline: none;
-
-            font-size: 16px;
-        }
-
-
-        #playerName:focus {
-
-            border-color:
-                #3f91ff;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(63,145,255,.10);
-        }
-
-
-        #nameWarning {
-
-            display: none;
-
-            margin-top: 8px;
-
-            color:
-                #ff5964;
-
-            font-size: 12px;
-
-            font-weight: 800;
-        }
-
-
-        /* =====================================================
-           CATEGORIAS
-        ====================================================== */
-
-        .category-bar {
-
-            display: flex;
-
-            gap: 8px;
-
-            flex-wrap: wrap;
-
-            margin-bottom: 18px;
-        }
-
-
-        .category-btn {
-
-            border: 0;
-
-            padding:
-                10px 13px;
-
-            border-radius: 9px;
-
-            background:
-                rgba(255,255,255,.06);
-
-            color:
-                #aab4c0;
-
-            font-weight: 800;
-
-            transition: .15s ease;
-        }
-
-
-        .category-btn:hover {
-
-            background:
-                rgba(40,126,255,.20);
-
-            color: white;
-        }
-
-
-        /* =====================================================
-           LOJA
-        ====================================================== */
-
-        #shopContent {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(220px, 1fr)
-                );
-
-            gap: 12px;
-
-            max-height:
-                48vh;
-
-            overflow-y: auto;
-
-            padding-right: 4px;
-        }
-
-
-        .shop-item {
-
-            padding: 16px;
-
-            border-radius: 15px;
-
-            background:
-                rgba(255,255,255,.035);
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-
-            transition: .15s ease;
-        }
-
-
-        .shop-item:hover {
-
-            transform:
-                translateY(-3px);
-
-            border-color:
-                rgba(111,179,255,.25);
-
-            background:
-                rgba(111,179,255,.06);
-        }
-
-
-        .item-visual {
-
-            min-height: 55px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            margin-bottom: 10px;
-
-            font-size: 34px;
-
-            text-align: center;
-        }
-
-
-        .shop-item h3 {
-
-            margin:
-                0 0 7px;
-
-            font-size: 15px;
-        }
-
-
-        .shop-item p {
-
-            min-height: 44px;
-
-            margin:
-                0 0 12px;
-
-            color:
-                #8994a3;
-
-            font-size: 11px;
-
-            line-height: 1.45;
-        }
-
-
-        .shop-item strong {
-
-            display: block;
-
-            margin-bottom: 10px;
-
-            color:
-                #ffd34d;
-
-            font-size: 16px;
-        }
-
-
-        .shop-item button {
-
-            width: 100%;
-
-            border: 0;
-
-            padding:
-                10px;
-
-            border-radius: 9px;
-
-            background:
-                #1f9d62;
-
-            color: white;
-
-            font-weight: 900;
-
-            transition: .15s ease;
-        }
-
-
-        .shop-item button:hover {
-
-            filter:
-                brightness(1.15);
-        }
-
-
-        /* =====================================================
-           BOTÕES PRINCIPAIS
-        ====================================================== */
-
-        .primary-btn {
-
-            border: 0;
-
-            padding:
-                14px 20px;
-
-            border-radius: 10px;
-
-            background:
-                #287eff;
-
-            color: white;
-
-            font-weight: 900;
-
-            font-size: 15px;
-
-            transition: .15s ease;
-        }
-
-
-        .primary-btn:hover {
-
-            filter:
-                brightness(1.15);
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        .menu-actions {
-
-            display: grid;
-
-            grid-template-columns:
-                1fr 1fr;
-
-            gap: 10px;
-
-            margin-top: 20px;
-        }
-
-
-        #startWaveBtn {
-
-            width: 100%;
-
-            padding:
-                16px;
-
-            border: 0;
-
-            border-radius: 11px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #287eff,
-                    #1657c9
-                );
-
-            color: white;
-
-            font-size: 16px;
-
-            font-weight: 1000;
-
-            transition: .15s ease;
-        }
-
-
-        #startWaveBtn:hover {
-
-            filter:
-                brightness(1.12);
-
-            transform:
-                translateY(-2px);
-        }
-
-
-        /* =====================================================
-           RANKING
-        ====================================================== */
-
-        #rankingScreen {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 3000;
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                rgba(0,0,0,.82);
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-
-        .ranking-box {
-
-            position: relative;
-
-            width:
-                min(95vw, 760px);
-
-            max-height:
-                90vh;
-
-            overflow: hidden;
-
-            display: flex;
-
-            flex-direction: column;
-
-            padding: 28px;
-
-            border-radius: 20px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    #151b22,
-                    #0d1116
-                );
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            box-shadow:
-                0 30px 100px
-                rgba(0,0,0,.70);
-        }
-
-
-        .ranking-header {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 14px;
-
-            margin-bottom: 20px;
-        }
-
-
-        .ranking-header-icon {
-
-            font-size: 42px;
-        }
-
-
-        .ranking-header h2 {
-
-            margin: 0;
-
-            font-size: 25px;
-        }
-
-
-        .ranking-header p {
-
-            margin:
-                4px 0 0;
-
-            color:
-                #8e98a7;
-        }
-
-
-        #rankingContent {
-
-            overflow-y: auto;
-        }
-
-
-        .close-ranking {
-
-            position: absolute;
-
-            right: 15px;
-
-            top: 15px;
-
-            width: 38px;
-
-            height: 38px;
-
-            border: 0;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255,255,255,.08);
-
-            color: white;
-
-            font-size: 18px;
-        }
-
-
-        .close-ranking:hover {
-
-            background:
-                rgba(255,70,70,.20);
-        }
-
-
-        /* =====================================================
-           GAME OVER
-        ====================================================== */
-
-        #gameOver {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 4000;
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 20px;
-
-            background:
-                rgba(0,0,0,.88);
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-
-        .gameover-box {
-
-            width:
-                min(92vw, 500px);
-
-            padding: 35px;
-
-            border-radius: 20px;
-
-            background:
-                #11151b;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            text-align: center;
-
-            box-shadow:
-                0 30px 100px
-                rgba(0,0,0,.70);
-        }
-
-
-        .gameover-icon {
-
-            font-size: 65px;
-        }
-
-
-        .gameover-box h1 {
-
-            margin:
-                10px 0;
-
-            font-size: 38px;
-        }
-
-
-        .final-stats {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 10px;
-
-            margin:
-                20px 0;
-        }
-
-
-        .final-stat {
-
-            padding: 15px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,.05);
-        }
-
-
-        .final-stat span {
-
-            display: block;
-
-            color:
-                #7f8997;
-
-            font-size: 11px;
-
-            text-transform:
-                uppercase;
-        }
-
-
-        .final-stat strong {
-
-            display: block;
-
-            margin-top: 5px;
-
-            font-size: 22px;
-        }
-
-
-        #restartBtn,
-        #gameOverRankingBtn {
-
-            width: 100%;
-
-            margin-top: 8px;
-        }
-
-
-        /* =====================================================
-           CONTROLES
-        ====================================================== */
-
-        #controlsHelp {
-
-            position: fixed;
-
-            left: 20px;
-
-            bottom: 20px;
-
-            z-index: 120;
-
-            padding:
-                10px 13px;
-
-            border-radius: 10px;
-
-            background:
-                rgba(5,8,12,.72);
-
-            color:
-                #8f99a7;
-
-            font-size: 11px;
-
-            pointer-events: none;
-        }
-
-
-        /* =====================================================
-           RESPONSIVO
-        ====================================================== */
-
-        @media(max-width:700px){
-
-            .menu-box {
-
-                padding: 20px;
-            }
-
-
-            .game-title {
-
-                font-size: 30px;
-            }
-
-
-            .menu-header {
-
-                flex-direction:
-                    column;
-            }
-
-
-            .money-box {
-
-                width: 100%;
-
-                text-align: center;
-            }
-
-
-            .menu-actions {
-
-                grid-template-columns:
-                    1fr;
-            }
-
-
-            #shopContent {
-
-                grid-template-columns:
-                    1fr;
-            }
-
-
-            #gameInventory {
-
-                bottom: 8px;
-            }
-
-
-            #gameInventorySlots {
-
-                gap: 4px;
-            }
-
-
-            .inventory-slot {
-
-                width: 58px;
-
-                height: 58px;
-            }
-
-
-            #weaponHUD {
-
-                right: 10px;
-
-                bottom: 90px;
-            }
-
-
-            #controlsHelp {
-
-                display: none;
-            }
-
-
-            #rankingBtn {
-
-                top: 10px;
-
-                right: 10px;
-
-                font-size: 11px;
-            }
-        }
-
-    </style>
-
+    <!-- CSS EXTERNO -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 
 <body>
 
-
-    <!-- =====================================================
-         CANVAS PRINCIPAL
-    ====================================================== -->
+    <!-- ======================================================
+         CANVAS PRINCIPAL DO JOGO
+    ======================================================= -->
 
     <canvas id="game"></canvas>
 
 
-    <!-- =====================================================
-         HUD
-    ====================================================== -->
+    <!-- ======================================================
+         HUD DO JOGO
+    ======================================================= -->
 
     <div id="hud">
 
@@ -1387,61 +40,47 @@
 
             <div class="hud-left">
 
+                <!-- NOME -->
+                <div class="hud-card">
+                    <span class="hud-label">Jogador</span>
+                    <span
+                        id="nameHud"
+                        class="hud-value"
+                    >
+                        -
+                    </span>
+                </div>
+
 
                 <!-- VIDA -->
-
                 <div class="hud-card health-card">
 
                     <span class="hud-label">
                         Vida
                     </span>
 
-                    <span
-                        id="health"
-                        class="hud-value"
-                    >
-                        100
-                    </span>
-
                     <div class="health-bar">
-
-                        <div
-                            id="healthBar"
-                        ></div>
-
+                        <div id="healthBar"></div>
                     </div>
 
                 </div>
 
 
                 <!-- ARMADURA -->
-
-                <div class="hud-card">
+                <div class="hud-card health-card">
 
                     <span class="hud-label">
                         Armadura
                     </span>
 
-                    <span
-                        id="armor"
-                        class="hud-value"
-                    >
-                        0
-                    </span>
-
                     <div class="health-bar">
-
-                        <div
-                            id="armorBar"
-                        ></div>
-
+                        <div id="armorBar"></div>
                     </div>
 
                 </div>
 
 
                 <!-- ONDA -->
-
                 <div class="hud-card">
 
                     <span class="hud-label">
@@ -1452,14 +91,13 @@
                         id="wave"
                         class="hud-value"
                     >
-                        1
+                        0
                     </span>
 
                 </div>
 
 
                 <!-- INIMIGOS -->
-
                 <div class="hud-card">
 
                     <span class="hud-label">
@@ -1476,26 +114,7 @@
                 </div>
 
 
-                <!-- SCORE -->
-
-                <div class="hud-card">
-
-                    <span class="hud-label">
-                        Score
-                    </span>
-
-                    <span
-                        id="score"
-                        class="hud-value"
-                    >
-                        0
-                    </span>
-
-                </div>
-
-
                 <!-- DINHEIRO -->
-
                 <div class="hud-card">
 
                     <span class="hud-label">
@@ -1506,25 +125,7 @@
                         id="moneyHud"
                         class="hud-value"
                     >
-                        $500
-                    </span>
-
-                </div>
-
-
-                <!-- NOME -->
-
-                <div class="hud-card">
-
-                    <span class="hud-label">
-                        Jogador
-                    </span>
-
-                    <span
-                        id="nameHud"
-                        class="hud-value"
-                    >
-                        Jogador
+                        $0
                     </span>
 
                 </div>
@@ -1534,115 +135,98 @@
         </div>
 
 
-        <!-- ARMA -->
+        <!-- ==================================================
+             ARMA / MUNIÇÃO
+        =================================================== -->
 
         <div id="weaponHUD">
 
-            <div id="weapon">
+            <div
+                id="weapon"
+            >
                 Pistola
             </div>
 
-            <div id="ammo">
-                12 / 60
+            <div
+                id="ammo"
+            >
+                0
             </div>
 
+        </div>
+
+
+        <!-- ==================================================
+             AJUDA DE CONTROLES
+        =================================================== -->
+
+        <div id="controlsHelp">
+            WASD / Setas = Mover &nbsp; | &nbsp;
+            Mouse = Mirar &nbsp; | &nbsp;
+            Clique = Atirar &nbsp; | &nbsp;
+            R = Recarregar
         </div>
 
     </div>
 
 
-    <!-- =====================================================
-         RANKING
-    ====================================================== -->
+    <!-- ======================================================
+         BOTÃO RANKING
+    ======================================================= -->
 
     <button
         id="rankingBtn"
         type="button"
     >
-        🏆 Ranking Global
+        🏆 Ranking
     </button>
 
 
-    <!-- =====================================================
-         INVENTÁRIO DURANTE O JOGO
-    ====================================================== -->
-
-    <div id="gameInventory">
-
-        <div id="gameInventorySlots"></div>
-
-    </div>
-
-
-    <!-- =====================================================
-         CONTROLES
-    ====================================================== -->
-
-    <div id="controlsHelp">
-
-        WASD / SETAS = mover
-        &nbsp; • &nbsp;
-
-        MOUSE = mirar
-        &nbsp; • &nbsp;
-
-        CLIQUE = atirar
-        &nbsp; • &nbsp;
-
-        R = recarregar
-        &nbsp; • &nbsp;
-
-        1–5 = usar item
-        &nbsp; • &nbsp;
-
-        E = colocar
-        &nbsp; • &nbsp;
-
-        T = vender arma
-
-    </div>
-
-
-    <!-- =====================================================
+    <!-- ======================================================
          MENU / LOJA PRINCIPAL
-    ====================================================== -->
+    ======================================================= -->
 
-    <div id="shopScreen">
+    <section
+        id="shopScreen"
+    >
 
         <div class="menu-box">
 
+
+            <!-- ==================================================
+                 CABEÇALHO
+            =================================================== -->
 
             <div class="menu-header">
 
                 <div>
 
                     <h1 class="game-title">
-                        🧟 THEY ARE COMING
+                        THEY ARE COMING
                     </h1>
 
                     <p class="game-subtitle">
-                        Sobreviva às ondas de mortos-vivos,
-                        compre equipamentos e tente chegar
-                        ao topo do ranking global.
+                        Sobreviva às ondas de inimigos,
+                        compre equipamentos e tente entrar
+                        no ranking global do Ludix.
                     </p>
 
                 </div>
 
 
-                <div class="money-box">
-
-                    💰
-
-                    <span id="money">
-                        $500
-                    </span>
-
+                <div
+                    id="money"
+                    class="money-box"
+                >
+                    💰 $0
                 </div>
 
             </div>
 
 
-            <!-- NOME -->
+            <!-- ==================================================
+                 NOME DO JOGADOR
+            =================================================== -->
 
             <div class="name-area">
 
@@ -1658,177 +242,179 @@
                     type="text"
                     maxlength="20"
                     autocomplete="off"
-                    placeholder="Digite seu nome"
+                    placeholder="Digite seu nome..."
                 >
 
                 <div id="nameWarning">
-                    ⚠️ Digite seu nome para começar.
+                    Digite um nome para começar.
                 </div>
 
             </div>
 
 
-            <!-- CATEGORIAS -->
+            <!-- ==================================================
+                 CATEGORIAS
+            =================================================== -->
 
             <div class="category-bar">
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="armadura"
+                    data-category="Todos"
                 >
-                    🛡️ Armaduras
+                    Todos
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="armas"
+                    data-category="Pistolas"
                 >
-                    🔫 Armas
+                    Pistolas
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="municao"
+                    data-category="SMG"
                 >
-                    📦 Munição
+                    SMG
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="amigos"
+                    data-category="Fuzis"
                 >
-                    🐕 Amigos
+                    Fuzis
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="kits"
+                    data-category="Shotguns"
                 >
-                    🩹 Kits
+                    Shotguns
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="bombas"
+                    data-category="Snipers"
                 >
-                    💣 Bombas
+                    Snipers
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="armadilhas"
+                    data-category="Pesadas"
                 >
-                    🪤 Armadilhas
+                    Pesadas
                 </button>
-
 
                 <button
                     class="category-btn"
                     type="button"
-                    data-category="barricadas"
+                    data-category="Energia"
                 >
-                    🧱 Barricadas
+                    Energia
                 </button>
 
             </div>
 
 
-            <!-- ITENS DA LOJA -->
+            <!-- ==================================================
+                 LOJA
+            =================================================== -->
 
-            <div id="shopContent"></div>
+            <div id="shopContent">
 
-
-            <!-- INVENTÁRIO DO MENU -->
-
-            <div>
-
-                <h3
-                    style="
-                        margin:
-                            22px 0 8px;
-                        color:#aab4c0;
-                        font-size:12px;
-                        text-transform:uppercase;
-                        letter-spacing:1px;
-                    "
-                >
-                    Inventário
-                </h3>
-
-                <div id="menuInventory"></div>
+                <!--
+                    O game.js preenche esta área
+                    automaticamente.
+                -->
 
             </div>
 
 
-            <!-- AÇÕES -->
+            <!-- ==================================================
+                 INVENTÁRIO DO MENU
+            =================================================== -->
+
+            <div
+                id="menuInventory"
+                aria-label="Inventário"
+            >
+
+                <!--
+                    O game.js cria os slots aqui.
+                -->
+
+            </div>
+
+
+            <!-- ==================================================
+                 BOTÕES
+            =================================================== -->
 
             <div class="menu-actions">
 
                 <button
                     id="startWaveBtn"
-                    type="button"
-                >
-                    🧟 COMEÇAR ONDA
-                </button>
-
-
-                <button
-                    id="menuRankingBtn"
                     class="primary-btn"
                     type="button"
-                    style="
-                        background:#252c35;
-                    "
                 >
-                    🏆 RANKING GLOBAL
+                    ⚔️ COMEÇAR
                 </button>
 
             </div>
 
+        </div>
 
-            <div
-                style="
-                    margin-top:12px;
-                    color:#687382;
-                    font-size:11px;
-                    text-align:center;
-                "
-            >
-                Dica: durante a preparação você pode
-                comprar equipamentos e organizar seu inventário.
-            </div>
+    </section>
+
+
+    <!-- ======================================================
+         INVENTÁRIO DURANTE O JOGO
+    ======================================================= -->
+
+    <div
+        id="gameInventory"
+    >
+
+        <div
+            id="gameInventorySlots"
+        >
+
+            <!--
+                Os slots são criados pelo game.js.
+            -->
 
         </div>
 
     </div>
 
 
-    <!-- =====================================================
+    <!-- ======================================================
          RANKING GLOBAL
-    ====================================================== -->
+         
+         O game.js também pode criar/atualizar
+         este painel dinamicamente.
+    ======================================================= -->
 
-    <div id="rankingScreen">
+    <section
+        id="rankingScreen"
+    >
 
         <div class="ranking-box">
-
 
             <button
                 id="closeRankingBtn"
                 class="close-ranking"
                 type="button"
+                aria-label="Fechar ranking"
             >
                 ✕
             </button>
@@ -1836,34 +422,27 @@
 
             <div class="ranking-header">
 
-                <div class="ranking-header-icon">
-                    🏆
-                </div>
-
                 <div>
 
-                    <h2>
-                        RANKING GLOBAL
-                    </h2>
+                    <div class="ranking-title">
+                        🏆 Ranking Global
+                    </div>
 
-                    <p>
-                        Os maiores sobreviventes
-                    </p>
+                    <div class="ranking-subtitle">
+                        Os maiores sobreviventes de They Are Coming
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <div id="rankingContent">
+            <div
+                id="rankingContent"
+                class="global-ranking"
+            >
 
-                <div
-                    style="
-                        padding:40px;
-                        text-align:center;
-                        color:#8d98a7;
-                    "
-                >
+                <div class="ranking-loading">
                     Carregando ranking...
                 </div>
 
@@ -1871,39 +450,35 @@
 
         </div>
 
-    </div>
+    </section>
 
 
-    <!-- =====================================================
+    <!-- ======================================================
          GAME OVER
-    ====================================================== -->
+    ======================================================= -->
 
-    <div id="gameOver">
+    <section
+        id="gameOver"
+    >
 
         <div class="gameover-box">
 
-
             <div class="gameover-icon">
-                💀
+                ☠️
             </div>
-
 
             <h1>
                 VOCÊ MORREU
             </h1>
 
-
-            <p
-                style="
-                    color:#8994a3;
-                "
-            >
-                Os mortos-vivos venceram esta batalha.
+            <p>
+                As hordas venceram desta vez.
+                Seu resultado foi enviado para o ranking
+                quando possível.
             </p>
 
 
             <div class="final-stats">
-
 
                 <div class="final-stat">
 
@@ -1911,10 +486,7 @@
                         Pontuação
                     </span>
 
-                    <strong
-                        id="finalScore"
-                        class="final-score"
-                    >
+                    <strong id="finalScore">
                         0
                     </strong>
 
@@ -1924,47 +496,14 @@
                 <div class="final-stat">
 
                     <span>
-                        Onda
+                        Resultado
                     </span>
 
-                    <strong
-                        class="final-wave"
-                    >
-                        0
+                    <strong>
+                        💀
                     </strong>
 
                 </div>
-
-
-                <div class="final-stat">
-
-                    <span>
-                        Abates
-                    </span>
-
-                    <strong
-                        class="final-kills"
-                    >
-                        0
-                    </strong>
-
-                </div>
-
-
-                <div class="final-stat">
-
-                    <span>
-                        Dinheiro
-                    </span>
-
-                    <strong
-                        class="final-money"
-                    >
-                        $0
-                    </strong>
-
-                </div>
-
 
             </div>
 
@@ -1974,105 +513,55 @@
                 class="primary-btn"
                 type="button"
             >
-                🔄 JOGAR NOVAMENTE
-            </button>
-
-
-            <button
-                id="gameOverRankingBtn"
-                class="primary-btn"
-                type="button"
-                style="
-                    background:#252c35;
-                "
-            >
-                🏆 VER RANKING
+                🔄 Jogar novamente
             </button>
 
         </div>
 
-    </div>
+    </section>
 
 
-    <!-- =====================================================
-         GAME.JS
-    ====================================================== -->
+    <!-- ======================================================
+         JAVASCRIPT PRINCIPAL
+    ======================================================= -->
 
     <script src="game.js"></script>
 
 
-    <!-- =====================================================
-         PEQUENOS AJUSTES DE COMPATIBILIDADE
-    ====================================================== -->
+    <!-- ======================================================
+         COMPATIBILIDADE DO BOTÃO DE RANKING
+    ======================================================= -->
 
     <script>
 
         /*
-         * Botão de ranking do menu.
-         *
-         * O game.js possui openRanking(),
-         * então apenas chamamos a função quando
-         * ela já estiver disponível.
+         * O game.js atual possui a função openRanking().
+         * Este botão adicional garante que o ranking
+         * também possa ser aberto pelo menu, caso exista.
          */
 
-        const menuRankingBtn =
-            document.getElementById(
-                "menuRankingBtn"
-            );
+        document.addEventListener("DOMContentLoaded", function () {
 
-        if(menuRankingBtn){
+            const menuRankingBtn =
+                document.getElementById("menuRankingBtn");
 
-            menuRankingBtn.addEventListener(
-                "click",
-                function(){
+            if (
+                menuRankingBtn &&
+                typeof window.openRanking === "function"
+            ) {
 
-                    if(
-                        typeof openRanking ===
-                        "function"
-                    ){
-
-                        openRanking();
-
-                    }else{
-
-                        console.warn(
-                            "openRanking ainda não está disponível."
-                        );
-
+                menuRankingBtn.addEventListener(
+                    "click",
+                    function () {
+                        window.openRanking();
                     }
-
-                }
-            );
-
-        }
-
-
-        /*
-         * Mantém o botão de ranking visível
-         * enquanto estiver no menu.
-         */
-
-        window.addEventListener(
-            "load",
-            function(){
-
-                const shop =
-                    document.getElementById(
-                        "shopScreen"
-                    );
-
-                if(shop){
-
-                    shop.style.display =
-                        "flex";
-
-                }
+                );
 
             }
-        );
+
+        });
 
     </script>
-
 
 </body>
 
