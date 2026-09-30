@@ -9,7 +9,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #111;
+    background: #101820;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -26,153 +26,410 @@ body {
 #canvas {
     position: absolute;
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     display: block;
-
     image-rendering: pixelated;
-
     cursor: crosshair;
 }
 
-/* ============================================================
+/* =========================
    HUD
-============================================================ */
+========================= */
 
 #hud {
     position: absolute;
-
     top: 15px;
     left: 15px;
     right: 15px;
 
     display: flex;
-
     justify-content: space-between;
     align-items: flex-start;
 
     pointer-events: none;
-
-    z-index: 10;
 }
 
-.status,
-.coordinates {
-    background:
-        linear-gradient(
-            rgba(10, 15, 25, 0.88),
-            rgba(20, 25, 35, 0.78)
-        );
+.hud-left {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
 
-    border: 2px solid rgba(255, 255, 255, 0.18);
-
-    border-radius: 10px;
-
-    padding: 9px 13px;
-
+.hud-box {
     color: white;
+    background: rgba(0, 0, 0, .68);
+    border: 2px solid rgba(255,255,255,.22);
+    border-radius: 9px;
+    padding: 7px 11px;
 
-    font-size: 16px;
-
-    box-shadow:
-        0 5px 20px rgba(0, 0, 0, 0.35);
-
-    backdrop-filter: blur(5px);
+    text-shadow: 1px 1px 2px black;
 }
 
-.status {
-    color: #ff6f78;
-
+.hud-title {
+    font-size: 10px;
     font-weight: bold;
+    margin-bottom: 4px;
 }
 
-/* ============================================================
+.bar {
+    width: 160px;
+    height: 12px;
+
+    background: #241919;
+    border: 1px solid #111;
+    border-radius: 5px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#healthBar {
+    height: 100%;
+    width: 100%;
+    background: #e53935;
+}
+
+#hungerBar {
+    height: 100%;
+    width: 100%;
+    background: #e7a52e;
+}
+
+.coordinates {
+    min-width: 110px;
+    line-height: 1.5;
+    font-size: 13px;
+}
+
+#timeText {
+    margin-top: 4px;
+    font-size: 11px;
+    opacity: .8;
+}
+
+/* =========================
    HOTBAR
-============================================================ */
+========================= */
 
 #hotbar {
     position: absolute;
-
+    bottom: 18px;
     left: 50%;
-    bottom: 20px;
-
     transform: translateX(-50%);
 
     display: flex;
+    gap: 4px;
 
-    gap: 6px;
+    padding: 6px;
 
-    padding: 7px;
-
-    background:
-        rgba(10, 12, 18, 0.88);
-
-    border:
-        2px solid rgba(255, 255, 255, 0.22);
-
-    border-radius: 12px;
+    background: rgba(35, 35, 35, .92);
+    border: 3px solid #111;
+    border-radius: 7px;
 
     box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.55);
+        0 5px 20px rgba(0,0,0,.6);
+}
+
+.slot {
+    position: relative;
+
+    width: 55px;
+    height: 55px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #777,
+            #404040
+        );
+
+    border: 3px solid #222;
+    border-radius: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.slot.selected {
+    border-color: #f5d34d;
+
+    box-shadow:
+        0 0 0 2px #fff1,
+        0 0 14px #ffd83d;
+}
+
+.slot-icon {
+    font-size: 28px;
+}
+
+.slot-number {
+    position: absolute;
+    top: 2px;
+    left: 4px;
+
+    color: white;
+    font-size: 10px;
+
+    text-shadow: 2px 2px 2px black;
+}
+
+.item-count {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+
+    text-shadow: 2px 2px 2px black;
+}
+
+/* =========================
+   MENSAGEM
+========================= */
+
+#message {
+    position: absolute;
+    left: 50%;
+    top: 80px;
+
+    transform: translateX(-50%);
+
+    color: white;
+    font-weight: bold;
+
+    background: rgba(0,0,0,.65);
+    padding: 8px 15px;
+
+    border-radius: 8px;
+
+    opacity: 0;
+    transition: opacity .2s;
+
+    pointer-events: none;
+}
+
+/* =========================
+   INVENTÁRIO
+========================= */
+
+#inventoryOverlay {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,.62);
 
     z-index: 20;
 }
 
-.slot {
+#inventoryOverlay.open {
+    display: flex;
+}
+
+#inventoryPanel {
+    width: min(700px, 94vw);
+
+    background:
+        linear-gradient(
+            #555,
+            #343434
+        );
+
+    border: 4px solid #171717;
+    border-radius: 8px;
+
+    padding: 12px;
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.8);
+}
+
+.inventory-title {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+
+    margin-bottom: 12px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+#closeInventory {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.inventory-body {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+.armor-area {
+    width: 100px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.armor-slot {
     width: 58px;
     height: 58px;
 
     display: flex;
-
     justify-content: center;
     align-items: center;
 
-    font-size: 31px;
+    font-size: 27px;
 
-    background:
-        linear-gradient(
-            145deg,
-            #50545b,
-            #292d34
-        );
+    background: #3a3a3a;
+    border: 3px solid #191919;
+    border-radius: 5px;
+}
 
-    border:
-        2px solid rgba(255, 255, 255, 0.16);
+#inventoryGrid,
+#inventoryHotbar {
+    display: grid;
+    grid-template-columns: repeat(9, 48px);
+    gap: 4px;
+}
 
-    border-radius: 7px;
+.inventory-slot {
+    position: relative;
+
+    width: 48px;
+    height: 48px;
+
+    background: #444;
+    border: 3px solid #1d1d1d;
+    border-radius: 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.inventory-slot:hover {
+    background: #666;
+    border-color: #ddd;
+}
+
+.inventory-slot .icon {
+    font-size: 24px;
+}
+
+.inventory-slot .count {
+    position: absolute;
+    right: 3px;
+    bottom: 1px;
+
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+
+    text-shadow: 2px 2px 2px black;
+}
+
+.inventory-separator {
+    height: 15px;
+}
+
+.inventory-help {
+    color: #ddd;
+    font-size: 11px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+/* =========================
+   PAUSA
+========================= */
+
+#pauseMenu {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0,0,0,.72);
+
+    z-index: 30;
+}
+
+#pauseMenu.open {
+    display: flex;
+}
+
+.pause-panel {
+    width: min(430px, 90vw);
+
+    padding: 30px;
+
+    text-align: center;
+
+    background: #303030;
+    border: 4px solid #111;
+    border-radius: 12px;
+
+    color: white;
+
+    box-shadow:
+        0 20px 70px rgba(0,0,0,.8);
+}
+
+.pause-panel h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.pause-panel p {
+    margin-bottom: 25px;
+    color: #bbb;
+}
+
+.pause-panel button {
+    width: 100%;
+
+    padding: 13px;
+    margin-top: 9px;
+
+    background: #555;
+    color: white;
+
+    border: 2px solid #222;
+    border-radius: 6px;
 
     cursor: pointer;
 
-    transition:
-        transform 0.12s,
-        border-color 0.12s,
-        box-shadow 0.12s;
+    font-size: 16px;
 }
 
-.slot:hover {
-    transform: translateY(-4px);
+.pause-panel button:hover {
+    background: #707070;
 }
 
-.slot.selected {
-    border-color: #ffd43b;
-
-    box-shadow:
-        0 0 0 2px rgba(255, 212, 59, 0.2),
-        0 0 20px rgba(255, 212, 59, 0.45);
-
-    background:
-        linear-gradient(
-            145deg,
-            #686d75,
-            #373b42
-        );
-}
-
-/* ============================================================
-   AJUDA
-============================================================ */
+/* =========================
+   CONTROLES
+========================= */
 
 #help {
     position: absolute;
@@ -180,60 +437,55 @@ body {
     left: 15px;
     bottom: 15px;
 
-    padding: 11px 14px;
+    padding: 10px 13px;
 
-    background:
-        rgba(5, 8, 14, 0.78);
-
-    border:
-        1px solid rgba(255, 255, 255, 0.18);
-
-    border-radius: 9px;
+    background: rgba(0,0,0,.65);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 8px;
 
     color: white;
 
-    font-size: 13px;
-
-    line-height: 1.65;
+    font-size: 12px;
+    line-height: 1.6;
 
     pointer-events: none;
-
-    z-index: 10;
-
-    box-shadow:
-        0 5px 18px rgba(0, 0, 0, 0.3);
 }
 
-#help b {
-    color: #ffd84a;
-}
+/* =========================
+   MOBILE
+========================= */
 
-/* ============================================================
-   RESPONSIVO
-============================================================ */
-
-@media (max-width: 700px) {
+@media(max-width:800px) {
 
     #help {
         display: none;
     }
 
     .slot {
-        width: 46px;
-        height: 46px;
-
-        font-size: 24px;
+        width: 42px;
+        height: 42px;
     }
 
-    #hotbar {
-        bottom: 10px;
-        gap: 4px;
-        padding: 5px;
+    .slot-icon {
+        font-size: 22px;
     }
 
-    .status,
-    .coordinates {
-        font-size: 13px;
-        padding: 6px 9px;
+    #inventoryGrid,
+    #inventoryHotbar {
+        grid-template-columns: repeat(9, 34px);
+        gap: 3px;
+    }
+
+    .inventory-slot {
+        width: 34px;
+        height: 34px;
+    }
+
+    .inventory-slot .icon {
+        font-size: 18px;
+    }
+
+    .armor-area {
+        display: none;
     }
 }
