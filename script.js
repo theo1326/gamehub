@@ -1,12 +1,10 @@
 const games = [
     {
-        {
-  name:"Space Waves",
-  category:"Ação",
-  icon:"🚀",
-  description:"Controle sua nave, desvie dos obstáculos e alcance a maior distância possível.",
-  link:"jogos/space-waves/"
-},
+        name: "Space Waves",
+        category: "Ação",
+        icon: "🚀",
+        description: "Controle sua nave, desvie dos obstáculos e alcance a maior distância possível.",
+        link: "jogos/space-waves/"
     },
 
     {
