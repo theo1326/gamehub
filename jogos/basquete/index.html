@@ -8,15 +8,13 @@
 <title>Basquete 2 Jogadores</title>
 
 <style>
-
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
 }
 
-html,
-body{
+html,body{
     width:100%;
     height:100%;
     overflow:hidden;
@@ -57,7 +55,6 @@ canvas{
 
 .panel{
     width:min(620px,90vw);
-
     padding:42px;
 
     border-radius:24px;
@@ -85,7 +82,6 @@ canvas{
 
 button{
     border:0;
-
     border-radius:12px;
 
     padding:15px 30px;
@@ -123,6 +119,8 @@ button:hover{
     border:
         1px solid
         rgba(255,255,255,.08);
+
+    line-height:1.7;
 }
 
 .controlBox strong{
@@ -152,7 +150,6 @@ button:hover{
     font-weight:bold;
     margin:20px 0 28px;
 }
-
 </style>
 </head>
 
@@ -178,7 +175,6 @@ button:hover{
             contra outra pessoa no mesmo computador.
         </p>
 
-
         <div class="controls">
 
             <div class="controlBox">
@@ -190,10 +186,9 @@ button:hover{
                 A / D — Mover<br>
                 W — Pular<br>
                 S — Agachar<br>
-                F — Arremessar
+                <b>F — Arremessar</b>
 
             </div>
-
 
             <div class="controlBox">
 
@@ -204,23 +199,19 @@ button:hover{
                 ← / → — Mover<br>
                 ↑ — Pular<br>
                 ↓ — Agachar<br>
-                L — Arremessar
+                <b>L — Arremessar</b>
 
             </div>
 
         </div>
 
-
         <p>
-
             🏆 Primeiro jogador a fazer
             5 cestas vence.<br>
 
             Se o tempo acabar,
             vence quem tiver mais cestas.
-
         </p>
-
 
         <button id="startBtn">
             COMEÇAR PARTIDA
@@ -232,7 +223,7 @@ button:hover{
 
 
 <!-- =====================================================
-     FIM DE JOGO
+     GAME OVER
 ===================================================== -->
 
 <div id="gameOver" class="hidden">
@@ -299,11 +290,11 @@ const finalScore =
    MUNDO
 ===================================================== */
 
-let W = 1600;
-let H = 900;
-
 const WORLD_WIDTH = 1600;
 const WORLD_HEIGHT = 900;
+
+let W = window.innerWidth;
+let H = window.innerHeight;
 
 const groundY = 765;
 
@@ -317,7 +308,6 @@ const gravity = 2100;
 let playing = false;
 
 let score1 = 0;
-
 let score2 = 0;
 
 let matchTime = 120;
@@ -326,38 +316,45 @@ let resetTimer = 0;
 
 
 /* =====================================================
-   TECLADO
+   SISTEMA DE MOVIMENTO
 ===================================================== */
 
-const keys = {};
+const keys = Object.create(null);
 
 
 /*
-    IMPORTANTE:
+    Aqui NÃO usamos mais outro sistema
+    de teclado para F e L.
 
-    Agora usamos e.code.
-
-    F  = KeyF
-    L  = KeyL
-
-    O terceiro argumento "true"
-    coloca o evento em modo capture.
+    O teclado inteiro é controlado
+    por este único evento.
 */
 
 document.addEventListener(
     "keydown",
     function(e){
 
+        /*
+            Guarda a tecla para movimentação.
+        */
+
         keys[e.code] = true;
 
 
-        /* =========================================
-           JOGADOR 1 — F
-        ========================================= */
+        /*
+            =========================================
+            JOGADOR 1 — F
+            =========================================
+        */
 
-        if(e.code === "KeyF"){
+        if(
+            e.code === "KeyF" ||
+            e.key === "f" ||
+            e.key === "F"
+        ){
 
             e.preventDefault();
+            e.stopPropagation();
 
             if(
                 playing &&
@@ -371,13 +368,20 @@ document.addEventListener(
         }
 
 
-        /* =========================================
-           JOGADOR 2 — L
-        ========================================= */
+        /*
+            =========================================
+            JOGADOR 2 — L
+            =========================================
+        */
 
-        if(e.code === "KeyL"){
+        if(
+            e.code === "KeyL" ||
+            e.key === "l" ||
+            e.key === "L"
+        ){
 
             e.preventDefault();
+            e.stopPropagation();
 
             if(
                 playing &&
@@ -391,16 +395,16 @@ document.addEventListener(
         }
 
 
-        /* =========================================
-           SETAS
-        ========================================= */
+        /*
+            Impede as setas de mexerem
+            na página.
+        */
 
         if(
             e.code === "ArrowLeft" ||
             e.code === "ArrowRight" ||
             e.code === "ArrowUp" ||
-            e.code === "ArrowDown" ||
-            e.code === "Space"
+            e.code === "ArrowDown"
         ){
 
             e.preventDefault();
@@ -424,20 +428,16 @@ document.addEventListener(
 
 
 /* =====================================================
-   TAMANHO DA TELA
+   TAMANHO
 ===================================================== */
 
 function resize(){
 
-    canvas.width =
-        window.innerWidth;
+    W = window.innerWidth;
+    H = window.innerHeight;
 
-    canvas.height =
-        window.innerHeight;
-
-    W = canvas.width;
-
-    H = canvas.height;
+    canvas.width = W;
+    canvas.height = H;
 
 }
 
@@ -454,24 +454,15 @@ resize();
 ===================================================== */
 
 const basket1 = {
-
     x:125,
-
     rimY:405,
-
     rimWidth:86
-
 };
 
-
 const basket2 = {
-
     x:1475,
-
     rimY:405,
-
     rimWidth:86
-
 };
 
 
@@ -486,15 +477,12 @@ const player1 = {
     y:groundY-105,
 
     vx:0,
-
     vy:0,
 
     width:62,
-
     height:105,
 
     color:"#287cff",
-
     dark:"#104aaf",
 
     facing:1,
@@ -519,15 +507,12 @@ const player2 = {
     y:groundY-105,
 
     vx:0,
-
     vy:0,
 
     width:62,
-
     height:105,
 
     color:"#e63c3c",
-
     dark:"#9d1717",
 
     facing:-1,
@@ -554,9 +539,7 @@ const ball = {
     z:0,
 
     vx:0,
-
     vy:0,
-
     vz:0,
 
     radius:19,
@@ -575,7 +558,6 @@ const ball = {
 function resetGame(){
 
     score1 = 0;
-
     score2 = 0;
 
     matchTime = 120;
@@ -584,55 +566,37 @@ function resetGame(){
 
 
     player1.x = 400;
-
-    player1.y =
-        groundY -
-        player1.height;
+    player1.y = groundY-player1.height;
 
     player1.vx = 0;
-
     player1.vy = 0;
 
     player1.onGround = true;
-
     player1.crouching = false;
-
     player1.shootCooldown = 0;
 
 
     player2.x = 1138;
-
-    player2.y =
-        groundY -
-        player2.height;
+    player2.y = groundY-player2.height;
 
     player2.vx = 0;
-
     player2.vy = 0;
 
     player2.onGround = true;
-
     player2.crouching = false;
-
     player2.shootCooldown = 0;
 
 
-    ball.x =
-        player1.x;
-
-    ball.y =
-        player1.y;
+    ball.x = player1.x;
+    ball.y = player1.y;
 
     ball.z = 0;
 
     ball.vx = 0;
-
     ball.vy = 0;
-
     ball.vz = 0;
 
-    ball.heldBy =
-        player1;
+    ball.heldBy = player1;
 
     ball.scored = false;
 
@@ -647,13 +611,9 @@ function startGame(){
 
     resetGame();
 
-    menu.classList.add(
-        "hidden"
-    );
+    menu.classList.add("hidden");
 
-    gameOver.classList.add(
-        "hidden"
-    );
+    gameOver.classList.add("hidden");
 
     playing = true;
 
@@ -661,15 +621,13 @@ function startGame(){
 
 
 /* =====================================================
-   FINAL DE JOGO
+   FINAL
 ===================================================== */
 
 function finishGame(){
 
     if(!playing){
-
         return;
-
     }
 
     playing = false;
@@ -681,14 +639,12 @@ function finishGame(){
             "🔵 JOGADOR 1 VENCEU!";
 
     }
-
     else if(score2 > score1){
 
         winnerText.textContent =
             "🔴 JOGADOR 2 VENCEU!";
 
     }
-
     else{
 
         winnerText.textContent =
@@ -713,7 +669,7 @@ function finishGame(){
 
 
 /* =====================================================
-   MÃO DO JOGADOR
+   POSIÇÃO DA MÃO
 ===================================================== */
 
 function getHandPosition(player){
@@ -734,53 +690,46 @@ function getHandPosition(player){
 
 
 /* =====================================================
-   ARREMESSO
+   ARREMESSAR
 ===================================================== */
 
 function shootBall(player){
 
     /*
-        A função só funciona durante
+        SEGURANÇA:
+        só pode arremessar durante
         a partida.
     */
 
     if(!playing){
-
         return;
-
     }
 
 
     /*
-        O jogador precisa estar
-        realmente segurando a bola.
+        Se a bola não estiver
+        com esse jogador, não arremessa.
     */
 
     if(ball.heldBy !== player){
-
         return;
-
     }
 
 
     /*
-        Pequeno intervalo entre
-        dois arremessos.
+        Pequeno cooldown.
     */
 
     if(player.shootCooldown > 0){
-
         return;
-
     }
 
 
-    player.shootCooldown =
-        0.65;
+    player.shootCooldown = 0.65;
 
 
     /*
-        Escolhe a cesta adversária.
+        Cesta adversária.
     */
 
     const target =
@@ -790,7 +739,7 @@ function shootBall(player){
 
 
     /*
-        Posição da mão.
+        Mão.
     */
 
     const hand =
@@ -798,36 +747,31 @@ function shootBall(player){
 
 
     /*
-        Solta a bola.
+        SOLTA A BOLA.
     */
 
     ball.heldBy = null;
 
     ball.x = hand.x;
-
     ball.y = hand.y;
 
     ball.z = 45;
 
 
     /*
-        Distância horizontal.
+        Distância.
     */
 
     const dx =
         target.x -
         ball.x;
 
-
     const distance =
         Math.abs(dx);
 
 
     /*
-        Tempo de voo.
-
-        Isso permite arremessar
-        de diferentes posições.
+        Tempo do arremesso.
     */
 
     const flightTime =
@@ -842,7 +786,7 @@ function shootBall(player){
 
 
     /*
-        Velocidade horizontal.
+        Movimento horizontal.
     */
 
     ball.vx =
@@ -851,8 +795,7 @@ function shootBall(player){
 
 
     /*
-        Altura necessária
-        para chegar ao aro.
+        Altura do aro.
     */
 
     const targetZ =
@@ -861,7 +804,7 @@ function shootBall(player){
 
 
     /*
-        Velocidade vertical.
+        Movimento vertical.
     */
 
     ball.vz =
@@ -883,7 +826,7 @@ function shootBall(player){
 
 
 /* =====================================================
-   ATUALIZAR JOGADOR
+   MOVIMENTO
 ===================================================== */
 
 function updatePlayer(
@@ -894,10 +837,6 @@ function updatePlayer(
 
     let moving = false;
 
-
-    /* =========================================
-       ESQUERDA
-    ========================================= */
 
     if(keys[controls.left]){
 
@@ -910,10 +849,6 @@ function updatePlayer(
     }
 
 
-    /* =========================================
-       DIREITA
-    ========================================= */
-
     if(keys[controls.right]){
 
         player.vx = 430;
@@ -925,10 +860,6 @@ function updatePlayer(
     }
 
 
-    /* =========================================
-       PARAR
-    ========================================= */
-
     if(!moving){
 
         player.vx *=
@@ -939,10 +870,6 @@ function updatePlayer(
 
     }
 
-
-    /* =========================================
-       PULO
-    ========================================= */
 
     if(
         keys[controls.jump] &&
@@ -956,36 +883,21 @@ function updatePlayer(
     }
 
 
-    /* =========================================
-       AGACHAR
-    ========================================= */
-
     player.crouching =
-        keys[controls.down];
+        !!keys[controls.down];
 
-
-    /* =========================================
-       GRAVIDADE
-    ========================================= */
 
     player.vy +=
-        gravity *
-        dt;
+        gravity*dt;
 
 
     player.x +=
-        player.vx *
-        dt;
+        player.vx*dt;
 
 
     player.y +=
-        player.vy *
-        dt;
+        player.vy*dt;
 
-
-    /* =========================================
-       CHÃO
-    ========================================= */
 
     if(
         player.y +
@@ -1004,10 +916,6 @@ function updatePlayer(
     }
 
 
-    /* =========================================
-       LIMITES
-    ========================================= */
-
     player.x =
         Math.max(
             55,
@@ -1020,13 +928,7 @@ function updatePlayer(
         );
 
 
-    /* =========================================
-       COOLDOWN
-    ========================================= */
-
-    if(
-        player.shootCooldown > 0
-    ){
+    if(player.shootCooldown > 0){
 
         player.shootCooldown -= dt;
 
@@ -1036,15 +938,10 @@ function updatePlayer(
 
 
 /* =====================================================
-   ATUALIZAR BOLA
+   BOLA
 ===================================================== */
 
 function updateBall(dt){
-
-    /*
-        Se estiver na mão,
-        acompanha o jogador.
-    */
 
     if(ball.heldBy){
 
@@ -1053,12 +950,8 @@ function updateBall(dt){
                 ball.heldBy
             );
 
-        ball.x =
-            hand.x;
-
-        ball.y =
-            hand.y;
-
+        ball.x = hand.x;
+        ball.y = hand.y;
         ball.z = 0;
 
         return;
@@ -1066,36 +959,15 @@ function updateBall(dt){
     }
 
 
-    /* =========================================
-       MOVIMENTO
-    ========================================= */
+    ball.x += ball.vx*dt;
 
-    ball.x +=
-        ball.vx *
-        dt;
-
-    ball.y +=
-        ball.vy *
-        dt;
+    ball.y += ball.vy*dt;
 
 
-    /* =========================================
-       GRAVIDADE
-    ========================================= */
+    ball.vz -= gravity*dt;
 
-    ball.vz -=
-        gravity *
-        dt;
+    ball.z += ball.vz*dt;
 
-
-    ball.z +=
-        ball.vz *
-        dt;
-
-
-    /* =========================================
-       CHÃO / QUIQUE
-    ========================================= */
 
     if(ball.z < 0){
 
@@ -1109,7 +981,6 @@ function updateBall(dt){
             ball.vz *= -0.48;
 
         }
-
         else{
 
             ball.vz = 0;
@@ -1122,10 +993,6 @@ function updateBall(dt){
     }
 
 
-    /* =========================================
-       PAREDES
-    ========================================= */
-
     if(ball.x < 25){
 
         ball.x = 25;
@@ -1135,10 +1002,7 @@ function updateBall(dt){
     }
 
 
-    if(
-        ball.x >
-        WORLD_WIDTH-25
-    ){
+    if(ball.x > WORLD_WIDTH-25){
 
         ball.x =
             WORLD_WIDTH-25;
@@ -1157,37 +1021,33 @@ function updateBall(dt){
 function tryPickupBall(player){
 
     if(ball.heldBy){
-
         return;
-
     }
 
 
     if(ball.z > 95){
-
         return;
-
     }
 
 
-    const centerX =
+    const playerCenterX =
         player.x +
         player.width/2;
 
 
-    const centerY =
+    const playerCenterY =
         player.y +
         player.height/2;
 
 
     const dx =
         ball.x -
-        centerX;
+        playerCenterX;
 
 
     const dy =
         ball.y -
-        centerY;
+        playerCenterY;
 
 
     const distance =
@@ -1199,13 +1059,10 @@ function tryPickupBall(player){
 
     if(distance < 125){
 
-        ball.heldBy =
-            player;
+        ball.heldBy = player;
 
         ball.vx = 0;
-
         ball.vy = 0;
-
         ball.vz = 0;
 
     }
@@ -1214,22 +1071,18 @@ function tryPickupBall(player){
 
 
 /* =====================================================
-   DETECTAR CESTA
+   CESTA
 ===================================================== */
 
 function checkBasketCollision(){
 
     if(ball.heldBy){
-
         return;
-
     }
 
 
     if(ball.scored){
-
         return;
-
     }
 
 
@@ -1248,9 +1101,7 @@ function checkBasketCollision(){
     ];
 
 
-    for(
-        const item of baskets
-    ){
+    for(const item of baskets){
 
         const b =
             item.basket;
@@ -1275,11 +1126,6 @@ function checkBasketCollision(){
             );
 
 
-        /*
-            A bola precisa estar
-            descendo para marcar.
-        */
-
         if(
             horizontal <
             b.rimWidth/2
@@ -1292,26 +1138,13 @@ function checkBasketCollision(){
             ball.scored = true;
 
 
-            if(
-                item.player === 1
-            ){
-
+            if(item.player === 1){
                 score1++;
-
             }
-
             else{
-
                 score2++;
-
             }
 
-
-            /*
-                Entrega a bola
-                para quem sofreu
-                a cesta.
-            */
 
             const nextPlayer =
                 item.player === 1
@@ -1332,15 +1165,9 @@ function checkBasketCollision(){
             ball.z = 0;
 
             ball.vx = 0;
-
             ball.vy = 0;
-
             ball.vz = 0;
 
-
-            /*
-                Primeiro a 5.
-            */
 
             if(
                 score1 >= 5 ||
@@ -1351,9 +1178,7 @@ function checkBasketCollision(){
                     function(){
 
                         if(playing){
-
                             finishGame();
-
                         }
 
                     },
@@ -1383,9 +1208,7 @@ function checkBasketCollision(){
 function updateTimer(dt){
 
     if(!playing){
-
         return;
-
     }
 
 
@@ -1404,15 +1227,13 @@ function updateTimer(dt){
 
 
 /* =====================================================
-   ATUALIZAÇÃO GERAL
+   UPDATE
 ===================================================== */
 
 function update(dt){
 
     if(!playing){
-
         return;
-
     }
 
 
@@ -1420,19 +1241,12 @@ function update(dt){
 
         resetTimer -= dt;
 
-
         if(resetTimer < 0){
-
             resetTimer = 0;
-
         }
 
     }
 
-
-    /* =========================================
-       JOGADOR 1
-    ========================================= */
 
     updatePlayer(
         player1,
@@ -1446,10 +1260,6 @@ function update(dt){
     );
 
 
-    /* =========================================
-       JOGADOR 2
-    ========================================= */
-
     updatePlayer(
         player2,
         dt,
@@ -1462,18 +1272,6 @@ function update(dt){
     );
 
 
-    /*
-        F e L NÃO são tratados aqui.
-
-        Eles já chamam shootBall()
-        diretamente no evento keydown.
-    */
-
-
-    /* =========================================
-       PEGAR BOLA
-    ========================================= */
-
     if(resetTimer <= 0){
 
         tryPickupBall(player1);
@@ -1483,23 +1281,9 @@ function update(dt){
     }
 
 
-    /* =========================================
-       BOLA
-    ========================================= */
-
     updateBall(dt);
 
-
-    /* =========================================
-       CESTA
-    ========================================= */
-
     checkBasketCollision();
-
-
-    /* =========================================
-       TEMPO
-    ========================================= */
 
     updateTimer(dt);
 
@@ -1513,27 +1297,19 @@ function update(dt){
 function drawBackground(){
 
     const scaleX =
-        W /
-        WORLD_WIDTH;
-
+        W/WORLD_WIDTH;
 
     const scaleY =
-        H /
-        WORLD_HEIGHT;
+        H/WORLD_HEIGHT;
 
 
     ctx.save();
-
 
     ctx.scale(
         scaleX,
         scaleY
     );
 
-
-    /* =========================================
-       CÉU
-    ========================================= */
 
     const sky =
         ctx.createLinearGradient(
@@ -1556,8 +1332,7 @@ function drawBackground(){
     );
 
 
-    ctx.fillStyle =
-        sky;
+    ctx.fillStyle = sky;
 
 
     ctx.fillRect(
@@ -1568,9 +1343,7 @@ function drawBackground(){
     );
 
 
-    /* =========================================
-       ARQUIBANCADAS
-    ========================================= */
+    /* ARQUIBANCADAS */
 
     ctx.fillStyle =
         "#202832";
@@ -1611,9 +1384,7 @@ function drawBackground(){
     }
 
 
-    /* =========================================
-       PÚBLICO
-    ========================================= */
+    /* PÚBLICO */
 
     for(
         let row=0;
@@ -1659,7 +1430,7 @@ function drawBackground(){
                 x-9,
                 y+8,
                 18,
-                17
+                25
             );
 
         }
@@ -1667,9 +1438,7 @@ function drawBackground(){
     }
 
 
-    /* =========================================
-       PISO
-    ========================================= */
+    /* PISO */
 
     const floor =
         ctx.createLinearGradient(
@@ -1692,8 +1461,7 @@ function drawBackground(){
     );
 
 
-    ctx.fillStyle =
-        floor;
+    ctx.fillStyle = floor;
 
 
     ctx.fillRect(
@@ -1704,13 +1472,10 @@ function drawBackground(){
     );
 
 
-    /* =========================================
-       LINHAS DA QUADRA
-    ========================================= */
+    /* LINHAS */
 
     ctx.strokeStyle =
         "rgba(255,255,255,.75)";
-
 
     ctx.lineWidth = 6;
 
@@ -1760,23 +1525,16 @@ function drawBackground(){
    CESTA
 ===================================================== */
 
-function drawBasket(
-    basket,
-    side
-){
+function drawBasket(basket){
 
     const scaleX =
-        W /
-        WORLD_WIDTH;
-
+        W/WORLD_WIDTH;
 
     const scaleY =
-        H /
-        WORLD_HEIGHT;
+        H/WORLD_HEIGHT;
 
 
     ctx.save();
-
 
     ctx.scale(
         scaleX,
@@ -1788,9 +1546,7 @@ function drawBasket(
         basket.x;
 
 
-    /* =========================================
-       POSTE
-    ========================================= */
+    /* POSTE */
 
     ctx.fillStyle =
         "#18202a";
@@ -1800,14 +1556,11 @@ function drawBasket(
         x-10,
         basket.rimY-5,
         20,
-        groundY -
-        (basket.rimY-5)
+        groundY-(basket.rimY-5)
     );
 
 
-    /* =========================================
-       TABELA
-    ========================================= */
+    /* TABELA */
 
     ctx.fillStyle =
         "#edf3f8";
@@ -1836,13 +1589,10 @@ function drawBasket(
     );
 
 
-    /* =========================================
-       QUADRADO
-    ========================================= */
+    /* QUADRADO */
 
     ctx.strokeStyle =
         "#d33";
-
 
     ctx.lineWidth = 5;
 
@@ -1855,13 +1605,10 @@ function drawBasket(
     );
 
 
-    /* =========================================
-       ARO
-    ========================================= */
+    /* ARO */
 
     ctx.strokeStyle =
         "#e85b24";
-
 
     ctx.lineWidth = 9;
 
@@ -1883,13 +1630,10 @@ function drawBasket(
     ctx.stroke();
 
 
-    /* =========================================
-       REDE
-    ========================================= */
+    /* REDE */
 
     ctx.strokeStyle =
         "rgba(255,255,255,.8)";
-
 
     ctx.lineWidth = 2;
 
@@ -1902,18 +1646,15 @@ function drawBasket(
 
         ctx.beginPath();
 
-
         ctx.moveTo(
             x+i*9,
             basket.rimY+4
         );
 
-
         ctx.lineTo(
             x+i*6,
             basket.rimY+48
         );
-
 
         ctx.stroke();
 
@@ -1928,18 +1669,15 @@ function drawBasket(
 
         ctx.beginPath();
 
-
         ctx.moveTo(
             x-35+i*18,
             basket.rimY+13
         );
 
-
         ctx.lineTo(
             x-25+i*13,
             basket.rimY+43
         );
-
 
         ctx.stroke();
 
@@ -1958,17 +1696,13 @@ function drawBasket(
 function drawPlayer(player){
 
     const scaleX =
-        W /
-        WORLD_WIDTH;
-
+        W/WORLD_WIDTH;
 
     const scaleY =
-        H /
-        WORLD_HEIGHT;
+        H/WORLD_HEIGHT;
 
 
     ctx.save();
-
 
     ctx.scale(
         scaleX,
@@ -1986,16 +1720,13 @@ function drawPlayer(player){
         player.height;
 
 
-    /* =========================================
-       SOMBRA
-    ========================================= */
+    /* SOMBRA */
 
     ctx.fillStyle =
         "rgba(0,0,0,.25)";
 
 
     ctx.beginPath();
-
 
     ctx.ellipse(
         cx,
@@ -2007,13 +1738,10 @@ function drawPlayer(player){
         Math.PI*2
     );
 
-
     ctx.fill();
 
 
-    /* =========================================
-       PERNAS
-    ========================================= */
+    /* PERNAS */
 
     ctx.fillStyle =
         "#111722";
@@ -2035,9 +1763,7 @@ function drawPlayer(player){
     );
 
 
-    /* =========================================
-       TÊNIS
-    ========================================= */
+    /* TÊNIS */
 
     ctx.fillStyle =
         "#f1f1f1";
@@ -2059,16 +1785,13 @@ function drawPlayer(player){
     );
 
 
-    /* =========================================
-       CORPO
-    ========================================= */
+    /* CORPO */
 
     ctx.fillStyle =
         player.color;
 
 
     ctx.beginPath();
-
 
     ctx.roundRect(
         cx-27,
@@ -2078,13 +1801,10 @@ function drawPlayer(player){
         12
     );
 
-
     ctx.fill();
 
 
-    /* =========================================
-       DETALHE DA CAMISA
-    ========================================= */
+    /* DETALHE */
 
     ctx.fillStyle =
         player.dark;
@@ -2098,13 +1818,10 @@ function drawPlayer(player){
     );
 
 
-    /* =========================================
-       BRAÇO TRASEIRO
-    ========================================= */
+    /* BRAÇO TRASEIRO */
 
     ctx.strokeStyle =
         player.dark;
-
 
     ctx.lineWidth = 14;
 
@@ -2113,25 +1830,20 @@ function drawPlayer(player){
 
     ctx.beginPath();
 
-
     ctx.moveTo(
         cx-23,
         player.y+43
     );
-
 
     ctx.lineTo(
         cx-38,
         player.y+76
     );
 
-
     ctx.stroke();
 
 
-    /* =========================================
-       BRAÇO DA FRENTE
-    ========================================= */
+    /* BRAÇO */
 
     const hand =
         getHandPosition(player);
@@ -2146,33 +1858,27 @@ function drawPlayer(player){
 
     ctx.beginPath();
 
-
     ctx.moveTo(
         cx+
         player.facing*20,
         player.y+43
     );
 
-
     ctx.lineTo(
         hand.x,
         hand.y
     );
 
-
     ctx.stroke();
 
 
-    /* =========================================
-       CABEÇA
-    ========================================= */
+    /* CABEÇA */
 
     ctx.fillStyle =
         "#d69a6a";
 
 
     ctx.beginPath();
-
 
     ctx.arc(
         cx,
@@ -2182,20 +1888,16 @@ function drawPlayer(player){
         Math.PI*2
     );
 
-
     ctx.fill();
 
 
-    /* =========================================
-       CABELO
-    ========================================= */
+    /* CABELO */
 
     ctx.fillStyle =
         "#171717";
 
 
     ctx.beginPath();
-
 
     ctx.arc(
         cx,
@@ -2205,21 +1907,16 @@ function drawPlayer(player){
         Math.PI*2
     );
 
-
     ctx.fill();
 
 
-    /* =========================================
-       NÚMERO
-    ========================================= */
+    /* NÚMERO */
 
     ctx.fillStyle =
         "white";
 
-
     ctx.font =
         "bold 24px Arial";
-
 
     ctx.textAlign =
         "center";
@@ -2246,17 +1943,13 @@ function drawPlayer(player){
 function drawBall(){
 
     const scaleX =
-        W /
-        WORLD_WIDTH;
-
+        W/WORLD_WIDTH;
 
     const scaleY =
-        H /
-        WORLD_HEIGHT;
+        H/WORLD_HEIGHT;
 
 
     ctx.save();
-
 
     ctx.scale(
         scaleX,
@@ -2265,20 +1958,16 @@ function drawBall(){
 
 
     const screenY =
-        ball.y -
-        ball.z;
+        ball.y-ball.z;
 
 
-    /* =========================================
-       SOMBRA
-    ========================================= */
+    /* SOMBRA */
 
     ctx.fillStyle =
         "rgba(0,0,0,.28)";
 
 
     ctx.beginPath();
-
 
     ctx.ellipse(
         ball.x,
@@ -2294,13 +1983,10 @@ function drawBall(){
         Math.PI*2
     );
 
-
     ctx.fill();
 
 
-    /* =========================================
-       BOLA
-    ========================================= */
+    /* BOLA */
 
     const gradient =
         ctx.createRadialGradient(
@@ -2331,7 +2017,6 @@ function drawBall(){
 
     ctx.beginPath();
 
-
     ctx.arc(
         ball.x,
         screenY,
@@ -2340,23 +2025,18 @@ function drawBall(){
         Math.PI*2
     );
 
-
     ctx.fill();
 
 
-    /* =========================================
-       COSTURAS
-    ========================================= */
+    /* COSTURAS */
 
     ctx.strokeStyle =
         "#35170b";
-
 
     ctx.lineWidth = 2.5;
 
 
     ctx.beginPath();
-
 
     ctx.arc(
         ball.x,
@@ -2366,12 +2046,10 @@ function drawBall(){
         1.1
     );
 
-
     ctx.stroke();
 
 
     ctx.beginPath();
-
 
     ctx.arc(
         ball.x,
@@ -2381,18 +2059,15 @@ function drawBall(){
         4.25
     );
 
-
     ctx.stroke();
 
 
     ctx.beginPath();
 
-
     ctx.moveTo(
         ball.x-ball.radius,
         screenY
     );
-
 
     ctx.quadraticCurveTo(
         ball.x,
@@ -2400,7 +2075,6 @@ function drawBall(){
         ball.x+ball.radius,
         screenY
     );
-
 
     ctx.stroke();
 
@@ -2417,12 +2091,10 @@ function drawBall(){
 function drawHUD(){
 
     const scale =
-        W /
-        WORLD_WIDTH;
+        W/WORLD_WIDTH;
 
 
     ctx.save();
-
 
     ctx.scale(
         scale,
@@ -2430,16 +2102,13 @@ function drawHUD(){
     );
 
 
-    /* =========================================
-       PLACAR
-    ========================================= */
+    /* PLACAR */
 
     ctx.fillStyle =
         "rgba(8,12,18,.82)";
 
 
     ctx.beginPath();
-
 
     ctx.roundRect(
         WORLD_WIDTH/2-180,
@@ -2449,16 +2118,13 @@ function drawHUD(){
         18
     );
 
-
     ctx.fill();
 
 
     ctx.strokeStyle =
         "rgba(255,255,255,.12)";
 
-
     ctx.lineWidth = 2;
-
 
     ctx.stroke();
 
@@ -2512,17 +2178,7 @@ function drawHUD(){
     );
 
 
-    /* =========================================
-       TEMPO
-    ========================================= */
-
-    ctx.fillStyle =
-        "#fff";
-
-
-    ctx.font =
-        "bold 20px Arial";
-
+    /* TEMPO */
 
     const minutes =
         Math.floor(
@@ -2538,24 +2194,28 @@ function drawHUD(){
         .padStart(2,"0");
 
 
+    ctx.fillStyle =
+        "#fff";
+
+    ctx.font =
+        "bold 20px Arial";
+
+
     ctx.fillText(
-        minutes + ":" + seconds,
+        minutes+":"+seconds,
         WORLD_WIDTH/2,
         107
     );
 
 
-    /* =========================================
-       INDICADOR DO JOGADOR 1
-    ========================================= */
+    /* INDICADOR */
 
     if(
         ball.heldBy === player1
     ){
 
         ctx.fillStyle =
-            "rgba(40,124,255,.95)";
-
+            "#4d91ff";
 
         ctx.font =
             "bold 18px Arial";
@@ -2570,17 +2230,12 @@ function drawHUD(){
     }
 
 
-    /* =========================================
-       INDICADOR DO JOGADOR 2
-    ========================================= */
-
     if(
         ball.heldBy === player2
     ){
 
         ctx.fillStyle =
-            "rgba(230,60,60,.95)";
-
+            "#ff5757";
 
         ctx.font =
             "bold 18px Arial";
@@ -2616,31 +2271,15 @@ function draw(){
 
     drawBackground();
 
+    drawBasket(basket1);
 
-    drawBasket(
-        basket1,
-        "left"
-    );
+    drawBasket(basket2);
 
+    drawPlayer(player1);
 
-    drawBasket(
-        basket2,
-        "right"
-    );
-
-
-    drawPlayer(
-        player1
-    );
-
-
-    drawPlayer(
-        player2
-    );
-
+    drawPlayer(player2);
 
     drawBall();
-
 
     drawHUD();
 
@@ -2680,7 +2319,7 @@ function loop(now){
 
 
 /* =====================================================
-   BOTÃO COMEÇAR
+   BOTÕES
 ===================================================== */
 
 startBtn.addEventListener(
@@ -2692,10 +2331,6 @@ startBtn.addEventListener(
     }
 );
 
-
-/* =====================================================
-   BOTÃO RECOMEÇAR
-===================================================== */
 
 restartBtn.addEventListener(
     "click",
@@ -2712,7 +2347,7 @@ restartBtn.addEventListener(
 
 
 /* =====================================================
-   INICIALIZAÇÃO
+   INÍCIO
 ===================================================== */
 
 resetGame();
