@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Ludix - Space Waves</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#050512;
+    color:white;
+    touch-action:none;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+#game{
+    position:relative;
+    width:100%;
+    height:100%;
+    max-width:1400px;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 50% 50%,#151544 0%,#08081b 45%,#020208 100%);
+}
+
+canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.screen{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:
+        radial-gradient(circle at center,#16164a88,#03030dcc 75%);
+}
+
+.panel{
+    width:min(450px,94vw);
+    padding:35px 28px;
+    text-align:center;
+    border:1px solid #4848ff88;
+    border-radius:24px;
+    background:rgba(8,8,30,.88);
+    box-shadow:
+        0 0 40px #3838ff33,
+        inset 0 0 30px #ffffff05;
+    backdrop-filter:blur(12px);
+}
+
+.logo{
+    font-size:clamp(38px,8vw,65px);
+    font-weight:900;
+    letter-spacing:3px;
+    color:#fff;
+    text-shadow:
+        0 0 10px #4f5cff,
+        0 0 30px #3038ff,
+        0 0 60px #1d25ff;
+}
+
+.subtitle{
+    margin-top:8px;
+    color:#9296ff;
+    font-size:14px;
+    letter-spacing:4px;
+    text-transform:uppercase;
+}
+
+.input{
+    width:100%;
+    margin-top:30px;
+    padding:15px;
+    border:1px solid #4545ff;
+    border-radius:12px;
+    outline:none;
+    background:#05051a;
+    color:white;
+    font-size:17px;
+    text-align:center;
+}
+
+.input:focus{
+    border-color:#7d83ff;
+    box-shadow:0 0 15px #4545ff55;
+}
+
+.btn{
+    width:100%;
+    margin-top:15px;
+    padding:15px;
+    border:0;
+    border-radius:12px;
+    cursor:pointer;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    background:linear-gradient(135deg,#454cff,#793cff);
+    box-shadow:0 0 20px #4b43ff44;
+    transition:.15s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 30px #5b51ff77;
+}
+
+.btn.secondary{
+    background:#16162f;
+    border:1px solid #37375f;
+}
+
+.help{
+    margin-top:25px;
+    color:#85859d;
+    font-size:14px;
+    line-height:1.7;
+}
+
+.hidden{
+    display:none !important;
+}
+
+/* =========================
+   HUD
+========================= */
+
+#hud{
+    position:absolute;
+    top:18px;
+    left:18px;
+    right:18px;
+    z-index:5;
+    display:flex;
+    justify-content:space-between;
+    pointer-events:none;
+}
+
+.hudBox{
+    padding:9px 14px;
+    border:1px solid #4545ff66;
+    border-radius:10px;
+    background:#08081dcc;
+    backdrop-filter:blur(5px);
+}
+
+.hudLabel{
+    color:#7777a8;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+.hudValue{
+    margin-top:2px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* =========================
+   RANKING
+========================= */
+
+.rankTitle{
+    font-size:32px;
+    margin-bottom:20px;
+    text-shadow:0 0 20px #4f54ff;
+}
+
+.ranking{
+    max-height:360px;
+    overflow-y:auto;
+    text-align:left;
+    margin-top:10px;
+}
+
+.rankRow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px;
+    margin-bottom:7px;
+    border-radius:10px;
+    background:#11112c;
+    border:1px solid #28284d;
+}
+
+.rankPosition{
+    width:30px;
+    font-weight:bold;
+    color:#777dff;
+}
+
+.rankName{
+    flex:1;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.rankScore{
+    font-weight:bold;
+    color:#9ea3ff;
+}
+
+.loading{
+    color:#8585a5;
+    padding:20px;
+    text-align:center;
+}
+
+/* =========================
+   GAME OVER
+========================= */
+
+.finalScore{
+    margin:20px 0;
+    font-size:48px;
+    font-weight:900;
+    color:#7d83ff;
+    text-shadow:0 0 25px #555cff;
+}
+
+/* Mobile */
+@media(max-width:600px){
+
+    .panel{
+        padding:28px 20px;
+    }
+
+    .hudBox{
+        padding:7px 10px;
+    }
+
+    .hudValue{
+        font-size:16px;
+    }
+
+    .help{
+        font-size:13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <canvas id="canvas"></canvas>
+
+    <!-- ================= MENU ================= -->
+
+    <div id="menu" class="screen">
+
+        <div class="panel">
+
+            <div class="logo">SPACE WAVES</div>
+
+            <div class="subtitle">
+                LUDIX
+            </div>
+
+            <input
+                id="playerName"
+                class="input"
+                maxlength="16"
+                autocomplete="off"
+                placeholder="Digite seu nome"
+            >
+
+            <button id="playBtn" class="btn">
+                ▶ JOGAR
+            </button>
+
+            <button id="rankingBtn" class="btn secondary">
+                🏆 RANKING GLOBAL
+            </button>
+
+            <div class="help">
+                ⌨️ Pressione <b>ESPAÇO</b> para subir<br>
+                📱 Toque na tela para subir<br>
+                🚀 Desvie dos obstáculos e sobreviva!
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= RANKING ================= -->
+
+    <div id="rankingScreen" class="screen hidden">
+
+        <div class="panel">
+
+            <div class="rankTitle">
+                🏆 RANKING GLOBAL
+            </div>
+
+            <div id="rankingList" class="ranking">
+                <div class="loading">
+                    Carregando ranking...
+                </div>
+            </div>
+
+            <button id="backRankingBtn" class="btn secondary">
+                ← VOLTAR
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ================= GAME OVER ================= -->
+
+    <div id="gameOver" class="screen hidden">
+
+        <div class="panel">
+
+            <div class="rankTitle">
+                GAME OVER
+            </div>
+
+            <div id="finalScore" class="finalScore">
+                0
+            </div>
+
+            <div id="savingText" class="help">
+                Salvando seu score...
+            </div>
+
+            <button id="restartBtn" class="btn">
+                🔄 JOGAR NOVAMENTE
+            </button>
+
+            <button id="menuBtn" class="btn secondary">
+                🏠 MENU
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ================= HUD ================= -->
+
+    <div id="hud" class="hidden">
+
+        <div class="hudBox">
+            <div class="hudLabel">Score</div>
+            <div id="score" class="hudValue">0</div>
+        </div>
+
+        <div class="hudBox">
+            <div class="hudLabel">Distância</div>
+            <div id="distance" class="hudValue">0m</div>
+        </div>
+
+        <div class="hudBox">
+            <div class="hudLabel">Velocidade</div>
+            <div id="speed" class="hudValue">1x</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://vkswxahmirkhcynwlzys.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_pGNNupmDtxbXRgs01aZdeg_6dJqw4Kc";
+
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let W = 0;
+let H = 0;
+
+function resize(){
+
+    W = canvas.width = window.innerWidth * devicePixelRatio;
+    H = canvas.height = window.innerHeight * devicePixelRatio;
+
+    canvas.style.width = window.innerWidth + "px";
+    canvas.style.height = window.innerHeight + "px";
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+}
+
+window.addEventListener("resize",resize);
+resize();
+
+
+/* =========================================================
+   ELEMENTOS
+========================================================= */
+
+const menu = document.getElementById("menu");
+const rankingScreen = document.getElementById("rankingScreen");
+const gameOver = document.getElementById("gameOver");
+const hud = document.getElementById("hud");
+
+const playerName = document.getElementById("playerName");
+
+const playBtn = document.getElementById("playBtn");
+const rankingBtn = document.getElementById("rankingBtn");
+const backRankingBtn = document.getElementById("backRankingBtn");
+
+const restartBtn = document.getElementById("restartBtn");
+const menuBtn = document.getElementById("menuBtn");
+
+const scoreEl = document.getElementById("score");
+const distanceEl = document.getElementById("distance");
+const speedEl = document.getElementById("speed");
+
+const finalScoreEl = document.getElementById("finalScore");
+const savingText = document.getElementById("savingText");
+const rankingList = document.getElementById("rankingList");
+
+
+/* =========================================================
+   ESTADO
+========================================================= */
+
+let running = false;
+
+let animationId = 0;
+
+let player = null;
+
+let obstacles = [];
+
+let particles = [];
+
+let stars = [];
+
+let score = 0;
+
+let distance = 0;
+
+let gameSpeed = 5;
+
+let lastTime = 0;
+
+let spawnTimer = 0;
+
+let playerNameValue = "";
+
+
+/* =========================================================
+   ESTRELAS
+========================================================= */
+
+function createStars(){
+
+    stars = [];
+
+    const amount = Math.max(
+        80,
+        Math.floor(W * H / 10000)
+    );
+
+    for(let i=0;i<amount;i++){
+
+        stars.push({
+            x:Math.random()*W,
+            y:Math.random()*H,
+            size:Math.random()*2+0.5,
+            speed:Math.random()*1.5+0.3,
+            alpha:Math.random()*0.7+0.2
+        });
+    }
+}
+
+createStars();
+
+
+/* =========================================================
+   NAVE
+========================================================= */
+
+function createPlayer(){
+
+    player = {
+
+        x:W * 0.22,
+
+        y:H / 2,
+
+        size:22,
+
+        velocity:0,
+
+        gravity:0.42,
+
+        lift:-7.5,
+
+        angle:0
+
+    };
+}
+
+
+/* =========================================================
+   INICIAR JOGO
+========================================================= */
+
+function startGame(){
+
+    let name = playerName.value.trim();
+
+    if(!name){
+        playerName.focus();
+        playerName.style.borderColor = "#ff4d6d";
+        return;
+    }
+
+    playerName.style.borderColor = "#4545ff";
+
+    playerNameValue = name.substring(0,16);
+
+    menu.classList.add("hidden");
+    rankingScreen.classList.add("hidden");
+    gameOver.classList.add("hidden");
+
+    hud.classList.remove("hidden");
+
+    score = 0;
+    distance = 0;
+
+    gameSpeed = 5;
+
+    obstacles = [];
+    particles = [];
+
+    createPlayer();
+
+    running = true;
+
+    lastTime = performance.now();
+
+    cancelAnimationFrame(animationId);
+
+    animationId = requestAnimationFrame(loop);
+}
+
+
+/* =========================================================
+   PULAR / SUBIR
+========================================================= */
+
+function jump(){
+
+    if(!running) return;
+
+    player.velocity = player.lift;
+
+    createParticles(
+        player.x,
+        player.y,
+        5
+    );
+}
+
+
+/* =========================================================
+   TECLADO
+========================================================= */
+
+window.addEventListener("keydown",(e)=>{
+
+    if(
+        e.code === "Space" ||
+        e.key === " "
+    ){
+
+        e.preventDefault();
+
+        jump();
+    }
+
+});
+
+
+/* =========================================================
+   TOQUE
+========================================================= */
+
+canvas.addEventListener("pointerdown",(e)=>{
+
+    if(!running) return;
+
+    e.preventDefault();
+
+    jump();
+
+});
+
+
+/* =========================================================
+   OBSTÁCULOS
+========================================================= */
+
+function spawnObstacle(){
+
+    const gapSize = Math.max(
+        145,
+        230 - distance * 0.015
+    );
+
+    const margin = 70;
+
+    const gapY =
+        margin +
+        Math.random() *
+        (H - gapSize - margin*2);
+
+    const width = 45;
+
+    obstacles.push({
+
+        x:W + 80,
+
+        width:width,
+
+        gapY:gapY,
+
+        gapSize:gapSize,
+
+        passed:false
+
+    });
+
+}
+
+
+/* =========================================================
+   PARTÍCULAS
+========================================================= */
+
+function createParticles(x,y,count){
+
+    for(let i=0;i<count;i++){
+
+        particles.push({
+
+            x:x,
+
+            y:y,
+
+            vx:(Math.random()-.5)*4,
+
+            vy:(Math.random()-.5)*4,
+
+            life:1,
+
+            size:Math.random()*3+1
+
+        });
+
+    }
+}
+
+
+/* =========================================================
+   COLISÃO
+========================================================= */
+
+function collision(){
+
+    const p = player;
+
+    if(
+        p.y - p.size < 0 ||
+        p.y + p.size > H
+    ){
+        return true;
+    }
+
+    for(const o of obstacles){
+
+        const touchingX =
+            p.x + p.size > o.x &&
+            p.x - p.size < o.x + o.width;
+
+        if(!touchingX) continue;
+
+        const outsideGap =
+            p.y - p.size < o.gapY ||
+            p.y + p.size > o.gapY + o.gapSize;
+
+        if(outsideGap){
+
+            return true;
+
+        }
+
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   GAME LOOP
+========================================================= */
+
+function loop(time){
+
+    if(!running) return;
+
+    const dt = Math.min(
+        (time-lastTime)/16.67,
+        2
+    );
+
+    lastTime = time;
+
+    update(dt);
+
+    draw();
+
+    animationId =
+        requestAnimationFrame(loop);
+}
+
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(dt){
+
+    distance += gameSpeed * 0.12 * dt;
+
+    score = Math.floor(distance);
+
+    gameSpeed =
+        5 +
+        Math.min(
+            8,
+            distance / 180
+        );
+
+    speedEl.textContent =
+        (gameSpeed/5).toFixed(1) + "x";
+
+    scoreEl.textContent =
+        score;
+
+    distanceEl.textContent =
+        Math.floor(distance) + "m";
+
+
+    /* Nave */
+
+    player.velocity +=
+        player.gravity * dt;
+
+    player.y +=
+        player.velocity * dt;
+
+    player.angle =
+        Math.max(
+            -0.7,
+            Math.min(
+                0.7,
+                player.velocity * 0.07
+            )
+        );
+
+
+    /* Obstáculos */
+
+    spawnTimer -= dt;
+
+    if(spawnTimer <= 0){
+
+        spawnObstacle();
+
+        spawnTimer =
+            Math.max(
+                38,
+                75 - distance * 0.025
+            );
+
+    }
+
+    for(let i=obstacles.length-1;i>=0;i--){
+
+        const o = obstacles[i];
+
+        o.x -= gameSpeed * dt;
+
+        if(
+            !o.passed &&
+            o.x + o.width < player.x
+        ){
+
+            o.passed = true;
+
+            distance += 5;
+
+            createParticles(
+                player.x,
+                player.y,
+                8
+            );
+        }
+
+        if(o.x + o.width < -100){
+
+            obstacles.splice(i,1);
+
+        }
+
+    }
+
+
+    /* Estrelas */
+
+    for(const star of stars){
+
+        star.x -=
+            star.speed *
+            gameSpeed *
+            0.25 *
+            dt;
+
+        if(star.x < 0){
+
+            star.x = W + Math.random()*100;
+
+            star.y = Math.random()*H;
+
+        }
+
+    }
+
+
+    /* Partículas */
+
+    for(let i=particles.length-1;i>=0;i--){
+
+        const p = particles[i];
+
+        p.x += p.vx * dt;
+        p.y += p.vy * dt;
+
+        p.life -= 0.035 * dt;
+
+        if(p.life <= 0){
+
+            particles.splice(i,1);
+
+        }
+
+    }
+
+
+    if(collision()){
+
+        endGame();
+
+    }
+
+}
+
+
+/* =========================================================
+   DESENHAR FUNDO
+========================================================= */
+
+function drawBackground(){
+
+    const gradient =
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+    gradient.addColorStop(
+        0,
+        "#07071b"
+    );
+
+    gradient.addColorStop(
+        .5,
+        "#10102f"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#04040c"
+    );
+
+    ctx.fillStyle = gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+
+    /* estrelas */
+
+    for(const star of stars){
+
+        ctx.globalAlpha =
+            star.alpha;
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            star.x,
+            star.y,
+            star.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+    ctx.globalAlpha = 1;
+
+
+    /* linhas de velocidade */
+
+    ctx.globalAlpha=.12;
+
+    ctx.strokeStyle="#6570ff";
+
+    ctx.lineWidth=1;
+
+    for(let y=0;y<H;y+=70){
+
+        ctx.beginPath();
+
+        ctx.moveTo(0,y);
+
+        ctx.lineTo(W,y);
+
+        ctx.stroke();
+
+    }
+
+    ctx.globalAlpha=1;
+
+}
+
+
+/* =========================================================
+   DESENHAR OBSTÁCULOS
+========================================================= */
+
+function drawObstacles(){
+
+    for(const o of obstacles){
+
+        /* bloco superior */
+
+        const topHeight =
+            o.gapY;
+
+        const bottomY =
+            o.gapY + o.gapSize;
+
+        const bottomHeight =
+            H - bottomY;
+
+
+        ctx.shadowBlur = 20;
+
+        ctx.shadowColor =
+            "#ff355f";
+
+        ctx.fillStyle =
+            "#ff2756";
+
+
+        ctx.fillRect(
+            o.x,
+            0,
+            o.width,
+            topHeight
+        );
+
+        ctx.fillRect(
+            o.x,
+            bottomY,
+            o.width,
+            bottomHeight
+        );
+
+
+        ctx.shadowBlur = 0;
+
+
+        /* bordas */
+
+        ctx.fillStyle =
+            "#ff9bad";
+
+        ctx.fillRect(
+            o.x,
+            topHeight-5,
+            o.width,
+            5
+        );
+
+        ctx.fillRect(
+            o.x,
+            bottomY,
+            o.width,
+            5
+        );
+
+
+        /* detalhes */
+
+        ctx.fillStyle =
+            "#8b102e";
+
+        for(
+            let y=20;
+            y<topHeight;
+            y+=25
+        ){
+
+            ctx.fillRect(
+                o.x+8,
+                y,
+                o.width-16,
+                3
+            );
+
+        }
+
+        for(
+            let y=bottomY+20;
+            y<H;
+            y+=25
+        ){
+
+            ctx.fillRect(
+                o.x+8,
+                y,
+                o.width-16,
+                3
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   DESENHAR NAVE
+========================================================= */
+
+function drawPlayer(){
+
+    if(!player) return;
+
+    ctx.save();
+
+    ctx.translate(
+        player.x,
+        player.y
+    );
+
+    ctx.rotate(
+        player.angle
+    );
+
+
+    /* rastro */
+
+    const trail =
+        ctx.createLinearGradient(
+            -45,
+            0,
+            0,
+            0
+        );
+
+    trail.addColorStop(
+        0,
+        "transparent"
+    );
+
+    trail.addColorStop(
+        1,
+        "#6975ff"
+    );
+
+    ctx.fillStyle = trail;
+
+    ctx.beginPath();
+
+    ctx.moveTo(-50,0);
+
+    ctx.lineTo(-5,-6);
+
+    ctx.lineTo(-5,6);
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    /* brilho */
+
+    ctx.shadowBlur = 25;
+
+    ctx.shadowColor =
+        "#6873ff";
+
+
+    /* nave triangular */
+
+    ctx.beginPath();
+
+    ctx.moveTo(25,0);
+
+    ctx.lineTo(-15,-14);
+
+    ctx.lineTo(-9,0);
+
+    ctx.lineTo(-15,14);
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fill();
+
+
+    ctx.shadowBlur = 0;
+
+
+    /* núcleo */
+
+    ctx.beginPath();
+
+    ctx.moveTo(13,0);
+
+    ctx.lineTo(-5,-7);
+
+    ctx.lineTo(-5,7);
+
+    ctx.closePath();
+
+    ctx.fillStyle =
+        "#5965ff";
+
+    ctx.fill();
+
+
+    ctx.restore();
+
+}
+
+
+/* =========================================================
+   DESENHAR PARTÍCULAS
+========================================================= */
+
+function drawParticles(){
+
+    for(const p of particles){
+
+        ctx.globalAlpha =
+            Math.max(0,p.life);
+
+        ctx.fillStyle =
+            "#6e78ff";
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+    }
+
+    ctx.globalAlpha=1;
+
+}
+
+
+/* =========================================================
+   DRAW
+========================================================= */
+
+function draw(){
+
+    drawBackground();
+
+    drawObstacles();
+
+    drawParticles();
+
+    drawPlayer();
+
+}
+
+
+/* =========================================================
+   GAME OVER
+========================================================= */
+
+async function endGame(){
+
+    if(!running) return;
+
+    running=false;
+
+    cancelAnimationFrame(animationId);
+
+    finalScoreEl.textContent =
+        score;
+
+    gameOver.classList.remove("hidden");
+
+    savingText.textContent =
+        "Salvando seu score...";
+
+
+    try{
+
+        const {error} =
+            await db
+            .from("space_waves_scores")
+            .insert({
+
+                player_name:
+                    playerNameValue,
+
+                score:
+                    score
+
+            });
+
+
+        if(error){
+
+            console.error(error);
+
+            savingText.textContent =
+                "Não foi possível salvar o score.";
+
+        }else{
+
+            savingText.textContent =
+                "Score salvo no ranking global!";
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        savingText.textContent =
+            "Erro ao salvar o score.";
+
+    }
+
+}
+
+
+/* =========================================================
+   RANKING
+========================================================= */
+
+async function loadRanking(){
+
+    rankingList.innerHTML =
+        '<div class="loading">Carregando ranking...</div>';
+
+    try{
+
+        const {data,error} =
+            await db
+            .from("space_waves_scores")
+            .select("player_name,score,created_at")
+            .order("score",{ascending:false})
+            .limit(100);
+
+
+        if(error){
+
+            console.error(error);
+
+            rankingList.innerHTML =
+                '<div class="loading">Erro ao carregar ranking.</div>';
+
+            return;
+
+        }
+
+
+        if(!data || data.length===0){
+
+            rankingList.innerHTML =
+                '<div class="loading">Ainda não existem scores.</div>';
+
+            return;
+
+        }
+
+
+        /*
+          Mantém apenas o melhor score
+          de cada jogador.
+        */
+
+        const best = {};
+
+        for(const row of data){
+
+            const name =
+                String(row.player_name || "Jogador")
+                .trim();
+
+            if(
+                !best[name] ||
+                Number(row.score) >
+                Number(best[name].score)
+            ){
+
+                best[name]=row;
+
+            }
+
+        }
+
+
+        const ranking =
+            Object.values(best)
+            .sort(
+                (a,b)=>
+                    Number(b.score) -
+                    Number(a.score)
+            )
+            .slice(0,50);
+
+
+        rankingList.innerHTML =
+            ranking
+            .map((row,index)=>{
+
+                return `
+                    <div class="rankRow">
+
+                        <div class="rankPosition">
+                            #${index+1}
+                        </div>
+
+                        <div class="rankName">
+                            ${escapeHTML(row.player_name)}
+                        </div>
+
+                        <div class="rankScore">
+                            ${Number(row.score)}
+                        </div>
+
+                    </div>
+                `;
+
+            })
+            .join("");
+
+
+    }catch(error){
+
+        console.error(error);
+
+        rankingList.innerHTML =
+            '<div class="loading">Erro ao carregar ranking.</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   PROTEÇÃO CONTRA HTML NO NOME
+========================================================= */
+
+function escapeHTML(text){
+
+    return String(text)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+
+}
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+playBtn.addEventListener(
+    "click",
+    startGame
+);
+
+
+restartBtn.addEventListener(
+    "click",
+    startGame
+);
+
+
+menuBtn.addEventListener(
+    "click",
+    ()=>{
+
+        gameOver.classList.add("hidden");
+
+        hud.classList.add("hidden");
+
+        menu.classList.remove("hidden");
+
+        running=false;
+
+    }
+);
+
+
+rankingBtn.addEventListener(
+    "click",
+    async ()=>{
+
+        menu.classList.add("hidden");
+
+        rankingScreen.classList.remove("hidden");
+
+        await loadRanking();
+
+    }
+);
+
+
+backRankingBtn.addEventListener(
+    "click",
+    ()=>{
+
+        rankingScreen.classList.add("hidden");
+
+        menu.classList.remove("hidden");
+
+    }
+);
+
+
+/* =========================================================
+   ENTER NO NOME
+========================================================= */
+
+playerName.addEventListener(
+    "keydown",
+    e=>{
+
+        if(e.key==="Enter"){
+
+            startGame();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DESENHO INICIAL
+========================================================= */
+
+createPlayer();
+
+draw();
+
+</script>
+
+</body>
+</html>
