@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -18,8 +17,40 @@
         content="Ludix — They Are Coming. Sobreviva às ondas de zumbis e entre no ranking global."
     >
 
-    <!-- SUPABASE -->
+    <!-- =====================================================
+         SUPABASE
+    ====================================================== -->
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- =====================================================
+         CONFIGURAÇÃO DO SUPABASE
+    ====================================================== -->
+
+    <script>
+
+        /*
+         * COLOQUE AQUI OS DADOS DO SEU PROJETO SUPABASE.
+         *
+         * Project Settings
+         * → API
+         *
+         * Use a:
+         * Project URL
+         * Publishable / anon key
+         *
+         * NÃO USE A SERVICE_ROLE KEY.
+         */
+
+        window.SUPABASE_URL =
+            "COLE_AQUI_SUA_SUPABASE_URL";
+
+        window.SUPABASE_ANON_KEY =
+            "COLE_AQUI_SUA_ANON_KEY";
+
+    </script>
+
 
     <style>
 
@@ -29,103 +60,151 @@
 
         html,
         body {
+
             margin: 0;
             padding: 0;
+
             width: 100%;
             height: 100%;
+
             overflow: hidden;
+
             background: #080b0f;
+
             font-family:
                 Arial,
                 Helvetica,
                 sans-serif;
+
             color: white;
         }
+
 
         body {
             user-select: none;
         }
+
 
         button,
         input {
             font-family: inherit;
         }
 
+
         button {
             cursor: pointer;
         }
 
-        /* =========================================
-           CANVAS
-        ========================================= */
 
-        #gameCanvas {
+        /* =====================================================
+           CANVAS
+        ====================================================== */
+
+        #game {
+
             position: fixed;
+
             inset: 0;
+
             width: 100%;
             height: 100%;
+
             display: block;
-            background: #11151a;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #18212a 0%,
+                    #0d1217 55%,
+                    #080b0f 100%
+                );
+
             cursor: crosshair;
+
+            z-index: 1;
         }
 
-        /* =========================================
+
+        /* =====================================================
            HUD
-        ========================================= */
+        ====================================================== */
 
         #hud {
+
             position: fixed;
+
             inset: 0;
-            pointer-events: none;
+
             z-index: 100;
+
+            pointer-events: none;
+
+            display: none;
         }
 
+
         .hud-top {
+
             position: absolute;
+
             top: 18px;
             left: 18px;
             right: 18px;
 
             display: flex;
+
             align-items: flex-start;
+
             justify-content: space-between;
 
             gap: 15px;
         }
 
-        .hud-left,
-        .hud-right {
+
+        .hud-left {
+
             display: flex;
+
             gap: 10px;
+
             align-items: center;
+
+            flex-wrap: wrap;
         }
 
+
         .hud-card {
-            min-width: 100px;
+
+            min-width: 105px;
+
             padding: 10px 14px;
 
             border-radius: 12px;
 
             background:
-                rgba(5, 8, 12, .78);
+                rgba(5, 8, 12, .82);
 
             border:
                 1px solid
                 rgba(255,255,255,.10);
 
-            backdrop-filter: blur(8px);
+            backdrop-filter:
+                blur(8px);
 
             box-shadow:
                 0 8px 25px
                 rgba(0,0,0,.25);
         }
 
+
         .hud-label {
+
             display: block;
 
             color: #8994a3;
 
             font-size: 10px;
+
             text-transform: uppercase;
 
             margin-bottom: 3px;
@@ -133,21 +212,28 @@
             letter-spacing: 1px;
         }
 
+
         .hud-value {
+
             font-size: 18px;
+
             font-weight: 900;
         }
 
-        /* =========================================
+
+        /* =====================================================
            VIDA
-        ========================================= */
+        ====================================================== */
 
         .health-card {
             width: 180px;
         }
 
+
         .health-bar {
+
             width: 100%;
+
             height: 8px;
 
             margin-top: 6px;
@@ -159,8 +245,11 @@
             background: #2a2f36;
         }
 
+
         #healthBar {
+
             width: 100%;
+
             height: 100%;
 
             border-radius: 99px;
@@ -176,24 +265,44 @@
                 width .15s ease;
         }
 
-        /* =========================================
-           ARMA / MUNIÇÃO
-        ========================================= */
+
+        #armorBar {
+
+            width: 100%;
+
+            height: 100%;
+
+            border-radius: 99px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #287eff,
+                    #65b4ff
+                );
+        }
+
+
+        /* =====================================================
+           ARMA
+        ====================================================== */
 
         #weaponHUD {
+
             position: absolute;
 
             right: 20px;
+
             bottom: 125px;
 
-            min-width: 190px;
+            min-width: 210px;
 
             padding: 15px;
 
             border-radius: 15px;
 
             background:
-                rgba(5,8,12,.82);
+                rgba(5,8,12,.86);
 
             border:
                 1px solid
@@ -202,43 +311,76 @@
             text-align: right;
         }
 
-        #weaponName {
+
+        #weapon {
+
             font-size: 18px;
+
             font-weight: 900;
         }
 
+
         #ammo {
+
             margin-top: 5px;
 
             font-size: 28px;
+
             font-weight: 900;
 
             color: #ffd34d;
         }
 
-        /* =========================================
-           INVENTÁRIO
-        ========================================= */
 
-        #inventory {
-            position: absolute;
+        /* =====================================================
+           INVENTÁRIO
+        ====================================================== */
+
+        #gameInventory {
+
+            position: fixed;
 
             left: 50%;
+
             bottom: 18px;
 
             transform:
                 translateX(-50%);
 
-            display: flex;
-            gap: 8px;
+            z-index: 200;
+
+            display: none;
 
             pointer-events: auto;
         }
 
+
+        #gameInventorySlots {
+
+            display: flex;
+
+            gap: 8px;
+        }
+
+
+        #menuInventory {
+
+            display: flex;
+
+            gap: 8px;
+
+            justify-content: center;
+
+            margin-top: 18px;
+        }
+
+
         .inventory-slot {
+
             position: relative;
 
             width: 74px;
+
             height: 74px;
 
             display: flex;
@@ -246,6 +388,7 @@
             flex-direction: column;
 
             align-items: center;
+
             justify-content: center;
 
             border-radius: 12px;
@@ -263,705 +406,40 @@
                 .15s ease;
         }
 
+
         .inventory-slot:hover {
+
             transform:
                 translateY(-4px);
 
             border-color:
                 rgba(255,255,255,.25);
-        }
-
-        .inventory-slot.selected {
-            border-color:
-                #3d91ff;
-
-            box-shadow:
-                0 0 18px
-                rgba(61,145,255,.25);
 
             color: white;
         }
 
-        .slot-number {
-            position: absolute;
 
-            top: 5px;
-            left: 7px;
-
-            font-size: 10px;
-
-            color: #77818e;
-        }
-
-        .slot-icon {
-            font-size: 27px;
-        }
-
-        .slot-name {
-            max-width: 65px;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-
-            white-space: nowrap;
-
-            margin-top: 4px;
-
-            font-size: 9px;
-        }
-
-        /* =========================================
-           MENSAGEM
-        ========================================= */
-
-        #gameMessage {
-            position: fixed;
-
-            top: 80px;
-            left: 50%;
-
-            transform:
-                translate(-50%, -20px);
-
-            opacity: 0;
-
-            pointer-events: none;
-
-            z-index: 500;
-
-            padding: 12px 22px;
-
-            border-radius: 999px;
-
-            background:
-                rgba(5,8,12,.9);
-
-            border:
-                1px solid
-                rgba(255,255,255,.12);
-
-            font-weight: 900;
-
-            transition:
-                .2s ease;
-        }
-
-        #gameMessage.show {
-            opacity: 1;
-
-            transform:
-                translate(-50%, 0);
-        }
-
-        /* =========================================
-           MENU / PAINEL BASE
-        ========================================= */
-
-        .screen {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 1000;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                rgba(0,0,0,.82);
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-        .screen.active {
-            display: flex;
-        }
-
-        .panel {
-            width:
-                min(92vw, 550px);
-
-            padding: 30px;
-
-            border-radius: 20px;
-
-            background:
-                #11151b;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            box-shadow:
-                0 30px 100px
-                rgba(0,0,0,.65);
-
-            text-align: center;
-        }
-
-        .panel h1 {
-            margin:
-                0 0 8px;
-
-            font-size: 34px;
-        }
-
-        .panel p {
-            color: #9da7b5;
-            line-height: 1.5;
-        }
-
-        .primary-btn {
-            width: 100%;
-
-            margin-top: 15px;
-
-            padding: 14px 20px;
-
-            border: 0;
-
-            border-radius: 10px;
-
-            background:
-                #287eff;
-
-            color: white;
-
-            font-weight: 900;
-
-            font-size: 15px;
-        }
-
-        .primary-btn:hover {
-            filter: brightness(1.15);
-        }
-
-        /* =========================================
-           NOME
-        ========================================= */
-
-        #playerNameScreen {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 9999;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(35,80,130,.25),
-                    rgba(0,0,0,.95)
-                );
-
-            backdrop-filter:
-                blur(10px);
-        }
-
-        #playerNameScreen.active {
-            display: flex;
-        }
-
-        .name-box {
-            width:
-                min(92vw, 500px);
-
-            padding: 35px;
-
-            border-radius: 22px;
-
-            background:
-                rgba(15,19,25,.96);
-
-            border:
-                1px solid
-                rgba(255,255,255,.12);
-
-            box-shadow:
-                0 30px 100px
-                rgba(0,0,0,.7);
-
-            text-align: center;
-        }
-
-        .name-icon {
-            font-size: 65px;
-            margin-bottom: 10px;
-        }
-
-        .name-box h1 {
-            margin: 0;
-
-            font-size: 32px;
-            font-weight: 1000;
-        }
-
-        .name-box p {
-            color: #9ca6b4;
-
-            margin:
-                10px 0 25px;
-        }
-
-        #playerNameInput {
-            width: 100%;
-
-            padding: 15px;
-
-            border-radius: 10px;
-
-            border:
-                1px solid
-                rgba(255,255,255,.14);
-
-            background:
-                #080b0f;
-
-            color: white;
-
-            outline: none;
+        .inventory-slot span {
 
             font-size: 16px;
 
-            margin-bottom: 10px;
-        }
-
-        #playerNameInput:focus {
-            border-color:
-                #3f91ff;
-        }
-
-        #confirmPlayerName {
-            width: 100%;
-
-            padding: 15px;
-
-            border: 0;
-
-            border-radius: 10px;
-
-            background:
-                #287eff;
-
-            color: white;
-
-            font-weight: 900;
-
-            font-size: 15px;
-        }
-
-        /* =========================================
-           LOJA
-        ========================================= */
-
-        #shop {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 2000;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                rgba(0,0,0,.82);
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-        #shop.active {
-            display: flex;
-        }
-
-        .shop-box {
-            width:
-                min(94vw, 900px);
-
-            max-height:
-                90vh;
-
-            overflow-y:
-                auto;
-
-            padding: 25px;
-
-            border-radius: 20px;
-
-            background:
-                #11151b;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-        }
-
-        .shop-header {
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            margin-bottom: 20px;
-        }
-
-        .shop-header h2 {
-            margin: 0;
-        }
-
-        #closeShopBtn,
-        .close-ranking {
-            border: 0;
-
-            width: 38px;
-            height: 38px;
-
-            border-radius: 50%;
-
-            background:
-                rgba(255,255,255,.08);
-
-            color: white;
-
-            font-size: 18px;
-        }
-
-        #shopItems {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(230px, 1fr)
-                );
-
-            gap: 10px;
-        }
-
-        .shop-item {
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            padding: 13px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,.045);
-
-            border:
-                1px solid
-                rgba(255,255,255,.07);
-        }
-
-        .shop-icon {
-            font-size: 32px;
-        }
-
-        .shop-info {
-            flex: 1;
-
-            display: flex;
-
-            flex-direction: column;
-        }
-
-        .shop-info strong {
-            font-size: 14px;
-        }
-
-        .shop-info span {
-            color: #7e8998;
-
-            font-size: 11px;
-
-            margin-top: 3px;
-        }
-
-        .shop-info small {
-            color: #b5bfcb;
-
-            margin-top: 4px;
-        }
-
-        .buy-weapon {
-            border: 0;
-
-            padding: 9px 12px;
-
-            border-radius: 8px;
-
-            background:
-                #1f9d62;
-
-            color: white;
-
             font-weight: 900;
         }
 
-        /* =========================================
-           RANKING
-        ========================================= */
 
-        #rankingPanel {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 3000;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                rgba(0,0,0,.82);
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-        #rankingPanel.active {
-            display: flex;
-        }
-
-        .ranking-box {
-            position: relative;
-
-            width:
-                min(94vw, 600px);
-
-            max-height:
-                90vh;
-
-            overflow-y:
-                auto;
-
-            padding: 28px;
-
-            border-radius: 20px;
-
-            background:
-                #11151b;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-        }
-
-        .ranking-header {
-            display: flex;
-
-            align-items: center;
-
-            gap: 14px;
-
-            margin-bottom: 20px;
-        }
-
-        .ranking-header > span {
-            font-size: 42px;
-        }
-
-        .ranking-header h2 {
-            margin: 0;
-        }
-
-        .ranking-header p {
-            margin: 4px 0 0;
-
-            color: #8e98a7;
-        }
-
-        .ranking-row {
-            display: flex;
-
-            align-items: center;
-
-            gap: 12px;
-
-            padding: 13px;
-
-            margin-bottom: 8px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,.045);
-        }
-
-        .ranking-position {
-            width: 38px;
-
-            text-align: center;
-
-            font-size: 18px;
-
-            font-weight: 900;
-        }
-
-        .ranking-player {
-            flex: 1;
-
-            display: flex;
-
-            flex-direction: column;
-
-            text-align: left;
-        }
-
-        .ranking-player strong {
-            font-size: 14px;
-        }
-
-        .ranking-player span {
-            margin-top: 4px;
-
-            color: #7f8997;
-
-            font-size: 11px;
-        }
-
-        .ranking-score {
-            font-size: 17px;
-
-            font-weight: 1000;
-
-            color: #ffd34d;
-        }
-
-        .ranking-empty,
-        .ranking-loading {
-            padding: 35px 10px;
-
-            text-align: center;
-
-            color: #8d98a7;
-        }
-
-        /* =========================================
-           GAME OVER
-        ========================================= */
-
-        #gameOver {
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 4000;
-
-            display: none;
-
-            align-items: center;
-            justify-content: center;
-
-            background:
-                rgba(0,0,0,.88);
-
-            backdrop-filter:
-                blur(8px);
-        }
-
-        #gameOver.active {
-            display: flex;
-        }
-
-        .gameover-box {
-            width:
-                min(92vw, 500px);
-
-            padding: 35px;
-
-            border-radius: 20px;
-
-            background:
-                #11151b;
-
-            border:
-                1px solid
-                rgba(255,255,255,.10);
-
-            text-align: center;
-        }
-
-        .gameover-icon {
-            font-size: 65px;
-        }
-
-        .gameover-box h1 {
-            margin:
-                10px 0;
-
-            font-size: 38px;
-        }
-
-        .final-stats {
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 10px;
-
-            margin:
-                20px 0;
-        }
-
-        .final-stat {
-            padding: 15px;
-
-            border-radius: 12px;
-
-            background:
-                rgba(255,255,255,.05);
-        }
-
-        .final-stat span {
-            display: block;
-
-            color: #7f8997;
-
-            font-size: 11px;
-
-            text-transform: uppercase;
-        }
-
-        .final-stat strong {
-            display: block;
-
-            margin-top: 5px;
-
-            font-size: 22px;
-        }
-
-        /* =========================================
+        /* =====================================================
            BOTÃO RANKING
-        ========================================= */
+        ====================================================== */
 
         #rankingBtn {
+
             position: fixed;
 
             right: 20px;
-            top: 95px;
 
-            z-index: 150;
+            top: 20px;
+
+            z-index: 500;
 
             pointer-events: auto;
 
@@ -974,108 +452,914 @@
                 rgba(255,255,255,.10);
 
             background:
-                rgba(5,8,12,.8);
+                rgba(5,8,12,.82);
 
             color: white;
 
             font-weight: 800;
+
+            transition: .15s ease;
         }
+
 
         #rankingBtn:hover {
+
             background:
-                rgba(40,126,255,.3);
+                rgba(40,126,255,.30);
+
+            transform:
+                translateY(-2px);
         }
 
-        /* =========================================
+
+        /* =====================================================
+           MENU PRINCIPAL
+        ====================================================== */
+
+        #shopScreen {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 2000;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(25,54,82,.35),
+                    rgba(0,0,0,.92)
+                );
+
+            backdrop-filter:
+                blur(8px);
+
+            overflow-y: auto;
+        }
+
+
+        .menu-box {
+
+            width:
+                min(96vw, 1000px);
+
+            max-height:
+                94vh;
+
+            overflow-y: auto;
+
+            padding: 30px;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #151b22,
+                    #0d1116
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            box-shadow:
+                0 30px 100px
+                rgba(0,0,0,.70);
+        }
+
+
+        .menu-header {
+
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items:
+                flex-start;
+
+            gap: 20px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .game-title {
+
+            margin: 0;
+
+            font-size: 42px;
+
+            font-weight: 1000;
+
+            letter-spacing: -1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ffffff,
+                    #6fb3ff
+                );
+
+            -webkit-background-clip:
+                text;
+
+            -webkit-text-fill-color:
+                transparent;
+        }
+
+
+        .game-subtitle {
+
+            margin:
+                8px 0 0;
+
+            color:
+                #8994a3;
+
+            line-height: 1.5;
+        }
+
+
+        .money-box {
+
+            padding: 12px 18px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,211,77,.08);
+
+            border:
+                1px solid
+                rgba(255,211,77,.15);
+
+            color:
+                #ffd34d;
+
+            font-weight: 900;
+
+            white-space:
+                nowrap;
+        }
+
+
+        /* =====================================================
+           NOME
+        ====================================================== */
+
+        .name-area {
+
+            padding: 18px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            margin-bottom: 20px;
+        }
+
+
+        .name-label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color:
+                #aab4c0;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing: 1px;
+        }
+
+
+        #playerName {
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            border-radius: 10px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.12);
+
+            background:
+                #080b0f;
+
+            color: white;
+
+            outline: none;
+
+            font-size: 16px;
+        }
+
+
+        #playerName:focus {
+
+            border-color:
+                #3f91ff;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(63,145,255,.10);
+        }
+
+
+        #nameWarning {
+
+            display: none;
+
+            margin-top: 8px;
+
+            color:
+                #ff5964;
+
+            font-size: 12px;
+
+            font-weight: 800;
+        }
+
+
+        /* =====================================================
+           CATEGORIAS
+        ====================================================== */
+
+        .category-bar {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            margin-bottom: 18px;
+        }
+
+
+        .category-btn {
+
+            border: 0;
+
+            padding:
+                10px 13px;
+
+            border-radius: 9px;
+
+            background:
+                rgba(255,255,255,.06);
+
+            color:
+                #aab4c0;
+
+            font-weight: 800;
+
+            transition: .15s ease;
+        }
+
+
+        .category-btn:hover {
+
+            background:
+                rgba(40,126,255,.20);
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           LOJA
+        ====================================================== */
+
+        #shopContent {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(220px, 1fr)
+                );
+
+            gap: 12px;
+
+            max-height:
+                48vh;
+
+            overflow-y: auto;
+
+            padding-right: 4px;
+        }
+
+
+        .shop-item {
+
+            padding: 16px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255,255,255,.035);
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            transition: .15s ease;
+        }
+
+
+        .shop-item:hover {
+
+            transform:
+                translateY(-3px);
+
+            border-color:
+                rgba(111,179,255,.25);
+
+            background:
+                rgba(111,179,255,.06);
+        }
+
+
+        .item-visual {
+
+            min-height: 55px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 10px;
+
+            font-size: 34px;
+
+            text-align: center;
+        }
+
+
+        .shop-item h3 {
+
+            margin:
+                0 0 7px;
+
+            font-size: 15px;
+        }
+
+
+        .shop-item p {
+
+            min-height: 44px;
+
+            margin:
+                0 0 12px;
+
+            color:
+                #8994a3;
+
+            font-size: 11px;
+
+            line-height: 1.45;
+        }
+
+
+        .shop-item strong {
+
+            display: block;
+
+            margin-bottom: 10px;
+
+            color:
+                #ffd34d;
+
+            font-size: 16px;
+        }
+
+
+        .shop-item button {
+
+            width: 100%;
+
+            border: 0;
+
+            padding:
+                10px;
+
+            border-radius: 9px;
+
+            background:
+                #1f9d62;
+
+            color: white;
+
+            font-weight: 900;
+
+            transition: .15s ease;
+        }
+
+
+        .shop-item button:hover {
+
+            filter:
+                brightness(1.15);
+        }
+
+
+        /* =====================================================
+           BOTÕES PRINCIPAIS
+        ====================================================== */
+
+        .primary-btn {
+
+            border: 0;
+
+            padding:
+                14px 20px;
+
+            border-radius: 10px;
+
+            background:
+                #287eff;
+
+            color: white;
+
+            font-weight: 900;
+
+            font-size: 15px;
+
+            transition: .15s ease;
+        }
+
+
+        .primary-btn:hover {
+
+            filter:
+                brightness(1.15);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        .menu-actions {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+
+        #startWaveBtn {
+
+            width: 100%;
+
+            padding:
+                16px;
+
+            border: 0;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #287eff,
+                    #1657c9
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 1000;
+
+            transition: .15s ease;
+        }
+
+
+        #startWaveBtn:hover {
+
+            filter:
+                brightness(1.12);
+
+            transform:
+                translateY(-2px);
+        }
+
+
+        /* =====================================================
+           RANKING
+        ====================================================== */
+
+        #rankingScreen {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 3000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(0,0,0,.82);
+
+            backdrop-filter:
+                blur(8px);
+        }
+
+
+        .ranking-box {
+
+            position: relative;
+
+            width:
+                min(95vw, 760px);
+
+            max-height:
+                90vh;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 28px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #151b22,
+                    #0d1116
+                );
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            box-shadow:
+                0 30px 100px
+                rgba(0,0,0,.70);
+        }
+
+
+        .ranking-header {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .ranking-header-icon {
+
+            font-size: 42px;
+        }
+
+
+        .ranking-header h2 {
+
+            margin: 0;
+
+            font-size: 25px;
+        }
+
+
+        .ranking-header p {
+
+            margin:
+                4px 0 0;
+
+            color:
+                #8e98a7;
+        }
+
+
+        #rankingContent {
+
+            overflow-y: auto;
+        }
+
+
+        .close-ranking {
+
+            position: absolute;
+
+            right: 15px;
+
+            top: 15px;
+
+            width: 38px;
+
+            height: 38px;
+
+            border: 0;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,.08);
+
+            color: white;
+
+            font-size: 18px;
+        }
+
+
+        .close-ranking:hover {
+
+            background:
+                rgba(255,70,70,.20);
+        }
+
+
+        /* =====================================================
+           GAME OVER
+        ====================================================== */
+
+        #gameOver {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 4000;
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(0,0,0,.88);
+
+            backdrop-filter:
+                blur(8px);
+        }
+
+
+        .gameover-box {
+
+            width:
+                min(92vw, 500px);
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            background:
+                #11151b;
+
+            border:
+                1px solid
+                rgba(255,255,255,.10);
+
+            text-align: center;
+
+            box-shadow:
+                0 30px 100px
+                rgba(0,0,0,.70);
+        }
+
+
+        .gameover-icon {
+
+            font-size: 65px;
+        }
+
+
+        .gameover-box h1 {
+
+            margin:
+                10px 0;
+
+            font-size: 38px;
+        }
+
+
+        .final-stats {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+            margin:
+                20px 0;
+        }
+
+
+        .final-stat {
+
+            padding: 15px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,.05);
+        }
+
+
+        .final-stat span {
+
+            display: block;
+
+            color:
+                #7f8997;
+
+            font-size: 11px;
+
+            text-transform:
+                uppercase;
+        }
+
+
+        .final-stat strong {
+
+            display: block;
+
+            margin-top: 5px;
+
+            font-size: 22px;
+        }
+
+
+        #restartBtn,
+        #gameOverRankingBtn {
+
+            width: 100%;
+
+            margin-top: 8px;
+        }
+
+
+        /* =====================================================
            CONTROLES
-        ========================================= */
+        ====================================================== */
 
         #controlsHelp {
+
             position: fixed;
 
             left: 20px;
+
             bottom: 20px;
 
             z-index: 120;
 
-            padding: 10px 13px;
+            padding:
+                10px 13px;
 
             border-radius: 10px;
 
             background:
                 rgba(5,8,12,.72);
 
-            color: #8f99a7;
+            color:
+                #8f99a7;
 
             font-size: 11px;
 
             pointer-events: none;
         }
 
-        /* =========================================
+
+        /* =====================================================
            RESPONSIVO
-        ========================================= */
+        ====================================================== */
 
-        @media (max-width: 700px) {
+        @media(max-width:700px){
 
-            .hud-top {
-                top: 8px;
-                left: 8px;
-                right: 8px;
+            .menu-box {
 
-                flex-wrap: wrap;
+                padding: 20px;
             }
 
-            .hud-card {
-                min-width: auto;
 
-                padding: 8px 10px;
+            .game-title {
+
+                font-size: 30px;
             }
 
-            .health-card {
-                width: 130px;
+
+            .menu-header {
+
+                flex-direction:
+                    column;
             }
 
-            #weaponHUD {
-                right: 10px;
-                bottom: 105px;
+
+            .money-box {
+
+                width: 100%;
+
+                text-align: center;
             }
 
-            #inventory {
+
+            .menu-actions {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            #shopContent {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            #gameInventory {
+
                 bottom: 8px;
+            }
+
+
+            #gameInventorySlots {
 
                 gap: 4px;
             }
 
+
             .inventory-slot {
+
                 width: 58px;
+
                 height: 58px;
             }
 
-            .slot-icon {
-                font-size: 21px;
+
+            #weaponHUD {
+
+                right: 10px;
+
+                bottom: 90px;
             }
 
-            .slot-name {
-                font-size: 7px;
-            }
 
             #controlsHelp {
+
                 display: none;
             }
 
+
             #rankingBtn {
-                top: 115px;
+
+                top: 10px;
+
                 right: 10px;
-            }
 
-            .name-box,
-            .ranking-box,
-            .shop-box,
-            .gameover-box {
-                padding: 20px;
+                font-size: 11px;
             }
-
         }
 
     </style>
@@ -1087,10 +1371,10 @@
 
 
     <!-- =====================================================
-         CANVAS DO JOGO
+         CANVAS PRINCIPAL
     ====================================================== -->
 
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="game"></canvas>
 
 
     <!-- =====================================================
@@ -1102,6 +1386,9 @@
         <div class="hud-top">
 
             <div class="hud-left">
+
+
+                <!-- VIDA -->
 
                 <div class="hud-card health-card">
 
@@ -1127,6 +1414,34 @@
                 </div>
 
 
+                <!-- ARMADURA -->
+
+                <div class="hud-card">
+
+                    <span class="hud-label">
+                        Armadura
+                    </span>
+
+                    <span
+                        id="armor"
+                        class="hud-value"
+                    >
+                        0
+                    </span>
+
+                    <div class="health-bar">
+
+                        <div
+                            id="armorBar"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ONDA -->
+
                 <div class="hud-card">
 
                     <span class="hud-label">
@@ -1137,11 +1452,31 @@
                         id="wave"
                         class="hud-value"
                     >
+                        1
+                    </span>
+
+                </div>
+
+
+                <!-- INIMIGOS -->
+
+                <div class="hud-card">
+
+                    <span class="hud-label">
+                        Inimigos
+                    </span>
+
+                    <span
+                        id="enemies"
+                        class="hud-value"
+                    >
                         0
                     </span>
 
                 </div>
 
+
+                <!-- SCORE -->
 
                 <div class="hud-card">
 
@@ -1159,6 +1494,8 @@
                 </div>
 
 
+                <!-- DINHEIRO -->
+
                 <div class="hud-card">
 
                     <span class="hud-label">
@@ -1166,10 +1503,28 @@
                     </span>
 
                     <span
-                        id="money"
+                        id="moneyHud"
                         class="hud-value"
                     >
-                        $100
+                        $500
+                    </span>
+
+                </div>
+
+
+                <!-- NOME -->
+
+                <div class="hud-card">
+
+                    <span class="hud-label">
+                        Jogador
+                    </span>
+
+                    <span
+                        id="nameHud"
+                        class="hud-value"
+                    >
+                        Jogador
                     </span>
 
                 </div>
@@ -1179,22 +1534,16 @@
         </div>
 
 
-        <!-- ================================================
-             ARMA
-        ================================================= -->
+        <!-- ARMA -->
 
         <div id="weaponHUD">
 
-            <div
-                id="weaponName"
-            >
-                Nenhuma arma
+            <div id="weapon">
+                Pistola
             </div>
 
-            <div
-                id="ammo"
-            >
-                0 / 0
+            <div id="ammo">
+                12 / 60
             </div>
 
         </div>
@@ -1203,7 +1552,7 @@
 
 
     <!-- =====================================================
-         BOTÃO RANKING
+         RANKING
     ====================================================== -->
 
     <button
@@ -1215,12 +1564,14 @@
 
 
     <!-- =====================================================
-         INVENTÁRIO
+         INVENTÁRIO DURANTE O JOGO
     ====================================================== -->
 
-    <div
-        id="inventory"
-    ></div>
+    <div id="gameInventory">
+
+        <div id="gameInventorySlots"></div>
+
+    </div>
 
 
     <!-- =====================================================
@@ -1231,97 +1582,234 @@
 
         WASD / SETAS = mover
         &nbsp; • &nbsp;
+
         MOUSE = mirar
         &nbsp; • &nbsp;
+
         CLIQUE = atirar
         &nbsp; • &nbsp;
+
         R = recarregar
         &nbsp; • &nbsp;
-        1–5 = armas
+
+        1–5 = usar item
+        &nbsp; • &nbsp;
+
+        E = colocar
+        &nbsp; • &nbsp;
+
+        T = vender arma
 
     </div>
 
 
     <!-- =====================================================
-         TELA DE NOME
+         MENU / LOJA PRINCIPAL
     ====================================================== -->
 
-    <div
-        id="playerNameScreen"
-    >
+    <div id="shopScreen">
 
-        <div class="name-box">
-
-            <div class="name-icon">
-                🧟
-            </div>
-
-            <h1>
-                THEY ARE COMING
-            </h1>
-
-            <p>
-                Digite seu nome para entrar
-                no ranking global.
-            </p>
-
-            <input
-                id="playerNameInput"
-                type="text"
-                maxlength="20"
-                autocomplete="off"
-                placeholder="Seu nome"
-            >
-
-            <button
-                id="confirmPlayerName"
-                type="button"
-            >
-                COMEÇAR
-            </button>
-
-        </div>
-
-    </div>
+        <div class="menu-box">
 
 
-    <!-- =====================================================
-         LOJA
-    ====================================================== -->
-
-    <div
-        id="shop"
-    >
-
-        <div class="shop-box">
-
-            <div class="shop-header">
+            <div class="menu-header">
 
                 <div>
 
-                    <h2>
-                        🏪 Arsenal
-                    </h2>
+                    <h1 class="game-title">
+                        🧟 THEY ARE COMING
+                    </h1>
 
-                    <p>
-                        Compre novas armas
-                        para as próximas ondas.
+                    <p class="game-subtitle">
+                        Sobreviva às ondas de mortos-vivos,
+                        compre equipamentos e tente chegar
+                        ao topo do ranking global.
                     </p>
 
                 </div>
 
-                <button
-                    id="closeShopBtn"
-                    type="button"
+
+                <div class="money-box">
+
+                    💰
+
+                    <span id="money">
+                        $500
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- NOME -->
+
+            <div class="name-area">
+
+                <label
+                    class="name-label"
+                    for="playerName"
                 >
-                    ✕
+                    Nome do jogador
+                </label>
+
+                <input
+                    id="playerName"
+                    type="text"
+                    maxlength="20"
+                    autocomplete="off"
+                    placeholder="Digite seu nome"
+                >
+
+                <div id="nameWarning">
+                    ⚠️ Digite seu nome para começar.
+                </div>
+
+            </div>
+
+
+            <!-- CATEGORIAS -->
+
+            <div class="category-bar">
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="armadura"
+                >
+                    🛡️ Armaduras
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="armas"
+                >
+                    🔫 Armas
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="municao"
+                >
+                    📦 Munição
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="amigos"
+                >
+                    🐕 Amigos
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="kits"
+                >
+                    🩹 Kits
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="bombas"
+                >
+                    💣 Bombas
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="armadilhas"
+                >
+                    🪤 Armadilhas
+                </button>
+
+
+                <button
+                    class="category-btn"
+                    type="button"
+                    data-category="barricadas"
+                >
+                    🧱 Barricadas
                 </button>
 
             </div>
 
+
+            <!-- ITENS DA LOJA -->
+
+            <div id="shopContent"></div>
+
+
+            <!-- INVENTÁRIO DO MENU -->
+
+            <div>
+
+                <h3
+                    style="
+                        margin:
+                            22px 0 8px;
+                        color:#aab4c0;
+                        font-size:12px;
+                        text-transform:uppercase;
+                        letter-spacing:1px;
+                    "
+                >
+                    Inventário
+                </h3>
+
+                <div id="menuInventory"></div>
+
+            </div>
+
+
+            <!-- AÇÕES -->
+
+            <div class="menu-actions">
+
+                <button
+                    id="startWaveBtn"
+                    type="button"
+                >
+                    🧟 COMEÇAR ONDA
+                </button>
+
+
+                <button
+                    id="menuRankingBtn"
+                    class="primary-btn"
+                    type="button"
+                    style="
+                        background:#252c35;
+                    "
+                >
+                    🏆 RANKING GLOBAL
+                </button>
+
+            </div>
+
+
             <div
-                id="shopItems"
-            ></div>
+                style="
+                    margin-top:12px;
+                    color:#687382;
+                    font-size:11px;
+                    text-align:center;
+                "
+            >
+                Dica: durante a preparação você pode
+                comprar equipamentos e organizar seu inventário.
+            </div>
 
         </div>
 
@@ -1332,30 +1820,25 @@
          RANKING GLOBAL
     ====================================================== -->
 
-    <div
-        id="rankingPanel"
-    >
+    <div id="rankingScreen">
 
         <div class="ranking-box">
+
 
             <button
                 id="closeRankingBtn"
                 class="close-ranking"
                 type="button"
-                style="
-                    position:absolute;
-                    right:15px;
-                    top:15px;
-                "
             >
                 ✕
             </button>
 
+
             <div class="ranking-header">
 
-                <span>
+                <div class="ranking-header-icon">
                     🏆
-                </span>
+                </div>
 
                 <div>
 
@@ -1371,11 +1854,16 @@
 
             </div>
 
-            <div
-                id="globalRanking"
-            >
 
-                <div class="ranking-loading">
+            <div id="rankingContent">
+
+                <div
+                    style="
+                        padding:40px;
+                        text-align:center;
+                        color:#8d98a7;
+                    "
+                >
                     Carregando ranking...
                 </div>
 
@@ -1390,26 +1878,32 @@
          GAME OVER
     ====================================================== -->
 
-    <div
-        id="gameOver"
-    >
+    <div id="gameOver">
 
         <div class="gameover-box">
+
 
             <div class="gameover-icon">
                 💀
             </div>
 
+
             <h1>
                 VOCÊ MORREU
             </h1>
 
-            <p>
-                Os mortos-vivos venceram
-                esta batalha.
+
+            <p
+                style="
+                    color:#8994a3;
+                "
+            >
+                Os mortos-vivos venceram esta batalha.
             </p>
 
+
             <div class="final-stats">
+
 
                 <div class="final-stat">
 
@@ -1418,12 +1912,14 @@
                     </span>
 
                     <strong
+                        id="finalScore"
                         class="final-score"
                     >
                         0
                     </strong>
 
                 </div>
+
 
                 <div class="final-stat">
 
@@ -1439,15 +1935,48 @@
 
                 </div>
 
+
+                <div class="final-stat">
+
+                    <span>
+                        Abates
+                    </span>
+
+                    <strong
+                        class="final-kills"
+                    >
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="final-stat">
+
+                    <span>
+                        Dinheiro
+                    </span>
+
+                    <strong
+                        class="final-money"
+                    >
+                        $0
+                    </strong>
+
+                </div>
+
+
             </div>
+
 
             <button
                 id="restartBtn"
                 class="primary-btn"
                 type="button"
             >
-                JOGAR NOVAMENTE
+                🔄 JOGAR NOVAMENTE
             </button>
+
 
             <button
                 id="gameOverRankingBtn"
@@ -1466,38 +1995,6 @@
 
 
     <!-- =====================================================
-         CONFIGURAÇÃO SUPABASE
-    ====================================================== -->
-
-    <script>
-
-        /*
-         * COLE AQUI OS DADOS DO SEU SUPABASE.
-         *
-         * Você encontra em:
-         *
-         * Supabase
-         * → Project Settings
-         * → API
-         *
-         * Use:
-         *
-         * Project URL
-         * Publishable key / anon key
-         *
-         * NÃO USE A SERVICE_ROLE KEY.
-         */
-
-        window.SUPABASE_URL =
-            "COLE_AQUI_SUA_SUPABASE_URL";
-
-        window.SUPABASE_ANON_KEY =
-            "COLE_AQUI_SUA_ANON_KEY";
-
-    </script>
-
-
-    <!-- =====================================================
          GAME.JS
     ====================================================== -->
 
@@ -1505,246 +2002,78 @@
 
 
     <!-- =====================================================
-         PEQUENOS AJUSTES DO HTML
+         PEQUENOS AJUSTES DE COMPATIBILIDADE
     ====================================================== -->
 
     <script>
 
         /*
-         * Atualiza o nome da arma no HUD.
+         * Botão de ranking do menu.
+         *
+         * O game.js possui openRanking(),
+         * então apenas chamamos a função quando
+         * ela já estiver disponível.
          */
 
-        function updateWeaponHUD() {
+        const menuRankingBtn =
+            document.getElementById(
+                "menuRankingBtn"
+            );
 
-            const name =
-                document.getElementById(
-                    "weaponName"
-                );
+        if(menuRankingBtn){
 
-            const ammo =
-                document.getElementById(
-                    "ammo"
-                );
+            menuRankingBtn.addEventListener(
+                "click",
+                function(){
 
-            if (
-                typeof player ===
-                "undefined"
-            ) {
-                return;
-            }
-
-            if (
-                typeof getCurrentWeapon !==
-                "function"
-            ) {
-                return;
-            }
-
-            const weapon =
-                getCurrentWeapon();
-
-            if (!weapon) {
-
-                if (name) {
-                    name.textContent =
-                        "Nenhuma arma";
-                }
-
-                if (ammo) {
-                    ammo.textContent =
-                        "0 / 0";
-                }
-
-                return;
-            }
-
-            if (name) {
-                name.textContent =
-                    weapon.name;
-            }
-
-            if (ammo) {
-
-                const reserve =
-                    typeof getWeaponAmmo ===
-                    "function"
-                        ? getWeaponAmmo(
-                            weapon
-                        )
-                        : 0;
-
-                ammo.textContent =
-                    (player.magazineAmmo || 0) +
-                    " / " +
-                    reserve;
-            }
-        }
-
-
-        /*
-         * Atualiza a barra de vida.
-         */
-
-        function updateHealthBar() {
-
-            const bar =
-                document.getElementById(
-                    "healthBar"
-                );
-
-            if (!bar) return;
-
-            if (
-                typeof player ===
-                "undefined" ||
-                !player
-            ) {
-                return;
-            }
-
-            const max =
-                player.maxHp || 100;
-
-            const current =
-                Math.max(
-                    0,
-                    player.hp || 0
-                );
-
-            const percentage =
-                Math.max(
-                    0,
-                    Math.min(
-                        100,
-                        (current / max) * 100
-                    )
-                );
-
-            bar.style.width =
-                percentage + "%";
-        }
-
-
-        /*
-         * Atualização complementar do HUD.
-         */
-
-        const oldUpdateHUD =
-            window.updateHUD;
-
-        window.updateHUD =
-            function () {
-
-                if (
-                    typeof oldUpdateHUD ===
-                    "function"
-                ) {
-
-                    oldUpdateHUD();
-                }
-
-                updateWeaponHUD();
-                updateHealthBar();
-            };
-
-
-        /*
-         * Botão do ranking no Game Over.
-         */
-
-        document.addEventListener(
-            "click",
-            function(event) {
-
-                if (
-                    event.target.closest(
-                        "#gameOverRankingBtn"
-                    )
-                ) {
-
-                    if (
+                    if(
                         typeof openRanking ===
                         "function"
-                    ) {
+                    ){
 
                         openRanking();
-                    }
-                }
 
-            }
-        );
+                    }else{
+
+                        console.warn(
+                            "openRanking ainda não está disponível."
+                        );
+
+                    }
+
+                }
+            );
+
+        }
 
 
         /*
-         * Mostrar a tela de nome
-         * quando a página abrir.
+         * Mantém o botão de ranking visível
+         * enquanto estiver no menu.
          */
 
         window.addEventListener(
             "load",
-            function() {
+            function(){
 
-                setTimeout(
-                    function() {
+                const shop =
+                    document.getElementById(
+                        "shopScreen"
+                    );
 
-                        if (
-                            typeof askPlayerName ===
-                            "function"
-                        ) {
+                if(shop){
 
-                            askPlayerName();
-                        }
+                    shop.style.display =
+                        "flex";
 
-                    },
-                    300
-                );
+                }
 
             }
         );
 
     </script>
 
+
 </body>
 
 </html>
-```
-
-### ⚠️ Só falta uma coisa no HTML
-
-Nesta parte:
-
-```html
-window.SUPABASE_URL =
-    "COLE_AQUI_SUA_SUPABASE_URL";
-
-window.SUPABASE_ANON_KEY =
-    "COLE_AQUI_SUA_ANON_KEY";
-```
-
-você precisa colocar **a URL e a chave do seu projeto Supabase**.
-
-E tem um detalhe importante: **não coloque a `service_role key` no HTML**. Use somente a chave pública (`anon`/`publishable`).
-
-Depois disso, a estrutura da pasta pode ficar assim:
-
-```text
-they-are-coming/
-│
-├── index.html
-│
-└── game.js
-```
-
-Se o seu `game.js` estiver dividido em 4 partes, ele precisa ser **um único arquivo `game.js`**, com:
-
-```text
-PARTE 1
-↓
-PARTE 2
-↓
-PARTE 3
-↓
-PARTE 4
-```
-
-na mesma ordem.
