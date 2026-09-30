@@ -1,10 +1,12 @@
 const games = [
     {
-        name: "They Are Coming",
-        category: "Ação",
-        icon: "🧟",
-        description: "Sobreviva às hordas de zumbis usando armas e barricadas.",
-        link: "jogos/they-are-coming/"
+        {
+  name:"Space Waves",
+  category:"Ação",
+  icon:"🚀",
+  description:"Controle sua nave, desvie dos obstáculos e alcance a maior distância possível.",
+  link:"jogos/space-waves/"
+},
     },
 
     {
