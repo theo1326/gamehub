@@ -39,14 +39,11 @@ canvas{
     position:fixed;
     inset:0;
     z-index:20;
-
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-
     text-align:center;
-
     background:
         radial-gradient(circle at center,#252a31 0%,#11151a 48%,#07090c 100%);
 }
@@ -56,8 +53,7 @@ canvas{
     font-size:58px;
     letter-spacing:2px;
     margin-bottom:12px;
-    text-shadow:
-        0 5px 20px rgba(0,0,0,.8);
+    text-shadow:0 5px 20px rgba(0,0,0,.8);
 }
 
 #menu > p{
@@ -75,18 +71,14 @@ canvas{
 .controlBox{
     min-width:270px;
     padding:22px 28px;
-
     border-radius:18px;
-
     background:
         linear-gradient(
             145deg,
             rgba(255,255,255,.08),
             rgba(255,255,255,.025)
         );
-
     border:1px solid rgba(255,255,255,.12);
-
     box-shadow:
         0 15px 40px rgba(0,0,0,.35),
         inset 0 1px rgba(255,255,255,.06);
@@ -113,32 +105,19 @@ canvas{
 button{
     border:none;
     padding:16px 36px;
-
     border-radius:12px;
-
-    background:linear-gradient(
-        135deg,
-        #ffffff,
-        #cfd4da
-    );
-
+    background:linear-gradient(135deg,#ffffff,#cfd4da);
     color:#111;
-
     font-size:18px;
     font-weight:bold;
-
     cursor:pointer;
-
-    box-shadow:
-        0 10px 25px rgba(0,0,0,.35);
-
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
     transition:.15s;
 }
 
 button:hover{
     transform:translateY(-2px) scale(1.03);
-    box-shadow:
-        0 15px 35px rgba(0,0,0,.45);
+    box-shadow:0 15px 35px rgba(0,0,0,.45);
 }
 
 #gameOver{
@@ -210,9 +189,7 @@ button:hover{
 
     </div>
 
-    <button id="startBtn">
-        COMEÇAR PARTIDA
-    </button>
+    <button id="startBtn">COMEÇAR PARTIDA</button>
 
 </div>
 
@@ -224,9 +201,7 @@ button:hover{
 
     <div id="finalScore"></div>
 
-    <button id="restartBtn">
-        JOGAR NOVAMENTE
-    </button>
+    <button id="restartBtn">JOGAR NOVAMENTE</button>
 
 </div>
 
@@ -276,7 +251,7 @@ function resize(){
         (canvas.height - WORLD_HEIGHT * scale) / 2;
 }
 
-window.addEventListener("resize",resize);
+window.addEventListener("resize", resize);
 
 resize();
 
@@ -286,10 +261,9 @@ resize();
 // ======================================================
 
 const keys = {};
-
 const justPressed = {};
 
-window.addEventListener("keydown",e=>{
+window.addEventListener("keydown", e => {
 
     const key = e.key.toLowerCase();
 
@@ -306,12 +280,11 @@ window.addEventListener("keydown",e=>{
         "arrowdown",
         " "
     ].includes(key)){
-
         e.preventDefault();
     }
 });
 
-window.addEventListener("keyup",e=>{
+window.addEventListener("keyup", e => {
 
     keys[e.key.toLowerCase()] = false;
 });
@@ -344,8 +317,6 @@ let lastTime = 0;
 
 let resetTimer = 0;
 
-let possessionTimer = 0;
-
 
 // ======================================================
 // JOGADORES
@@ -369,9 +340,7 @@ const player1 = {
 
     onGround:true,
 
-    shootCooldown:0,
-
-    name:"JOGADOR 1"
+    shootCooldown:0
 };
 
 const player2 = {
@@ -392,9 +361,7 @@ const player2 = {
 
     onGround:true,
 
-    shootCooldown:0,
-
-    name:"JOGADOR 2"
+    shootCooldown:0
 };
 
 
@@ -444,22 +411,6 @@ const basket2 = {
 // RESET
 // ======================================================
 
-function resetBall(){
-
-    ball.x = 800;
-    ball.y = groundY-90;
-
-    ball.z = 0;
-
-    ball.vx = 0;
-    ball.vy = 0;
-    ball.vz = 0;
-
-    ball.heldBy = null;
-
-    ball.scored = false;
-}
-
 function resetGame(){
 
     score1 = 0;
@@ -469,8 +420,6 @@ function resetGame(){
 
     resetTimer = 0;
 
-    possessionTimer = 0;
-
     player1.x = 400;
     player1.y = groundY-105;
 
@@ -478,9 +427,7 @@ function resetGame(){
     player1.vy = 0;
 
     player1.facing = 1;
-
     player1.onGround = true;
-
     player1.shootCooldown = 0;
 
     player2.x = 1138;
@@ -490,27 +437,19 @@ function resetGame(){
     player2.vy = 0;
 
     player2.facing = -1;
-
     player2.onGround = true;
-
     player2.shootCooldown = 0;
 
-    /*
-       A bola começa nas mãos
-       do jogador 1.
-    */
-
-    ball.x = player1.x + player1.width + 8;
+    ball.x = player1.x + player1.width + 10;
     ball.y = player1.y + 45;
 
-    ball.z = 40;
+    ball.z = 45;
 
     ball.vx = 0;
     ball.vy = 0;
     ball.vz = 0;
 
     ball.heldBy = player1;
-
     ball.scored = false;
 }
 
@@ -566,7 +505,6 @@ function updatePlayer(player,dt,controls){
     ){
 
         player.vy = -jumpPower;
-
         player.onGround = false;
     }
 
@@ -575,12 +513,9 @@ function updatePlayer(player,dt,controls){
     player.x += player.vx * dt;
     player.y += player.vy * dt;
 
-    if(
-        player.y + player.height >= groundY
-    ){
+    if(player.y + player.height >= groundY){
 
-        player.y =
-            groundY-player.height;
+        player.y = groundY-player.height;
 
         player.vy = 0;
 
@@ -641,11 +576,16 @@ function getHandPosition(player){
 
 function tryPickupBall(){
 
-    if(ball.heldBy) return;
+    if(ball.heldBy)
+        return;
 
-    if(ball.z > 80) return;
+    if(ball.z > 100)
+        return;
 
-    const players = [player1,player2];
+    const players = [
+        player1,
+        player2
+    ];
 
     let closest = null;
     let closestDistance = Infinity;
@@ -673,32 +613,6 @@ function tryPickupBall(){
     if(closest){
 
         ball.heldBy = closest;
-
-        possessionTimer = 0;
-    }
-}
-
-
-// ======================================================
-// PASSE AUTOMÁTICO DA POSSE
-// ======================================================
-
-function ensurePossession(){
-
-    if(ball.heldBy) return;
-
-    /*
-       Se a bola estiver parada no chão,
-       qualquer jogador próximo pode pegá-la.
-    */
-
-    if(
-        ball.z <= 2 &&
-        Math.abs(ball.vx) < 40 &&
-        Math.abs(ball.vz) < 50
-    ){
-
-        tryPickupBall();
     }
 }
 
@@ -709,13 +623,27 @@ function ensurePossession(){
 
 function shootBall(player){
 
-    if(ball.heldBy !== player)
-        return;
+    /*
+       O jogador pode arremessar
+       de QUALQUER lugar da quadra.
 
-    if(player.shootCooldown > 0)
-        return;
+       A única condição é estar
+       com a bola.
+    */
 
-    player.shootCooldown = .65;
+    if(ball.heldBy !== player){
+        return;
+    }
+
+    if(player.shootCooldown > 0){
+        return;
+    }
+
+    player.shootCooldown = 0.65;
+
+    /*
+       Cesta adversária.
+    */
 
     const target =
         player === player1
@@ -725,6 +653,11 @@ function shootBall(player){
     const hand =
         getHandPosition(player);
 
+    /*
+       Solta a bola exatamente
+       da posição atual da mão.
+    */
+
     ball.heldBy = null;
 
     ball.x = hand.x;
@@ -733,11 +666,7 @@ function shootBall(player){
     ball.z = 45;
 
     /*
-       O arremesso agora é calculado
-       diretamente para a cesta.
-
-       A parábola é alta e difícil,
-       mas possível.
+       DISTÂNCIA ATÉ A CESTA
     */
 
     const dx =
@@ -749,21 +678,33 @@ function shootBall(player){
     const direction =
         Math.sign(dx);
 
+    /*
+       ARREMESSO DE QUALQUER LUGAR
+       
+       Quanto mais longe,
+       maior a força horizontal.
+    */
+
     ball.vx =
         direction *
         Math.min(
-            950,
-            500 + distance*.72
+            1350,
+            560 + distance * 0.82
+        );
+
+    /*
+       Força vertical.
+       Mantém uma parábola alta.
+    */
+
+    ball.vz =
+        930 +
+        Math.min(
+            420,
+            distance * 0.18
         );
 
     ball.vy = 0;
-
-    ball.vz =
-        850 +
-        Math.min(
-            300,
-            distance*.12
-        );
 
     ball.scored = false;
 }
@@ -774,12 +715,6 @@ function shootBall(player){
 // ======================================================
 
 function handleShooting(){
-
-    /*
-       Usamos justPressed para que
-       apertar F ou L uma vez faça
-       exatamente um arremesso.
-    */
 
     if(consumeKey("f")){
 
@@ -846,14 +781,12 @@ function updateBall(dt){
     if(ball.x < 20){
 
         ball.x = 20;
-
         ball.vx *= -.65;
     }
 
     if(ball.x > WORLD_WIDTH-20){
 
         ball.x = WORLD_WIDTH-20;
-
         ball.vx *= -.65;
     }
 }
@@ -868,8 +801,7 @@ function checkSteal(){
     if(!ball.heldBy)
         return;
 
-    const holder =
-        ball.heldBy;
+    const holder = ball.heldBy;
 
     const opponent =
         holder === player1
@@ -889,12 +821,6 @@ function checkSteal(){
 
     if(distance < 55){
 
-        /*
-           Pequena chance de roubo
-           por segundo, evitando roubo
-           instantâneo toda hora.
-        */
-
         if(Math.random() < .025){
 
             const hand =
@@ -904,7 +830,6 @@ function checkSteal(){
 
             ball.x = hand.x;
             ball.y = hand.y;
-
             ball.z = 45;
         }
     }
@@ -942,13 +867,7 @@ function checkBasketCollision(){
         const b = item.basket;
 
         const horizontal =
-            Math.abs(
-                ball.x-b.x
-            );
-
-        /*
-           A posição visual da bola.
-        */
+            Math.abs(ball.x-b.x);
 
         const ballScreenY =
             ball.y-ball.z;
@@ -957,11 +876,6 @@ function checkBasketCollision(){
             Math.abs(
                 ballScreenY-b.rimY
             );
-
-        /*
-           A bola precisa estar descendo
-           e passar por uma área pequena.
-        */
 
         if(
             horizontal < b.rimWidth/2 &&
@@ -973,12 +887,11 @@ function checkBasketCollision(){
 
             if(item.player === 1){
 
-                score1 += 1;
+                score1++;
             }
-
             else{
 
-                score2 += 1;
+                score2++;
             }
 
             /*
@@ -989,8 +902,6 @@ function checkBasketCollision(){
                 score1 >= 5 ||
                 score2 >= 5
             ){
-
-                updateScore();
 
                 setTimeout(()=>{
 
@@ -1003,8 +914,6 @@ function checkBasketCollision(){
 
                 return;
             }
-
-            updateScore();
 
             resetTimer = 1.1;
 
@@ -1027,8 +936,7 @@ function updateReset(dt){
 
     if(resetTimer <= 0){
 
-        ball.x = 800;
-
+        ball.x = WORLD_WIDTH/2;
         ball.y = groundY-100;
 
         ball.z = 0;
@@ -1036,11 +944,6 @@ function updateReset(dt){
         ball.vx = 0;
         ball.vy = 0;
         ball.vz = 0;
-
-        /*
-           Depois da cesta a bola fica livre
-           no centro para os jogadores disputarem.
-        */
 
         ball.heldBy = null;
 
@@ -1101,7 +1004,7 @@ function finishGame(){
             "🤝 EMPATE!";
 
         resultText.textContent =
-            "Os dois jogadores terminaram com a mesma quantidade de cestas.";
+            "Os dois jogadores terminaram empatados.";
     }
 
     finalScore.textContent =
@@ -1116,10 +1019,6 @@ function finishGame(){
 // ======================================================
 
 function drawCourt(){
-
-    /*
-       FUNDO
-    */
 
     const bg =
         ctx.createLinearGradient(
@@ -1144,13 +1043,12 @@ function drawCourt(){
 
 
     /*
-       LUZES DO GINÁSIO
+       ILUMINAÇÃO
     */
 
     for(let i=0;i<7;i++){
 
-        const x =
-            80+i*245;
+        const x = 80+i*245;
 
         const light =
             ctx.createRadialGradient(
@@ -1184,7 +1082,7 @@ function drawCourt(){
 
 
     /*
-       ARQUIBANCADA
+       ARQUIBANCADAS
     */
 
     ctx.fillStyle = "#101419";
@@ -1247,7 +1145,7 @@ function drawCourt(){
 
 
     /*
-       PLACAS DE LED
+       PAINEL
     */
 
     ctx.fillStyle = "#080a0d";
@@ -1311,15 +1209,8 @@ function drawCourt(){
 
         ctx.beginPath();
 
-        ctx.moveTo(
-            x,
-            groundY
-        );
-
-        ctx.lineTo(
-            x,
-            WORLD_HEIGHT
-        );
+        ctx.moveTo(x,groundY);
+        ctx.lineTo(x,WORLD_HEIGHT);
 
         ctx.stroke();
     }
@@ -1390,46 +1281,8 @@ function drawCourt(){
     );
 
 
-    /*
-       LINHAS EXTRAS
-    */
-
-    ctx.lineWidth = 3;
-
-    ctx.beginPath();
-
-    ctx.moveTo(
-        250,
-        groundY
-    );
-
-    ctx.lineTo(
-        250,
-        groundY-260
-    );
-
-    ctx.moveTo(
-        WORLD_WIDTH-250,
-        groundY
-    );
-
-    ctx.lineTo(
-        WORLD_WIDTH-250,
-        groundY-260
-    );
-
-    ctx.stroke();
-
-
-    drawBasket(
-        basket1,
-        true
-    );
-
-    drawBasket(
-        basket2,
-        false
-    );
+    drawBasket(basket1,true);
+    drawBasket(basket2,false);
 }
 
 
@@ -1446,7 +1299,7 @@ function drawBasket(basket,left){
 
 
     /*
-       SOMBRA DO POSTE
+       SOMBRA
     */
 
     ctx.strokeStyle =
@@ -1552,7 +1405,7 @@ function drawBasket(basket,left){
 
 
     /*
-       QUADRADO DA TABELA
+       QUADRADO
     */
 
     ctx.strokeStyle = "#333";
@@ -1652,6 +1505,7 @@ function drawPlayer(player){
 
     const x = player.x;
     const y = player.y;
+
 
     /*
        SOMBRA
@@ -1828,7 +1682,7 @@ function drawPlayer(player){
 
 
     /*
-       ROSTO / DIREÇÃO
+       OLHO
     */
 
     const faceX =
@@ -1886,8 +1740,7 @@ function drawPlayer(player){
 
     ctx.textAlign = "center";
 
-    ctx.font =
-        "bold 20px Arial";
+    ctx.font = "bold 20px Arial";
 
     ctx.fillStyle = "#fff";
 
@@ -2007,7 +1860,7 @@ function drawBall(){
 
 
     /*
-       LINHAS DA BOLA
+       LINHAS
     */
 
     ctx.strokeStyle =
@@ -2061,10 +1914,6 @@ function drawBall(){
 
 function drawHUD(){
 
-    /*
-       PLACAR
-    */
-
     const hudX =
         WORLD_WIDTH/2-270;
 
@@ -2096,10 +1945,6 @@ function drawHUD(){
     ctx.stroke();
 
 
-    /*
-       JOGADOR 1
-    */
-
     ctx.textAlign = "center";
 
     ctx.font =
@@ -2114,11 +1959,6 @@ function drawHUD(){
         55
     );
 
-
-    /*
-       JOGADOR 2
-    */
-
     ctx.fillStyle =
         player2.color;
 
@@ -2129,15 +1969,10 @@ function drawHUD(){
     );
 
 
-    /*
-       PLACAR
-    */
-
     ctx.font =
         "bold 46px Arial";
 
-    ctx.fillStyle =
-        "#fff";
+    ctx.fillStyle = "#fff";
 
     ctx.fillText(
         score1,
@@ -2157,10 +1992,6 @@ function drawHUD(){
         101
     );
 
-
-    /*
-       TEMPO
-    */
 
     const minutes =
         Math.floor(matchTime/60);
@@ -2187,10 +2018,6 @@ function drawHUD(){
         130
     );
 
-
-    /*
-       META
-    */
 
     ctx.font =
         "bold 16px Arial";
@@ -2244,27 +2071,50 @@ function update(dt){
 
 
     /*
-       BOLA
+       BOLA NO CHÃO
     */
 
     tryPickupBall();
 
-    ensurePossession();
+
+    /*
+       ROUBO
+    */
 
     checkSteal();
 
+
+    /*
+       FÍSICA
+    */
+
     updateBall(dt);
+
+
+    /*
+       CESTA
+    */
 
     checkBasketCollision();
 
+
+    /*
+       RESET
+    */
+
     updateReset(dt);
+
+
+    /*
+       TEMPO
+    */
 
     updateTimer(dt);
 }
 
 
 // ======================================================
-// DESENHO
+// DESENHAR
 // ======================================================
 
 function draw(){
@@ -2328,9 +2178,9 @@ function gameLoop(time){
 
     draw();
 
+
     /*
-       Limpa teclas de pressionamento único
-       depois do frame.
+       Limpa os comandos de uma vez.
     */
 
     for(const key in justPressed){
@@ -2338,10 +2188,12 @@ function gameLoop(time){
         delete justPressed[key];
     }
 
+
     if(playing){
 
         requestAnimationFrame(gameLoop);
     }
+
     else{
 
         draw();
@@ -2361,16 +2213,14 @@ startBtn.addEventListener(
 restartBtn.addEventListener(
     "click",
     ()=>{
-
         gameOver.style.display = "none";
-
         startGame();
     }
 );
 
 
 // ======================================================
-// INÍCIO
+// INICIALIZAÇÃO
 // ======================================================
 
 resetGame();
