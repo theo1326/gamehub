@@ -13,7 +13,6 @@
 
     <canvas id="canvas"></canvas>
 
-    <!-- HUD -->
     <div id="hud">
 
         <div class="hud-left">
@@ -44,62 +43,64 @@
 
     </div>
 
-    <!-- MENSAGEM -->
     <div id="message"></div>
+
+    <!-- ITEM NA MÃO -->
+    <canvas id="handItemCanvas"></canvas>
 
     <!-- HOTBAR -->
     <div id="hotbar">
 
         <div class="slot selected" data-slot="0">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">1</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="1">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">2</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="2">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">3</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="3">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">4</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="4">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">5</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="5">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">6</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="6">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">7</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="7">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">8</span>
             <span class="item-count"></span>
         </div>
 
         <div class="slot" data-slot="8">
-            <span class="slot-icon"></span>
+            <canvas class="item-canvas"></canvas>
             <span class="slot-number">9</span>
             <span class="item-count"></span>
         </div>
@@ -112,26 +113,46 @@
         <div id="inventoryPanel">
 
             <div class="inventory-title">
-                Inventário
+                <span>INVENTÁRIO</span>
                 <button id="closeInventory">✕</button>
             </div>
 
             <div class="inventory-body">
 
-                <div class="armor-area">
+                <div class="character-panel">
 
-                    <div class="armor-slot">🪖</div>
-                    <div class="armor-slot">👕</div>
-                    <div class="armor-slot">👖</div>
-                    <div class="armor-slot">👢</div>
+                    <div class="character-title">
+                        PERSONAGEM
+                    </div>
+
+                    <div class="character-preview">
+                        <canvas id="characterCanvas"></canvas>
+                    </div>
+
+                    <div class="armor-slots">
+
+                        <div class="armor-slot" data-armor="helmet"></div>
+                        <div class="armor-slot" data-armor="chest"></div>
+                        <div class="armor-slot" data-armor="legs"></div>
+                        <div class="armor-slot" data-armor="boots"></div>
+
+                    </div>
 
                 </div>
 
-                <div>
+                <div class="inventory-right">
+
+                    <div class="inventory-section-title">
+                        ITENS
+                    </div>
 
                     <div id="inventoryGrid"></div>
 
                     <div class="inventory-separator"></div>
+
+                    <div class="inventory-section-title">
+                        BARRA RÁPIDA
+                    </div>
 
                     <div id="inventoryHotbar"></div>
 
@@ -139,8 +160,42 @@
 
             </div>
 
+            <!-- CRAFTING -->
+            <div class="crafting-area">
+
+                <div class="crafting-title">
+                    CRIAÇÃO
+                </div>
+
+                <div class="crafting-container">
+
+                    <div id="craftGrid">
+
+                        <div class="craft-slot" data-craft="0"></div>
+                        <div class="craft-slot" data-craft="1"></div>
+                        <div class="craft-slot" data-craft="2"></div>
+                        <div class="craft-slot" data-craft="3"></div>
+
+                    </div>
+
+                    <div class="craft-arrow">
+                        →
+                    </div>
+
+                    <div id="craftResult" class="craft-result">
+                    </div>
+
+                </div>
+
+                <div id="recipeName">
+                    Coloque materiais para criar um item
+                </div>
+
+            </div>
+
             <div class="inventory-help">
-                Clique em um item para mover • Clique duas vezes em comida para comer
+                Clique para mover itens • Clique duas vezes em comida para comer
+                • Use os materiais na área de criação
             </div>
 
         </div>
@@ -165,18 +220,17 @@
             </button>
 
             <button id="reloadButton">
-                Reiniciar mundo
+                Novo mundo
             </button>
 
         </div>
 
     </div>
 
-    <!-- CONTROLES -->
     <div id="help">
 
         <b>WASD / SETAS</b> — mover<br>
-        <b>ESPAÇO</b> — pular<br>
+        <b>ESPAÇO</b> — pular / nadar<br>
         <b>CLIQUE ESQUERDO</b> — atacar / quebrar<br>
         <b>CLIQUE DIREITO</b> — colocar / comer<br>
         <b>1-9</b> — selecionar item<br>
