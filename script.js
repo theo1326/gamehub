@@ -47,7 +47,7 @@ const games = [
 
     {
         name: "GTA 5",
-        category: "Corrida e ação",
+        category: "Corrida",
         icon: "🏎️",
         description: "Explore uma cidade 3D, dirija carros e complete missões.",
         link: "jogos/gta5/index.html"
@@ -81,31 +81,20 @@ let category = "Todos";
 
 function render() {
 
-    const query =
-        search.value
-        .trim()
-        .toLowerCase();
+    const query = search.value.trim().toLowerCase();
 
-    const filtered =
-        games.filter(game => {
+    const filtered = games.filter(game => {
 
-            const matchesSearch =
-                game.name
-                    .toLowerCase()
-                    .includes(query) ||
-                game.description
-                    .toLowerCase()
-                    .includes(query);
+        const matchesSearch =
+            game.name.toLowerCase().includes(query) ||
+            game.description.toLowerCase().includes(query);
 
-            const matchesCategory =
-                category === "Todos" ||
-                game.category === category;
+        const matchesCategory =
+            category === "Todos" ||
+            game.category === category;
 
-            return (
-                matchesSearch &&
-                matchesCategory
-            );
-        });
+        return matchesSearch && matchesCategory;
+    });
 
 
     grid.innerHTML = "";
@@ -113,8 +102,7 @@ function render() {
 
     filtered.forEach(game => {
 
-        const card =
-            document.createElement("div");
+        const card = document.createElement("div");
 
         card.className = "game-card";
 
@@ -125,6 +113,7 @@ function render() {
             </div>
 
             <div class="game-info">
+
                 <span class="game-category">
                     ${game.category}
                 </span>
@@ -136,32 +125,31 @@ function render() {
                 <button class="play-btn">
                     ▶ Jogar
                 </button>
+
             </div>
         `;
 
 
-        const button =
-            card.querySelector(".play-btn");
+        const button = card.querySelector(".play-btn");
 
 
-        button.addEventListener(
-            "click",
-            () => playGame(game)
-        );
+        button.addEventListener("click", () => {
+            playGame(game);
+        });
 
 
         grid.appendChild(card);
     });
 
 
-    count.textContent =
-        `${filtered.length} jogos`;
+    count.textContent = `${filtered.length} jogos`;
 
 
-    empty.style.display =
-        filtered.length === 0
-        ? "block"
-        : "none";
+    if (filtered.length === 0) {
+        empty.classList.remove("hidden");
+    } else {
+        empty.classList.add("hidden");
+    }
 }
 
 
@@ -169,71 +157,85 @@ function playGame(game) {
 
     if (game.link) {
 
-        window.location.href =
-            game.link;
+        window.location.href = game.link;
 
     } else {
 
-        alert(
-            "Esse jogo ainda não foi adicionado ao GameHub."
-        );
+        alert("Esse jogo ainda não foi adicionado ao Ludix.");
+
     }
 }
 
 
+/* =========================
+   CATEGORIAS
+========================= */
+
 document
-    .querySelectorAll(".category-btn")
+    .querySelectorAll(".filter")
     .forEach(button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+        button.addEventListener("click", () => {
 
-                document
-                    .querySelectorAll(".category-btn")
-                    .forEach(btn =>
-                        btn.classList.remove("active")
-                    );
+            document
+                .querySelectorAll(".filter")
+                .forEach(btn => {
+                    btn.classList.remove("active");
+                });
 
-                button.classList.add("active");
 
-                category =
-                    button.dataset.category;
+            button.classList.add("active");
 
-                render();
-            }
-        );
+
+            category = button.dataset.category;
+
+
+            render();
+
+        });
+
     });
 
 
-search.addEventListener(
-    "input",
-    render
-);
+/* =========================
+   PESQUISA
+========================= */
+
+search.addEventListener("input", render);
 
 
-const themeBtn =
-    document.getElementById("themeBtn");
+/* =========================
+   TEMA
+========================= */
+
+const themeBtn = document.getElementById("themeBtn");
 
 
 if (themeBtn) {
 
-    themeBtn.addEventListener(
-        "click",
-        () => {
+    themeBtn.addEventListener("click", () => {
 
-            document.body.classList.toggle(
-                "light"
-            );
+        document.body.classList.toggle("light");
 
-            themeBtn.textContent =
-                document.body.classList.contains("light")
-                ? "🌙"
-                : "☀️";
+
+        if (document.body.classList.contains("light")) {
+
+            themeBtn.textContent = "🌙";
+
+        } else {
+
+            themeBtn.textContent = "☀️";
+
         }
-    );
+
+    });
+
 }
 
+
+/* =========================
+   INICIAR
+========================= */
 
 render();
 ```
